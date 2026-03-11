@@ -1,0 +1,86 @@
+// @ts-nocheck
+import { redirect } from "next/navigation";
+
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { MessagesHub } from "@/components/messages-hub";
+
+const SYSTEM_MESSAGE_PREFIX = "__SYSTEM__|";
+type DeliveryStatus = "seen" | "delivered" | null;
+
+function formatPreview(body?: string | null) {
+  if (!body) return "Sohbeti aç ve yazışmaya başla";
+  if (body.startsWith(SYSTEM_MESSAGE_PREFIX)) {
+    return body.slice(SYSTEM_MESSAGE_PREFIX.length).trim();
+  }
+  return body;
+}
+
+function getMentionToken(me: { username?: string | null; name?: string | null }) {
+  if (me.username) return `@${me.username}`;
+  if (me.name) return `@${me.name.replace(/\s+/g, "").toLowerCase()}`;
+  return null;
+}
+
+export default async function MessagesPage() {
+  const session = await auth();
+  if (!session) redirect("/auth/login");
+
+  const conversations = await prisma.conversation.findMany({
+    where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] },
+    include: {
+      listing: { select: { id: true, title: true } },
+      buyer: { select: { id: true, name: true } },
+      seller: { select: { id: true, name: true } }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const lastByConversation = await Promise.all(
+    conversations.map(async (conversation) => {
+      const messages = await prisma.message.findMany({
+        where: { conversationId: conversation.id },
+        orderBy: { createdAt: "asc" }
+      });
+      const last = messages.length > 0 ? messages[messages.length - 1] : null;
+      return { conversationId: conversation.id, last };
+    })
+  );
+  const lastMap = new Map(lastByConversation.map((item) => [item.conversationId, item.last]));
+  const users = (await prisma.user.findMany()) as Array<{ id: string; name: string; username?: string | null }>;
+  const userMap = new Map(users.map((item) => [item.id, item.name]));
+  const me = users.find((item) => item.id === session.user.id) || null;
+  const mentionToken = getMentionToken(me || {});
+  const conversationItems = conversations.map((c) => {
+    const isGroup = c.conversationType === "GROUP";
+    const members = (c.participantIds || []).map((id) => userMap.get(id)).filter(Boolean) as string[];
+    const peer = isGroup ? c.groupName || c.contextTitle || "Grup Sohbeti" : c.buyerId === session.user.id ? c.seller.name : c.buyer.name;
+    const title = isGroup ? `${members.length} üye` : c.listing?.title || c.contextTitle || "Direkt Sohbet";
+    const last = lastMap.get(c.id);
+    const preview = last?.body || "Sohbeti ac ve yazismaya basla";
+    const time = last?.createdAt
+      ? new Date(last.createdAt).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+      : "";
+    const peerSeenAt = isGroup ? null : c.buyerId === session.user.id ? c.lastSeenBySellerAt : c.lastSeenByBuyerAt;
+    const deliveryStatus: DeliveryStatus =
+      !isGroup && last && last.senderId === session.user.id
+        ? peerSeenAt && new Date(peerSeenAt).getTime() >= new Date(last.createdAt).getTime()
+          ? "seen"
+          : "delivered"
+        : null;
+    const mySeenAt = isGroup ? (c.lastSeenByUser as Record<string, string> | null)?.[session.user.id] || null : null;
+    const hasMention =
+      Boolean(
+        isGroup &&
+        mentionToken &&
+        last &&
+        last.senderId !== session.user.id &&
+        (!mySeenAt || new Date(last.createdAt).getTime() > new Date(mySeenAt).getTime()) &&
+        formatPreview(last.body).includes(mentionToken)
+      );
+    return { id: c.id, peer, title, preview: formatPreview(preview), time, deliveryStatus, isGroup, image: c.groupImage || null, hasMention };
+  });
+
+  return <MessagesHub currentUserId={session.user.id} conversations={conversationItems} />;
+}
+

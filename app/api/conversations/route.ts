@@ -1,0 +1,119 @@
+// @ts-nocheck
+import { NextRequest, NextResponse } from "next/server";
+
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { conversationCreateSchema } from "@/lib/validations";
+
+type ConversationView = {
+  id: string;
+  buyerId: string;
+  sellerId: string;
+  contextType?: string;
+  listingId?: string | null;
+  createdAt?: Date;
+};
+
+export async function GET() {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
+
+  const items = await prisma.conversation.findMany({
+    where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] },
+    include: {
+      listing: { select: { id: true, title: true } },
+      buyer: { select: { id: true, name: true } },
+      seller: { select: { id: true, name: true } }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+
+  return NextResponse.json({ items });
+}
+
+export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
+
+  const contentType = req.headers.get("content-type") || "";
+  const isJsonRequest = contentType.includes("application/json");
+  const payload = contentType.includes("application/x-www-form-urlencoded")
+    ? Object.fromEntries((await req.formData()).entries())
+    : await req.json();
+
+  const parsed = conversationCreateSchema.safeParse(payload);
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+
+  let conversation: ConversationView | null = null;
+
+  if (parsed.data.listingId) {
+    const listing = await prisma.listing.findUnique({ where: { id: parsed.data.listingId } });
+    if (!listing) return NextResponse.json({ error: "İlan bulunamadı" }, { status: 404 });
+    if (listing.userId === session.user.id) return NextResponse.json({ error: "Kendi ilanı" }, { status: 400 });
+
+    conversation = await prisma.conversation.findUnique({
+      where: {
+        listingId_buyerId_sellerId: {
+          listingId: listing.id,
+          buyerId: session.user.id,
+          sellerId: listing.userId
+        }
+      }
+    });
+
+    if (!conversation) {
+      conversation = await prisma.conversation.create({
+        data: {
+          listingId: listing.id,
+          buyerId: session.user.id,
+          sellerId: listing.userId,
+          conversationType: "LISTING",
+          contextType: "LISTING",
+          contextTitle: listing.title
+        }
+      });
+    }
+  } else if (parsed.data.userId) {
+    const peer = await prisma.user.findUnique({ where: { id: parsed.data.userId } });
+    if (!peer) return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
+    if (peer.id === session.user.id) return NextResponse.json({ error: "Kendinizle sohbet açamazsınız" }, { status: 400 });
+
+    const allMyConversations = await prisma.conversation.findMany({
+      where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
+    });
+
+    const directMatches = (allMyConversations as ConversationView[]).filter(
+      (c) =>
+        !c.listingId &&
+        ((c.buyerId === session.user.id && c.sellerId === peer.id) ||
+          (c.buyerId === peer.id && c.sellerId === session.user.id))
+    );
+    conversation = directMatches.sort((a, b) => +new Date(b.createdAt || 0) - +new Date(a.createdAt || 0))[0] || null;
+
+    if (!conversation) {
+      conversation = await prisma.conversation.create({
+        data: {
+          listingId: null,
+          buyerId: session.user.id,
+          sellerId: peer.id,
+          conversationType: "DIRECT",
+          contextType: "BOARD",
+          contextTitle: parsed.data.contextTitle || "Mahalle Panosu Sohbeti"
+        }
+      });
+    }
+  }
+
+  if (!conversation) return NextResponse.json({ error: "Konuşma oluşturulamadı" }, { status: 400 });
+
+  if (!isJsonRequest) {
+    return NextResponse.redirect(new URL(`/messages/${conversation.id}`, req.url));
+  }
+
+  return NextResponse.json({ id: conversation.id }, { status: 201 });
+}
+
+
+
+
+

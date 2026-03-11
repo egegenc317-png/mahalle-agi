@@ -1,0 +1,26 @@
+[
+  {
+    "id": "7cf52743-817b-4d2f-9954-94546a6f7170",
+    "createdAt": "2026-03-03T14:49:16.560Z",
+    "updatedAt": "2026-03-03T14:49:16.560Z",
+    "raterUserId": "u1",
+    "targetUserId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "score": 6
+  },
+  {
+    "id": "5e2bc757-4a26-410e-ba6e-3eee38fd593a",
+    "createdAt": "2026-03-08T15:26:59.868Z",
+    "updatedAt": "2026-03-08T15:26:59.869Z",
+    "raterUserId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "targetUserId": "u1",
+    "score": 6
+  },
+  {
+    "id": "8d96cd1d-4712-485c-ac83-773b06f4a0df",
+    "createdAt": "2026-03-08T20:24:11.083Z",
+    "updatedAt": "2026-03-08T20:24:11.083Z",
+    "raterUserId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "targetUserId": "u1",
+    "score": 10
+  }
+]

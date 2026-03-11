@@ -1,0 +1,58 @@
+[
+  {
+    "id": "41df34ad-eff9-4fed-ba44-f2a6f2b3da78",
+    "createdAt": "2026-03-06T10:47:02.659Z",
+    "updatedAt": "2026-03-08T20:53:50.846Z",
+    "userId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "weekKey": "2026-W10",
+    "seconds": 8047
+  },
+  {
+    "id": "0077496e-cd3b-42fa-8bd9-1eb6cd04a2e8",
+    "createdAt": "2026-03-06T11:49:15.099Z",
+    "updatedAt": "2026-03-06T12:24:46.814Z",
+    "userId": "u1",
+    "weekKey": "2026-W10",
+    "seconds": 1320
+  },
+  {
+    "id": "f5edbf87-f795-46c6-a4ca-026ff0f133cb",
+    "createdAt": "2026-03-08T20:26:09.141Z",
+    "updatedAt": "2026-03-08T20:59:54.643Z",
+    "userId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "weekKey": "2026-W10",
+    "seconds": 1538
+  },
+  {
+    "id": "8b07c888-2f24-47a0-8c41-f70aa13dd4cb",
+    "createdAt": "2026-03-08T21:00:54.645Z",
+    "updatedAt": "2026-03-08T22:44:39.224Z",
+    "userId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "weekKey": "2026-W11",
+    "seconds": 245
+  },
+  {
+    "id": "262def83-5d58-4365-9ab9-20333b78360b",
+    "createdAt": "2026-03-08T21:02:20.889Z",
+    "updatedAt": "2026-03-10T13:38:49.016Z",
+    "userId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "weekKey": "2026-W11",
+    "seconds": 6239
+  },
+  {
+    "id": "e3d81cb5-a787-4d26-b808-d77efadbe3c4",
+    "createdAt": "2026-03-08T23:09:57.988Z",
+    "updatedAt": "2026-03-10T15:07:13.731Z",
+    "userId": "u1",
+    "weekKey": "2026-W11",
+    "seconds": 2646
+  },
+  {
+    "id": "c9d9c6b3-3c64-4965-85a5-17a1199c1d38",
+    "createdAt": "2026-03-10T17:07:27.307Z",
+    "updatedAt": "2026-03-10T22:16:51.745Z",
+    "userId": "f8f4f6a4-716d-4247-a934-d9342eee630e",
+    "weekKey": "2026-W11",
+    "seconds": 13084
+  }
+]

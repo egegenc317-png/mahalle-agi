@@ -1,0 +1,72 @@
+[
+  {
+    "id": "b1",
+    "neighborhoodId": "n2",
+    "userId": "u2",
+    "type": "ANNOUNCEMENT",
+    "title": "Aksam su kesintisi",
+    "body": "Bugun 21:00-23:00 arasi su kesintisi olacagi duyuruldu.",
+    "locationText": "Istanbul Kadikoy Moda",
+    "locationLat": 40.9877,
+    "locationLng": 29.0277,
+    "createdAt": "2026-03-02T21:35:45.840Z",
+    "photos": "[]",
+    "viewCount": 0
+  },
+  {
+    "id": "5056aaf4-fd9a-4a68-ab9f-08827e87d333",
+    "createdAt": "2026-03-02T21:35:46.885Z",
+    "neighborhoodId": "n1",
+    "userId": "u1",
+    "type": "ANNOUNCEMENT",
+    "title": "mırra bulundu",
+    "body": "vet binası önünden alınız ",
+    "locationText": "uludağ üniversitesi veterinerlik fakültesi ",
+    "locationLat": null,
+    "locationLng": null,
+    "photos": "[]",
+    "viewCount": 0
+  },
+  {
+    "id": "29ad5054-c400-455f-aef0-3d3b27fda60f",
+    "createdAt": "2026-03-02T22:36:54.274Z",
+    "neighborhoodId": "n1",
+    "userId": "u1",
+    "type": "ANNOUNCEMENT",
+    "title": "aaaaaa",
+    "body": "bbbbbb\r\n",
+    "locationText": "uludağ üniversitesi veterinerlik fakültesi ",
+    "locationLat": 40.2285414,
+    "locationLng": 28.8745386,
+    "photos": "[]",
+    "viewCount": 1
+  },
+  {
+    "id": "871a41e1-075a-47fc-ac42-f19570727bb5",
+    "createdAt": "2026-03-03T13:19:01.567Z",
+    "neighborhoodId": "n1",
+    "userId": "u1",
+    "type": "ANNOUNCEMENT",
+    "title": "bbbbbb",
+    "body": "ccccccc",
+    "locationText": null,
+    "locationLat": 40.23052292731403,
+    "locationLng": 28.866854828506533,
+    "photos": "[]",
+    "viewCount": 2
+  },
+  {
+    "id": "1e4c497c-2adf-489d-9104-9274af6f9f5d",
+    "createdAt": "2026-03-08T23:09:57.951Z",
+    "neighborhoodId": "n1",
+    "userId": "u1",
+    "type": "ANNOUNCEMENT",
+    "title": "börek",
+    "body": "sıcak leziz",
+    "photos": "[\"/uploads/1773011397077-v0d07osrtz.jpg\"]",
+    "locationText": null,
+    "locationLat": 40.23052292731403,
+    "locationLng": 28.866854828506533,
+    "viewCount": 1
+  }
+]

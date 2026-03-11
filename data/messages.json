@@ -1,0 +1,182 @@
+[
+  {
+    "id": "d505e0f1-8f63-449d-8b05-ebec11598418",
+    "createdAt": "2026-03-08T20:57:11.588Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "body": "aloo",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "f458f40f-0bb9-47f4-9cf5-abc8449b122b",
+    "createdAt": "2026-03-08T20:57:45.420Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "naber",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "90b44aca-df3e-4a4f-88d8-0d9598e45088",
+    "createdAt": "2026-03-08T21:01:08.105Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "body": "naber",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "feccb7db-4f97-40fe-83f0-4aa137e3f401",
+    "createdAt": "2026-03-08T21:01:38.387Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "iyi sen",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "f2a710a6-ff54-4e62-b70a-5ee4e00d9037",
+    "createdAt": "2026-03-08T21:09:14.360Z",
+    "conversationId": "a4150910-cba9-450b-a854-7bf6a28b8334",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "selam",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "c6f75c17-86ac-40d1-96e7-411b47406a28",
+    "createdAt": "2026-03-08T21:16:43.361Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "__FILE__|WhatsApp Image 2026-02-17 at 7.09.15 PM.jpeg|/uploads/1773004603328-ergx7dpzho8.jpg",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "6c2e27b6-95a9-4288-a665-880503f52f1d",
+    "createdAt": "2026-03-08T21:22:34.027Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "__FILE__|kamera-1773004953397.jpg|/uploads/1773004953968-m29w4uh9gr.jpg",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "5b285969-f5d4-43d2-b14d-1c4c4648f234",
+    "createdAt": "2026-03-08T21:24:49.175Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "__FILE__|kamera-1773005083667.jpg|/uploads/1773005089114-ebomj67v63.jpg",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "860ef20e-5f5a-4211-b8b3-50f181b4e331",
+    "createdAt": "2026-03-08T21:28:16.717Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "__FILEJSON__{\"name\":\"kamera-1773005289548.jpg\",\"url\":\"/uploads/1773005296683-sxvakk99q2.jpg\",\"viewOnce\":true}",
+    "viewOnceConsumedByBuyerAt": "2026-03-08T22:36:19.459Z",
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "59413aae-fcbe-43c2-9356-6a6c3f72add9",
+    "createdAt": "2026-03-08T21:33:18.346Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "__FILEJSON__{\"name\":\"Fonksiyonlar-Test-1-Z.pdf\",\"url\":\"/uploads/1773005598285-515nu7t8v9a.pdf\",\"viewOnce\":false}",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "8ed2aac0-0062-4e4a-a9c8-15e2ac880eb5",
+    "createdAt": "2026-03-08T21:38:45.738Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "🧡🎵📸🤍",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "0e307109-3cb9-4826-8ab6-d0c9d736218e",
+    "createdAt": "2026-03-08T21:47:49.237Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "🤔😍🥵💪😗",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "fe3097b7-3ceb-486c-98cb-41324e762f54",
+    "createdAt": "2026-03-08T21:57:58.056Z",
+    "conversationId": "053d72d3-f8cb-4e04-bf7f-8074497a3d2e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "aaa",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "055dd401-ac82-42d9-aa05-593cf23a3593",
+    "createdAt": "2026-03-08T22:38:26.511Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "body": "__FILEJSON__{\"name\":\"kamera-1773009500365.jpg\",\"url\":\"/uploads/1773009506475-ipi24xi6jh.jpg\",\"viewOnce\":true}",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": "2026-03-08T22:38:50.282Z"
+  },
+  {
+    "id": "1ebc6454-d9a9-492b-9372-47dc594c69da",
+    "createdAt": "2026-03-08T22:55:33.307Z",
+    "conversationId": "a4150910-cba9-450b-a854-7bf6a28b8334",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "güzel",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "2adbdf27-e006-42c8-902a-db742895e7e7",
+    "createdAt": "2026-03-08T23:00:28.863Z",
+    "conversationId": "39107803-de90-47c2-979c-8b3ed02bbd1e",
+    "senderId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "body": "evet suan daha iyi olmuş",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "3306e2bd-6e48-4cbf-a689-45cab0d3d62d",
+    "createdAt": "2026-03-10T14:06:32.891Z",
+    "conversationId": "a4150910-cba9-450b-a854-7bf6a28b8334",
+    "senderId": "u1",
+    "body": "__FILEJSON__{\"name\":\"kamera-1773151588194.jpg\",\"url\":\"/uploads/1773151592803-cus13kw7a0l.jpg\",\"viewOnce\":true}",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "206c0b15-977d-41bb-a869-9d3f369832f3",
+    "createdAt": "2026-03-10T17:06:31.072Z",
+    "conversationId": "cb7608ea-0c5f-46d8-bd09-339b92eb3dc4",
+    "senderId": "f8f4f6a4-716d-4247-a934-d9342eee630e",
+    "body": "naber ege",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "0d359b83-578a-45f5-addb-8f511102143a",
+    "createdAt": "2026-03-10T18:55:33.859Z",
+    "conversationId": "3d8ca194-eb2b-47da-a638-07e8263ce752",
+    "senderId": "f8f4f6a4-716d-4247-a934-d9342eee630e",
+    "body": "alooo",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  },
+  {
+    "id": "5f0d7fb9-4813-4f15-8e3b-ccb994569c40",
+    "createdAt": "2026-03-10T18:55:43.892Z",
+    "conversationId": "3d8ca194-eb2b-47da-a638-07e8263ce752",
+    "senderId": "f8f4f6a4-716d-4247-a934-d9342eee630e",
+    "body": "@egegenç naber bro",
+    "viewOnceConsumedByBuyerAt": null,
+    "viewOnceConsumedBySellerAt": null
+  }
+]

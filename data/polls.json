@@ -1,0 +1,27 @@
+[
+  {
+    "id": "p1",
+    "neighborhoodId": "n2",
+    "userId": "u2",
+    "question": "Bu hafta en iyi firin hangisi?",
+    "options": [
+      "Moda Firin",
+      "Kose Firin",
+      "Simit Sarayi"
+    ],
+    "createdAt": "2026-03-06T10:50:48.574Z"
+  },
+  {
+    "id": "9f224a9b-68da-4289-9fcd-071bab648c1c",
+    "createdAt": "2026-03-06T10:50:48.604Z",
+    "neighborhoodId": "n1",
+    "userId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "question": "en iyi hoca",
+    "options": [
+      "onur",
+      "mehmet",
+      "ali",
+      "uğur"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "0eafd757-ba4e-43b6-8277-33691aff2730",
+    "createdAt": "2026-03-06T12:19:46.395Z",
+    "pollId": "9f224a9b-68da-4289-9fcd-071bab648c1c",
+    "userId": "u1",
+    "optionIndex": 0
+  },
+  {
+    "id": "5e402a73-eaf2-47ff-8db0-77d215c86550",
+    "createdAt": "2026-03-07T11:49:04.353Z",
+    "pollId": "9f224a9b-68da-4289-9fcd-071bab648c1c",
+    "userId": "40dd2f5c-9ce7-469a-a785-f8c938f8c880",
+    "optionIndex": 2
+  },
+  {
+    "id": "48f08e00-21b5-4f10-b0c1-7ef8564bb31b",
+    "createdAt": "2026-03-08T20:24:25.665Z",
+    "pollId": "9f224a9b-68da-4289-9fcd-071bab648c1c",
+    "userId": "e6dbf3af-4ccc-4451-891e-6757ed16381c",
+    "optionIndex": 2
+  }
+]
