@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:start": "node scripts/dev-start.cjs",
+    "postinstall": "npm run prisma:generate:all",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
