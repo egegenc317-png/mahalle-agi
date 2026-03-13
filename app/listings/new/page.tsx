@@ -14,6 +14,30 @@ import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type ListingType = "PRODUCT" | "SERVICE" | "JOB";
 
+function readApiError(payload: unknown, fallback: string) {
+  if (typeof payload === "string" && payload.trim()) return payload;
+  if (!payload || typeof payload !== "object") return fallback;
+
+  const candidate = payload as {
+    error?: string | { formErrors?: string[]; fieldErrors?: Record<string, string[]> };
+  };
+
+  if (typeof candidate.error === "string" && candidate.error.trim()) {
+    return candidate.error;
+  }
+
+  if (candidate.error && typeof candidate.error === "object") {
+    const formErrors = Array.isArray(candidate.error.formErrors) ? candidate.error.formErrors.filter(Boolean) : [];
+    if (formErrors.length > 0) return formErrors[0];
+
+    const fieldErrors = candidate.error.fieldErrors || {};
+    const firstFieldError = Object.values(fieldErrors).flat().find(Boolean);
+    if (firstFieldError) return firstFieldError;
+  }
+
+  return fallback;
+}
+
 export default function NewListingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -128,7 +152,7 @@ export default function NewListingPage() {
       );
 
       if (!response.ok) {
-        setError(data.error || "İlan oluşturulamadı");
+        setError(readApiError(data, "İlan oluşturulamadı"));
         return;
       }
 

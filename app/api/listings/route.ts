@@ -102,18 +102,20 @@ export async function POST(req: NextRequest) {
 
   if (hasAnyLocationInput) {
     if (locationLat === null || locationLng === null) {
-      return NextResponse.json({ error: "Konum doğrulanamadı. Konum iznini açıp tekrar deneyin." }, { status: 400 });
-    }
+      locationLat = null;
+      locationLng = null;
+    } else {
+      const scopeCheck = await validatePointInUserScope({
+        lat: locationLat,
+        lng: locationLng,
+        neighborhoodId: user.neighborhoodId,
+        locationScope: session.user.locationScope
+      });
 
-    const scopeCheck = await validatePointInUserScope({
-      lat: locationLat,
-      lng: locationLng,
-      neighborhoodId: user.neighborhoodId,
-      locationScope: session.user.locationScope
-    });
-
-    if (!scopeCheck.ok) {
-      return NextResponse.json({ error: scopeCheck.error }, { status: 400 });
+      if (!scopeCheck.ok) {
+        locationLat = null;
+        locationLng = null;
+      }
     }
   }
 
