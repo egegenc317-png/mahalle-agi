@@ -138,6 +138,7 @@ export const prisma = {
           listings: include?.listings ? { where: include.listings.where, orderBy: include.listings.orderBy, take: include.listings.take } : false
         }
       });
+      if (!user) return null;
       return normalizeUser({
         ...user,
         neighborhood: normalizeNeighborhood(user?.neighborhood),
