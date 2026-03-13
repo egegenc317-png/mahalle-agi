@@ -22,45 +22,6 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       dbUser.accountType === "BUSINESS" &&
       (dbUser.shopName || dbUser.shopLocationLat || dbUser.shopLocationLng)
   );
-
-  let unreadMessageCount = 0;
-  let unreadBoardCount = 0;
-  if (session?.user.id) {
-    const myConversations = await prisma.conversation.findMany({
-      where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
-    });
-
-    const latestMessages = await Promise.all(
-      myConversations.map(async (conversation) => {
-        const msgs = await prisma.message.findMany({
-          where: { conversationId: conversation.id },
-          orderBy: { createdAt: "asc" }
-        });
-        const last = msgs.length > 0 ? msgs[msgs.length - 1] : null;
-        if (!last) return 0;
-        const mySeenAt =
-          conversation.conversationType === "GROUP"
-            ? (conversation.lastSeenByUser as Record<string, string> | null)?.[session.user.id] || null
-            : conversation.buyerId === session.user.id
-              ? conversation.lastSeenByBuyerAt
-              : conversation.lastSeenBySellerAt;
-        const unread = last.senderId !== session.user.id && (!mySeenAt || new Date(last.createdAt).getTime() > new Date(mySeenAt).getTime());
-        return unread ? 1 : 0;
-      })
-    );
-    unreadMessageCount = latestMessages.reduce<number>((sum, item) => sum + item, 0);
-
-    if (dbUser?.neighborhoodId) {
-      const newBoardPosts = await prisma.boardPost.findMany({
-        where: { neighborhoodId: dbUser.neighborhoodId },
-        orderBy: { createdAt: "desc" },
-        take: 20
-      });
-      const seenIds = new Set(dbUser.seenBoardPostIds || []);
-      unreadBoardCount = newBoardPosts.filter((post) => post.userId !== session.user.id && !seenIds.has(post.id)).length;
-    }
-  }
-  const unreadCount = unreadMessageCount + unreadBoardCount;
   const notificationHref = "/notifications";
 
   const homeHref = !session
@@ -90,9 +51,9 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
                   role={session?.user.role}
                   userId={session?.user.id}
                   accountType={dbUser?.accountType}
-                  hasShop={hasShop}
-                />
-                <Link href={homeHref} className="inline-flex min-w-0 items-center">
+                hasShop={hasShop}
+              />
+                <Link href={homeHref} prefetch className="inline-flex min-w-0 items-center">
                   <BrandLogo />
                 </Link>
               </div>
@@ -101,7 +62,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
                   isLoggedIn={Boolean(session)}
                   userId={session?.user.id}
                   userImage={dbUser?.image || null}
-                  unreadCount={unreadCount}
+                  unreadCount={0}
                   notificationHref={notificationHref}
                   compact
                 />
@@ -119,7 +80,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
                 accountType={dbUser?.accountType}
                 hasShop={hasShop}
               />
-              <Link href={homeHref} className="inline-flex items-center">
+              <Link href={homeHref} prefetch className="inline-flex items-center">
                 <BrandLogo size="lg" />
               </Link>
             </div>
@@ -133,7 +94,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
                 isLoggedIn={Boolean(session)}
                 userId={session?.user.id}
                 userImage={dbUser?.image || null}
-                unreadCount={unreadCount}
+                unreadCount={0}
                 notificationHref={notificationHref}
               />
             </div>

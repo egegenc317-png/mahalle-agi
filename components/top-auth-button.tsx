@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Bell, LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,45 @@ export function TopAuthButton({
   compact?: boolean;
 }) {
   const router = useRouter();
+  const [liveUnreadCount, setLiveUnreadCount] = useState(unreadCount);
+
+  useEffect(() => {
+    setLiveUnreadCount(unreadCount);
+  }, [unreadCount]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let cancelled = false;
+
+    const loadSummary = async () => {
+      try {
+        const res = await fetch("/api/me/shell-summary", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled && typeof data?.unreadCount === "number") {
+          setLiveUnreadCount(data.unreadCount);
+        }
+      } catch {
+        // Bildirim özeti hata verse bile üst bar akıcı kalmalı.
+      }
+    };
+
+    loadSummary();
+    const timer = window.setInterval(loadSummary, 45000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [isLoggedIn]);
 
   if (!isLoggedIn) {
     return (
       <Button asChild size="sm" variant="outline" className={compact ? "h-10 rounded-xl px-3 text-sm" : undefined}>
-        <Link href="/auth/login">Profile Giriş Yap</Link>
+        <Link href="/auth/login" prefetch>
+          Profile Giriş Yap
+        </Link>
       </Button>
     );
   }
@@ -35,21 +70,21 @@ export function TopAuthButton({
   return (
     <div className={`inline-flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
       <Button asChild type="button" size="icon" variant="outline" className={`relative border-amber-200 bg-white ${compact ? "h-10 w-10 rounded-2xl" : "h-12 w-12 rounded-full"}`}>
-        <Link href={notificationHref} aria-label="Bildirimler">
+        <Link href={notificationHref} prefetch aria-label="Bildirimler">
           <Bell className={`${compact ? "h-5 w-5" : "h-6 w-6"} text-amber-700`} />
-          {unreadCount > 0 ? (
+          {liveUnreadCount > 0 ? (
             <span className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
           ) : null}
-          {unreadCount > 0 ? (
+          {liveUnreadCount > 0 ? (
             <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[11px] font-bold text-white">
-              {unreadCount > 9 ? "9+" : unreadCount}
+              {liveUnreadCount > 9 ? "9+" : liveUnreadCount}
             </span>
           ) : null}
         </Link>
       </Button>
 
       {userId ? (
-        <Link href={`/profile/${userId}`} aria-label="Profilim" className={`inline-flex items-center justify-center overflow-hidden border border-amber-200 bg-amber-50 ${compact ? "h-10 w-10 rounded-2xl" : "h-12 w-12 rounded-full"}`}>
+        <Link href={`/profile/${userId}`} prefetch aria-label="Profilim" className={`inline-flex items-center justify-center overflow-hidden border border-amber-200 bg-amber-50 ${compact ? "h-10 w-10 rounded-2xl" : "h-12 w-12 rounded-full"}`}>
           {userImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={userImage} alt="Profil" className="h-full w-full object-cover" />
@@ -76,4 +111,3 @@ export function TopAuthButton({
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { Search } from "lucide-react";
@@ -76,7 +76,7 @@ export function HeaderUserSearch({ isLoggedIn, compact = false }: { isLoggedIn: 
             ? items.map((user) => (
                 <Link
                   key={user.id}
-                  href={`/profile/${user.id}`}
+                  href={`/profile/${user.id}`} prefetch
                   className="block rounded-xl px-2.5 py-2 text-sm transition hover:bg-amber-50"
                   onClick={() => setQ("")}
                 >
@@ -90,6 +90,7 @@ export function HeaderUserSearch({ isLoggedIn, compact = false }: { isLoggedIn: 
     </div>
   );
 }
+
 
 
 

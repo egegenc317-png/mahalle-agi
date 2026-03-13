@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import {
   BarChart3,
@@ -29,9 +30,24 @@ type LeftMenuProps = {
   hasShop?: boolean;
 };
 
+const PREFETCH_ROUTES = [
+  "/home",
+  "/board",
+  "/akis",
+  "/polls",
+  "/map",
+  "/carsi",
+  "/pazar",
+  "/messages",
+  "/notifications",
+  "/hakkimizda",
+  "/admin"
+] as const;
+
 export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: LeftMenuProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   const close = () => setOpen(false);
 
@@ -51,6 +67,21 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
       document.body.classList.remove("menu-open");
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    PREFETCH_ROUTES.forEach((route) => {
+      router.prefetch(route);
+    });
+
+    if (userId) {
+      router.prefetch(`/profile/${userId}`);
+    }
+    if (accountType === "BUSINESS" && hasShop) {
+      router.prefetch("/my-shop");
+    }
+  }, [accountType, hasShop, open, router, userId]);
 
   return (
     <>
@@ -87,14 +118,14 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
                 <nav className="flex max-h-[calc(100vh-82px)] flex-col gap-2.5 overflow-y-auto p-4 [&>button]:h-12 [&>button]:w-full [&>button]:justify-start [&>button]:rounded-2xl [&>button]:border-amber-200 [&>button]:bg-white/96 [&>button]:text-base [&>button]:shadow-sm">
                   {!isLoggedIn && (
                     <Button asChild variant="outline" onClick={close} className="justify-start">
-                      <Link href="/auth/login" className="inline-flex w-full items-center gap-3 text-base">
+                      <Link href="/auth/login" prefetch className="inline-flex w-full items-center gap-3 text-base">
                         <LogIn className="h-5 w-5 text-orange-500" /> Giriş
                       </Link>
                     </Button>
                   )}
 
                   <Button asChild variant="outline" onClick={close} className="justify-start">
-                    <Link href="/hakkimizda" className="inline-flex w-full items-center gap-3 text-base">
+                    <Link href="/hakkimizda" prefetch className="inline-flex w-full items-center gap-3 text-base">
                       <Info className="h-5 w-5 text-orange-500" /> Hakkımızda
                     </Link>
                   </Button>
@@ -102,56 +133,56 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
                   {isLoggedIn && (
                     <>
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/home" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/home" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <House className="h-5 w-5 text-orange-500" /> Ana Sayfa
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/board" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/board" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <LayoutPanelTop className="h-5 w-5 text-orange-500" /> Pano
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/akis" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/akis" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <Flame className="h-5 w-5 text-orange-500" /> Akış
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/polls" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/polls" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <BarChart3 className="h-5 w-5 text-orange-500" /> Oylama
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/map" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/map" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <Compass className="h-5 w-5 text-orange-500" /> Harita
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/carsi" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/carsi" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <Store className="h-5 w-5 text-orange-500" /> Çarşı
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/pazar" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/pazar" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <ShoppingBasket className="h-5 w-5 text-orange-500" /> Pazar
                         </Link>
                       </Button>
 
                       <Button asChild variant="outline" onClick={close} className="justify-start">
-                        <Link href="/messages" className="inline-flex w-full items-center gap-3 text-base">
+                        <Link href="/messages" prefetch className="inline-flex w-full items-center gap-3 text-base">
                           <MessagesSquare className="h-5 w-5 text-orange-500" /> Mesajlar
                         </Link>
                       </Button>
 
                       {userId && (
                         <Button asChild variant="outline" onClick={close} className="justify-start">
-                          <Link href={`/profile/${userId}`} className="inline-flex w-full items-center gap-3 text-base">
+                          <Link href={`/profile/${userId}`} prefetch className="inline-flex w-full items-center gap-3 text-base">
                             <CircleUserRound className="h-5 w-5 text-orange-500" /> Profil
                           </Link>
                         </Button>
@@ -159,7 +190,7 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
 
                       {accountType === "BUSINESS" && hasShop ? (
                         <Button asChild variant="outline" onClick={close} className="justify-start">
-                          <Link href="/my-shop" className="inline-flex w-full items-center gap-3 text-base">
+                          <Link href="/my-shop" prefetch className="inline-flex w-full items-center gap-3 text-base">
                             <Store className="h-5 w-5 text-orange-500" /> Dükkanım
                           </Link>
                         </Button>
@@ -167,7 +198,7 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
 
                       {(role === "ADMIN" || role === "MODERATOR") && (
                         <Button asChild variant="outline" onClick={close} className="justify-start">
-                          <Link href="/admin" className="inline-flex w-full items-center gap-3 text-base">
+                          <Link href="/admin" prefetch className="inline-flex w-full items-center gap-3 text-base">
                             <Shield className="h-5 w-5 text-orange-500" /> Admin
                           </Link>
                         </Button>
@@ -183,6 +214,3 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
     </>
   );
 }
-
-
-
