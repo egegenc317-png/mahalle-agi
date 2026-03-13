@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Flame, MapPin, Sparkles, Store, Tag } from "lucide-react";
 
 import { auth } from "@/lib/auth";
+import { findNeighborhoodByLocation } from "@/lib/neighborhood-geo";
 import { prisma } from "@/lib/prisma";
 import { getClosedStatus, getIstanbulNow } from "@/lib/shop-hours";
 import { Badge } from "@/components/ui/badge";
@@ -63,10 +64,19 @@ export default async function CarsiPage() {
     }) as Promise<ListingView[]>
   ]);
 
-  const scopedShops = (users as ShopUser[])
-    .filter((user) => user.neighborhoodId === neighborhoodId)
+  const businessUsers = (users as ShopUser[])
     .filter((user) => user.accountType === "BUSINESS")
-    .filter((user) => Boolean(user.shopName || user.shopLocationText || user.shopLogo));
+    .filter((user) => Boolean(user.shopName || user.shopLocationText || user.shopLogo))
+    .filter((user) => typeof user.shopLocationLat === "number" && typeof user.shopLocationLng === "number");
+
+  const scopedShops = (
+    await Promise.all(
+      businessUsers.map(async (user) => {
+        const matchedNeighborhood = await findNeighborhoodByLocation(user.shopLocationLat!, user.shopLocationLng!);
+        return matchedNeighborhood?.id === neighborhoodId ? user : null;
+      })
+    )
+  ).filter(Boolean) as ShopUser[];
 
   const listingCountByUser = new Map<string, number>();
   const latestListingByUser = new Map<string, ListingView>();
