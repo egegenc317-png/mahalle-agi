@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Megaphone, BriefcaseBusiness, ClipboardList, Crown, Sparkles, TrendingUp } from "lucide-react";
+import { Megaphone, BriefcaseBusiness, ClipboardList, Crown, Flame, Sparkles, TrendingUp } from "lucide-react";
 import Image from "next/image";
 
 import { auth } from "@/lib/auth";
@@ -180,6 +180,23 @@ export default async function UnifiedHomePage() {
         </div>
       </section>
 
+      <section className="rounded-3xl border border-amber-200 bg-[linear-gradient(135deg,#fffaf1_0%,#fff5e7_100%)] p-4 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-orange-600">
+              <Flame className="h-3.5 w-3.5" /> Mahalle Akışı
+            </p>
+            <h2 className="mt-1 text-xl font-semibold text-zinc-900">Mahallende olan biteni komşularının ağzından gör</h2>
+            <p className="mt-2 max-w-3xl text-sm text-zinc-600">
+              Aynı mahalledeki insanlar kısa notlar, fotoğraflar ve anlık gelişmeler paylaşsın. Yazan kişi açıkça görünür, akış sıcak ama düzenli ilerler.
+            </p>
+          </div>
+          <Button asChild className="bg-orange-500 hover:bg-orange-600">
+            <Link href="/akis">Akışa Git</Link>
+          </Button>
+        </div>
+      </section>
+
       <section className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
         <div className="rounded-2xl border bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
@@ -322,13 +339,17 @@ export default async function UnifiedHomePage() {
       </section>
 
       <section className="fixed bottom-3 left-3 right-3 z-40 rounded-2xl border border-amber-100 bg-white/95 p-3 shadow-lg backdrop-blur lg:static lg:z-auto lg:bg-white/80 lg:shadow-sm">
-        <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-6">
           <Button asChild className="h-12 bg-orange-500 hover:bg-orange-600">
             <Link href="/pazar">Pazar</Link>
           </Button>
 
           <Button asChild variant="outline" className="h-12">
             <Link href="/messages">Mesaj Gönder</Link>
+          </Button>
+
+          <Button asChild variant="outline" className="h-12">
+            <Link href="/akis">Akış</Link>
           </Button>
 
           <Button asChild variant="outline" className="h-12">

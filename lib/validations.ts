@@ -127,6 +127,11 @@ export const boardPostCreateSchema = z.object({
   locationLng: optionalLng
 });
 
+export const flowPostCreateSchema = z.object({
+  body: z.string().min(2).max(560),
+  photos: z.array(z.string().max(300)).max(4).optional()
+});
+
 export const pollCreateSchema = z.object({
   question: z.string().min(5).max(180),
   options: z.array(z.string().min(1).max(80)).min(2).max(5)

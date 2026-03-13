@@ -239,6 +239,15 @@ exports.Prisma.BoardPostScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.FlowPostScalarFieldEnum = {
+  id: 'id',
+  neighborhoodId: 'neighborhoodId',
+  userId: 'userId',
+  body: 'body',
+  photos: 'photos',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.PollScalarFieldEnum = {
   id: 'id',
   neighborhoodId: 'neighborhoodId',
@@ -362,6 +371,7 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   Report: 'Report',
   BoardPost: 'BoardPost',
+  FlowPost: 'FlowPost',
   Poll: 'Poll',
   PollVote: 'PollVote',
   UserRating: 'UserRating',

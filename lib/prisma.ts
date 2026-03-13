@@ -72,6 +72,15 @@ function normalizeBoardPost(post: any) {
   };
 }
 
+function normalizeFlowPost(post: any) {
+  if (!post) return null;
+  return {
+    ...post,
+    photos: parseJson<string[]>(post.photos, []),
+    user: normalizeUser(post.user)
+  };
+}
+
 function normalizePoll(poll: any) {
   if (!poll) return null;
   return {
@@ -259,6 +268,15 @@ export const prisma = {
       normalizeBoardPost(await db.boardPost.findUnique({ where, include: { user: Boolean(include?.user) } })),
     update: async ({ where, data }: any) => normalizeBoardPost(await db.boardPost.update({ where, data })),
     delete: async ({ where }: any) => normalizeBoardPost(await db.boardPost.delete({ where }))
+  },
+  flowPost: {
+    findMany: async ({ where, include, orderBy, take }: any = {}) =>
+      (await db.flowPost.findMany({ where, include: { user: Boolean(include?.user) }, orderBy, take })).map(normalizeFlowPost),
+    create: async ({ data }: any) =>
+      normalizeFlowPost(await db.flowPost.create({ data: { id: data.id || randomUUID(), ...data, photos: JSON.stringify(data.photos || []) } })),
+    findUnique: async ({ where, include }: any) =>
+      normalizeFlowPost(await db.flowPost.findUnique({ where, include: { user: Boolean(include?.user) } })),
+    delete: async ({ where }: any) => normalizeFlowPost(await db.flowPost.delete({ where }))
   },
   poll: {
     findMany: async ({ where, include, orderBy, take }: any = {}) =>

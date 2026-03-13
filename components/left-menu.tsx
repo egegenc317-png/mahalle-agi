@@ -7,6 +7,7 @@ import {
   BarChart3,
   CircleUserRound,
   Compass,
+  Flame,
   House,
   Info,
   LayoutPanelTop,
@@ -109,6 +110,12 @@ export function LeftMenu({ isLoggedIn, role, userId, accountType, hasShop }: Lef
                       <Button asChild variant="outline" onClick={close} className="justify-start">
                         <Link href="/board" className="inline-flex w-full items-center gap-3 text-base">
                           <LayoutPanelTop className="h-5 w-5 text-orange-500" /> Pano
+                        </Link>
+                      </Button>
+
+                      <Button asChild variant="outline" onClick={close} className="justify-start">
+                        <Link href="/akis" className="inline-flex w-full items-center gap-3 text-base">
+                          <Flame className="h-5 w-5 text-orange-500" /> Akış
                         </Link>
                       </Button>
 
