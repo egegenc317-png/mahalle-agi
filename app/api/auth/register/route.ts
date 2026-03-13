@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     const emailExists = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (emailExists) return NextResponse.json({ error: "E-posta zaten kayıtlı" }, { status: 409 });
     if (!(await isEmailVerified(normalizedEmail))) {
-      return NextResponse.json({ error: "Kayıttan önce Gmail adresini doğrulamalısın." }, { status: 400 });
+      return NextResponse.json({ error: "Kayıttan önce e-posta adresini doğrulamalısın." }, { status: 400 });
     }
   }
 

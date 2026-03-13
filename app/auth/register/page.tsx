@@ -50,7 +50,7 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const uploadInputClass = "h-11 border-amber-200 bg-white file:mr-3 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-[#f59e0b] file:to-[#ea580c] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:from-[#d97706] hover:file:to-[#c2410c]";
   const normalizedEmail = useMemo(() => email.trim().toLowerCase(), [email]);
-  const emailLooksValid = normalizedEmail.length === 0 || /^[^\s@]+@gmail\.com$/i.test(normalizedEmail);
+  const emailLooksValid = normalizedEmail.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(normalizedEmail);
   const emailCodeExpired = Boolean(emailCodeExpiresAt && emailCountdown <= 0 && !emailVerified);
   const formattedCountdown = useMemo(() => {
     const minutes = String(Math.floor(emailCountdown / 60)).padStart(2, "0");
@@ -92,7 +92,7 @@ export default function RegisterPage() {
       return;
     }
     setEmailCodeExpiresAt(typeof data.expiresAt === "string" ? data.expiresAt : null);
-    setEmailStatus("Doğrulama kodu Gmail adresine gönderildi. Kod 4 dakika boyunca geçerli.");
+    setEmailStatus("Doğrulama kodu e-posta adresine gönderildi. Kod 4 dakika boyunca geçerli.");
   };
 
   const verifyEmailCode = async () => {
@@ -118,7 +118,7 @@ export default function RegisterPage() {
     setEmailVerified(true);
     setEmailCodeExpiresAt(null);
     setEmailCountdown(0);
-    setEmailStatus("Gmail adresi doğrulandı.");
+    setEmailStatus("E-posta adresi doğrulandı.");
   };
 
   const uploadFile = async (file: File) => {
@@ -137,7 +137,7 @@ export default function RegisterPage() {
     setError(null);
     setEmailStatus(null);
     if (normalizedEmail && !emailVerified) {
-      setError("Gmail girdiysen önce doğrulama kodunu onaylamalısın.");
+      setError("E-posta girdiysen önce doğrulama kodunu onaylamalısın.");
       return;
     }
     setSubmitting(true);
@@ -247,7 +247,7 @@ export default function RegisterPage() {
                   <Input
                     type="email"
                     className="h-11 border-zinc-200 pl-9"
-                    placeholder="Gmail adresi (opsiyonel)"
+                    placeholder="E-posta adresi (opsiyonel)"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -259,7 +259,7 @@ export default function RegisterPage() {
                     }}
                   />
                 </div>
-                <p className="text-xs text-zinc-600">Gmail girersen doğrulama kodu gönderilir ve profilinde doğrulanmış kullanıcı rozeti görünür. Boş bırakabilirsin.</p>
+                <p className="text-xs text-zinc-600">E-posta girersen doğrulama kodu gönderilir ve profilinde doğrulanmış kullanıcı rozeti görünür. Boş bırakabilirsin.</p>
                 {normalizedEmail ? (
                   <div className="space-y-3 rounded-[24px] border border-amber-200 bg-[linear-gradient(135deg,#fff8ee_0%,#ffe9c4_45%,#ffffff_100%)] p-4 shadow-[0_20px_45px_rgba(180,120,45,0.12)]">
                     <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-100 bg-white/80 px-3 py-2">
@@ -267,7 +267,7 @@ export default function RegisterPage() {
                         <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-sm">
                           <Sparkles className="h-4 w-4" />
                         </span>
-                        Gmail doğrulaması
+                        E-posta doğrulaması
                       </div>
                       <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${emailVerified ? "border-emerald-200 bg-emerald-50 text-emerald-700" : emailCodeExpiresAt ? emailCodeExpired ? "border-red-200 bg-red-50 text-red-700" : "border-amber-200 bg-amber-50 text-amber-800" : "border-zinc-200 bg-white text-zinc-600"}`}>
                         <Clock3 className="h-3.5 w-3.5" />
@@ -275,11 +275,11 @@ export default function RegisterPage() {
                       </div>
                     </div>
                     {!emailLooksValid ? (
-                      <p className="text-xs text-red-600">Lütfen geçerli bir Gmail adresi gir.</p>
+                      <p className="text-xs text-red-600">Lütfen geçerli bir e-posta adresi gir.</p>
                     ) : null}
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <Button type="button" variant="outline" className="border-amber-300 bg-white/90" onClick={requestEmailCode} disabled={!emailLooksValid || emailSending || emailVerified}>
-                        {emailSending ? "Kod gönderiliyor..." : emailVerified ? "Gmail doğrulandı" : emailCodeExpiresAt && !emailCodeExpired ? "Kodu Yeniden Gönder" : "Kodu Gönder"}
+                        {emailSending ? "Kod gönderiliyor..." : emailVerified ? "E-posta doğrulandı" : emailCodeExpiresAt && !emailCodeExpired ? "Kodu Yeniden Gönder" : "Kodu Gönder"}
                       </Button>
                       <div className="relative flex-1">
                         <Input

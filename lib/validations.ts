@@ -22,7 +22,7 @@ export const registerSchema = z.object({
     .trim()
     .optional()
     .transform((value) => (value ? value.toLowerCase() : ""))
-    .refine((value) => !value || /^[^\s@]+@gmail\.com$/i.test(value), "Geçerli bir Gmail adresi girin."),
+    .refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(value), "Geçerli bir e-posta adresi girin."),
   password: z.string().min(6).max(64),
   birthDate: z.coerce.date(),
   showAge: z.coerce.boolean().optional().default(false),

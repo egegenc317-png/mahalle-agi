@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
   if (!normalizedEmail) {
     return NextResponse.json({ error: "E-posta adresi gerekli." }, { status: 400 });
   }
-  if (!/^[^\s@]+@gmail\.com$/i.test(normalizedEmail)) {
-    return NextResponse.json({ error: "Lütfen geçerli bir Gmail adresi gir." }, { status: 400 });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(normalizedEmail)) {
+    return NextResponse.json({ error: "Lütfen geçerli bir e-posta adresi gir." }, { status: 400 });
   }
 
   const emailExists = await prisma.user.findUnique({ where: { email: normalizedEmail } });
