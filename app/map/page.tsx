@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { MapPin } from "lucide-react";
 
 import { auth } from "@/lib/auth";
+import { geocodeLocationText } from "@/lib/geocode";
+import { findNeighborhoodByLocation } from "@/lib/neighborhood-geo";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UnifiedNeighborhoodMap } from "@/components/unified-neighborhood-map";
@@ -10,6 +12,25 @@ import { UnifiedNeighborhoodMap } from "@/components/unified-neighborhood-map";
 type ListingWithUser = Awaited<ReturnType<typeof prisma.listing.findMany>>[number];
 type BoardPostWithUser = Awaited<ReturnType<typeof prisma.boardPost.findMany>>[number];
 type BusinessUser = Awaited<ReturnType<typeof prisma.user.findMany>>[number];
+
+async function resolveNeighborhoodIdForPoint(input: {
+  locationLat?: number | null;
+  locationLng?: number | null;
+  locationText?: string | null;
+}) {
+  let lat = typeof input.locationLat === "number" ? input.locationLat : null;
+  let lng = typeof input.locationLng === "number" ? input.locationLng : null;
+
+  if ((lat === null || lng === null) && input.locationText?.trim()) {
+    const point = await geocodeLocationText(input.locationText.trim());
+    lat = point?.lat ?? null;
+    lng = point?.lng ?? null;
+  }
+
+  if (lat === null || lng === null) return null;
+  const neighborhood = await findNeighborhoodByLocation(lat, lng);
+  return neighborhood?.id ?? null;
+}
 
 export default async function MapPage() {
   const session = await auth();
@@ -40,57 +61,87 @@ export default async function MapPage() {
     (p: BoardPostWithUser) => Boolean(p.locationText) || (typeof p.locationLat === "number" && typeof p.locationLng === "number")
   );
 
-  const mapItems = [
-    ...posts.map((post: BoardPostWithUser) => ({
-      id: post.id,
-      kind: "BOARD" as const,
-      type: post.type,
-      title: post.title,
-      body: post.body,
-      userName: post.user.name || "Kullanıcı",
-      href: "/board",
-      createdAt: new Date(post.createdAt).toISOString(),
-      locationText: post.locationText ?? null,
-      locationLat: typeof post.locationLat === "number" ? post.locationLat : null,
-      locationLng: typeof post.locationLng === "number" ? post.locationLng : null
-    })),
-    ...listings.map((listing: ListingWithUser) => ({
-      id: listing.id,
-      kind: "LISTING" as const,
-      type: listing.type,
-      title: listing.title,
-      body: listing.description,
-      userName: listing.user.name || "Kullanıcı",
-      href: `/listings/${listing.id}`,
-      createdAt: new Date(listing.createdAt).toISOString(),
-      locationText: listing.locationText ?? null,
-      locationLat: typeof listing.locationLat === "number" ? listing.locationLat : null,
-      locationLng: typeof listing.locationLng === "number" ? listing.locationLng : null
-    })),
-    ...businessUsers
-      .filter(
-        (u: BusinessUser) =>
-          u.accountType === "BUSINESS" &&
-          typeof u.shopLocationLat === "number" &&
-          typeof u.shopLocationLng === "number" &&
-          u.neighborhoodId === neighborhoodId
-      )
-      .map((u: BusinessUser) => ({
-        id: `shop-${u.id}`,
-        kind: "LISTING" as const,
-        type: "SHOP",
-        title: u.shopName || `${u.name} Dükkanı`,
-        body: u.shopLocationText || "İşletme konumu",
-        userName: u.name || "İşletme",
-        href: `/profile/${u.id}`,
-        createdAt: new Date(u.createdAt).toISOString(),
-        locationText: u.shopLocationText ?? null,
-        locationLat: u.shopLocationLat ?? null,
-        locationLng: u.shopLocationLng ?? null,
-        imageUrl: u.shopLogo ?? null,
-        businessCategory: u.businessCategory ?? null
-      }))
-  ];
+  const [postItems, listingItems, businessItems] = await Promise.all([
+    Promise.all(
+      posts.map(async (post: BoardPostWithUser) => {
+        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
+          locationLat: typeof post.locationLat === "number" ? post.locationLat : null,
+          locationLng: typeof post.locationLng === "number" ? post.locationLng : null,
+          locationText: post.locationText ?? null
+        });
+        if (matchedNeighborhoodId !== neighborhoodId) return null;
+        return {
+          id: post.id,
+          kind: "BOARD" as const,
+          type: post.type,
+          title: post.title,
+          body: post.body,
+          userName: post.user.name || "Kullanıcı",
+          href: "/board",
+          createdAt: new Date(post.createdAt).toISOString(),
+          locationText: post.locationText ?? null,
+          locationLat: typeof post.locationLat === "number" ? post.locationLat : null,
+          locationLng: typeof post.locationLng === "number" ? post.locationLng : null
+        };
+      })
+    ),
+    Promise.all(
+      listings.map(async (listing: ListingWithUser) => {
+        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
+          locationLat: typeof listing.locationLat === "number" ? listing.locationLat : null,
+          locationLng: typeof listing.locationLng === "number" ? listing.locationLng : null,
+          locationText: listing.locationText ?? null
+        });
+        if (matchedNeighborhoodId !== neighborhoodId) return null;
+        return {
+          id: listing.id,
+          kind: "LISTING" as const,
+          type: listing.type,
+          title: listing.title,
+          body: listing.description,
+          userName: listing.user.name || "Kullanıcı",
+          href: `/listings/${listing.id}`,
+          createdAt: new Date(listing.createdAt).toISOString(),
+          locationText: listing.locationText ?? null,
+          locationLat: typeof listing.locationLat === "number" ? listing.locationLat : null,
+          locationLng: typeof listing.locationLng === "number" ? listing.locationLng : null
+        };
+      })
+    ),
+    Promise.all(
+      businessUsers
+        .filter(
+          (u: BusinessUser) =>
+            u.accountType === "BUSINESS" &&
+            (typeof u.shopLocationLat === "number" || Boolean(u.shopLocationText))
+        )
+        .map(async (u: BusinessUser) => {
+          const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
+            locationLat: u.shopLocationLat ?? null,
+            locationLng: u.shopLocationLng ?? null,
+            locationText: u.shopLocationText ?? null
+          });
+          if (matchedNeighborhoodId !== neighborhoodId) return null;
+          return {
+            id: `shop-${u.id}`,
+            kind: "LISTING" as const,
+            type: "SHOP",
+            title: u.shopName || `${u.name} Dükkanı`,
+            body: u.shopLocationText || "İşletme konumu",
+            userName: u.name || "İşletme",
+            href: `/profile/${u.id}`,
+            createdAt: new Date(u.createdAt).toISOString(),
+            locationText: u.shopLocationText ?? null,
+            locationLat: u.shopLocationLat ?? null,
+            locationLng: u.shopLocationLng ?? null,
+            imageUrl: u.shopLogo ?? null,
+            businessCategory: u.businessCategory ?? null
+          };
+        })
+    )
+  ]);
+
+  const mapItems = [...postItems, ...listingItems, ...businessItems].filter(Boolean);
 
   return (
     <div className="space-y-4">
