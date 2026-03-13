@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import { HeadBucketCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, HeadBucketCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 type UploadInput = {
   key: string;
@@ -15,6 +15,10 @@ function getLocalUploadDir() {
 
 function getLocalPublicUrl(key: string) {
   return `/uploads/${key}`;
+}
+
+function normalizeUploadKey(key: string) {
+  return key.replace(/^\/+/, "").replace(/^uploads\//, "");
 }
 
 function getStorageMode() {
@@ -80,13 +84,7 @@ async function uploadToS3({ key, body, contentType }: UploadInput) {
     })
   );
 
-  const url = config.publicBaseUrl
-    ? `${config.publicBaseUrl.replace(/\/$/, "")}/${key}`
-    : config.endpoint
-      ? `${config.endpoint.replace(/\/$/, "")}/${config.bucket}/${key}`
-      : `https://${config.bucket}.s3.${config.region}.amazonaws.com/${key}`;
-
-  return { url, provider: "s3" as const };
+  return { url: getLocalPublicUrl(key), provider: "s3" as const };
 }
 
 export async function uploadObject(input: UploadInput) {
@@ -106,6 +104,122 @@ export function getStoragePublicHost() {
   } catch {
     return null;
   }
+}
+
+export function resolveStoredMediaUrl(url: string | null | undefined) {
+  if (!url) return "";
+  if (url.startsWith("/uploads/")) return url;
+  if (url.startsWith("uploads/")) return `/${url}`;
+
+  try {
+    const parsed = new URL(url);
+    const pathname = decodeURIComponent(parsed.pathname || "/").replace(/^\/+/, "");
+
+    if (parsed.hostname.endsWith(".r2.dev")) {
+      return pathname ? getLocalPublicUrl(normalizeUploadKey(pathname)) : "";
+    }
+
+    if (parsed.hostname.includes("r2.cloudflarestorage.com")) {
+      const segments = pathname.split("/").filter(Boolean);
+      if (segments.length >= 2) {
+        return getLocalPublicUrl(normalizeUploadKey(segments.slice(1).join("/")));
+      }
+      if (segments.length === 1) {
+        return getLocalPublicUrl(normalizeUploadKey(segments[0]));
+      }
+    }
+  } catch {
+    return url;
+  }
+
+  return url;
+}
+
+function getLocalFilePath(key: string) {
+  return path.resolve(getLocalUploadDir(), normalizeUploadKey(key));
+}
+
+function getContentTypeFromKey(key: string) {
+  const ext = path.extname(key).toLowerCase();
+  switch (ext) {
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".png":
+      return "image/png";
+    case ".webp":
+      return "image/webp";
+    case ".gif":
+      return "image/gif";
+    case ".avif":
+      return "image/avif";
+    case ".pdf":
+      return "application/pdf";
+    case ".txt":
+      return "text/plain; charset=utf-8";
+    case ".zip":
+      return "application/zip";
+    case ".doc":
+      return "application/msword";
+    case ".docx":
+      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    case ".xls":
+      return "application/vnd.ms-excel";
+    case ".xlsx":
+      return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    case ".ppt":
+      return "application/vnd.ms-powerpoint";
+    case ".pptx":
+      return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    case ".mp3":
+      return "audio/mpeg";
+    case ".wav":
+      return "audio/wav";
+    case ".webm":
+      return "video/webm";
+    case ".mov":
+      return "video/quicktime";
+    case ".mp4":
+      return "video/mp4";
+    default:
+      return "application/octet-stream";
+  }
+}
+
+export async function readStoredObject(key: string) {
+  const normalizedKey = normalizeUploadKey(key);
+  const localPath = getLocalFilePath(normalizedKey);
+
+  try {
+    const body = await fs.readFile(localPath);
+    return {
+      body,
+      contentType: getContentTypeFromKey(normalizedKey),
+      cacheControl: "public, max-age=31536000, immutable"
+    };
+  } catch {}
+
+  if (getStorageMode() !== "s3") {
+    return null;
+  }
+
+  const config = getS3Config();
+  const client = getS3Client();
+  const object = await client.send(
+    new GetObjectCommand({
+      Bucket: config.bucket,
+      Key: normalizedKey
+    })
+  );
+
+  const body = object.Body;
+  if (!body) return null;
+
+  return {
+    body: typeof body.transformToWebStream === "function" ? body.transformToWebStream() : body,
+    contentType: object.ContentType || getContentTypeFromKey(normalizedKey),
+    cacheControl: object.CacheControl || "public, max-age=31536000, immutable"
+  };
 }
 
 export async function checkStorageHealth() {

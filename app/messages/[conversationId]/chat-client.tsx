@@ -7,6 +7,7 @@ import { Camera, Check, CheckCheck, FileText, Paperclip, Pin, PinOff, SendHorizo
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { normalizeMediaUrl } from "@/lib/media-url";
 
 type Message = {
   id: string;
@@ -75,7 +76,7 @@ function parseFileMessage(body: string): { name: string; url: string; viewOnce: 
       if (!parsed?.name) return null;
       return {
         name: parsed.name || "Dosya",
-        url: parsed.url || "",
+        url: normalizeMediaUrl(parsed.url || ""),
         viewOnce: Boolean(parsed.viewOnce),
         consumed: false
       };
@@ -90,7 +91,7 @@ function parseFileMessage(body: string): { name: string; url: string; viewOnce: 
   if (splitIndex < 1) return null;
   const name = payload.slice(0, splitIndex).trim();
   const url = payload.slice(splitIndex + 1).trim();
-  return { name: name || "Dosya", url, viewOnce: false, consumed: false };
+  return { name: name || "Dosya", url: normalizeMediaUrl(url), viewOnce: false, consumed: false };
 }
 
 function isImageUrl(url: string) {
