@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { requestPreciseLocation } from "@/lib/client/request-location";
 
 type ListingType = "PRODUCT" | "SERVICE" | "JOB";
 
@@ -61,24 +62,12 @@ export default function NewListingPage() {
     setType(initialType);
   }, [initialType]);
 
-  const getCurrentPosition = () =>
-    new Promise<{ lat: number; lng: number }>((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Tarayıcı konum servisini desteklemiyor."));
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => reject(new Error("Konum izni verilmedi veya konum alınamadı.")),
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    });
-
   const refreshLocation = async () => {
     setLocLoading(true);
+    setError(null);
     try {
-      const coords = await getCurrentPosition();
-      setLocationPreview(coords);
+      const coords = await requestPreciseLocation();
+      setLocationPreview({ lat: coords.lat, lng: coords.lng });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Konum alınamadı.");
     } finally {

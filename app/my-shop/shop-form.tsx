@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { requestPreciseLocation } from "@/lib/client/request-location";
 
 type ClosedDayMode = "OPEN" | "FULL_DAY" | "RANGE";
 type ClosedDayState = { day: number; label: string; mode: ClosedDayMode; start: string; end: string };
@@ -85,13 +86,10 @@ export function ShopForm({
     setLocLoading(true);
     setError(null);
     try {
-      if (!navigator.geolocation) throw new Error("Tarayıcı konum servisini desteklemiyor.");
-      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 })
-      );
-      setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-    } catch {
-      setError("Konum alınamadı. Lütfen konum iznini aç.");
+      const pos = await requestPreciseLocation();
+      setCoords({ lat: pos.lat, lng: pos.lng });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Konum alınamadı. Lütfen konum iznini aç.");
     } finally {
       setLocLoading(false);
     }

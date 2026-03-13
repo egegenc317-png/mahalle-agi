@@ -8,21 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
-
-function getCurrentPosition(): Promise<{ lat: number; lng: number }> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Tarayıcı konum servisini desteklemiyor."));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => reject(new Error("Konum izni verilmedi veya konum alınamadı.")),
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  });
-}
+import { requestPreciseLocation } from "@/lib/client/request-location";
 
 async function fetchJsonWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 20000) {
   const controller = new AbortController();
@@ -51,9 +37,10 @@ export function BoardCreateForm() {
 
   const refreshLocation = async () => {
     setLocLoading(true);
+    setError(null);
     try {
-      const coords = await getCurrentPosition();
-      setLocationPreview(coords);
+      const coords = await requestPreciseLocation();
+      setLocationPreview({ lat: coords.lat, lng: coords.lng });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Konum alınamadı.");
     } finally {
