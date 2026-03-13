@@ -28,8 +28,11 @@ export function FlowPostActions({
   const [liked, setLiked] = useState(likedByMe);
   const [likes, setLikes] = useState(likeCount);
   const [openReply, setOpenReply] = useState(false);
+  const [openRepost, setOpenRepost] = useState(false);
   const [replyBody, setReplyBody] = useState("");
+  const [repostBody, setRepostBody] = useState("");
   const [loadingReply, setLoadingReply] = useState(false);
+  const [loadingRepost, setLoadingRepost] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const toggleLike = async () => {
@@ -49,15 +52,25 @@ export function FlowPostActions({
   };
 
   const repost = async () => {
+    setLoadingRepost(true);
+    setError(null);
     const res = await fetch("/api/akis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        body: "Bu paylaşımı yeniden bıraktı.",
+        body: repostBody.trim() || "Bu paylaşımı yeniden bıraktı.",
         repostOfPostId: postId
       })
     });
-    if (res.ok) router.refresh();
+    const data = await res.json().catch(() => ({}));
+    setLoadingRepost(false);
+    if (!res.ok) {
+      setError(data.error || "Yeniden paylaşım gönderilemedi.");
+      return;
+    }
+    setRepostBody("");
+    setOpenRepost(false);
+    router.refresh();
   };
 
   const remove = async () => {
@@ -102,7 +115,7 @@ export function FlowPostActions({
         <button type="button" onClick={() => setOpenReply((v) => !v)} className="inline-flex items-center gap-1.5 transition hover:text-orange-600">
           <MessageCircle className="h-4 w-4" /> {replyCount}
         </button>
-        <button type="button" onClick={repost} className="inline-flex items-center gap-1.5 transition hover:text-emerald-600">
+        <button type="button" onClick={() => setOpenRepost((v) => !v)} className="inline-flex items-center gap-1.5 transition hover:text-emerald-600">
           <Repeat2 className="h-4 w-4" /> {repostCount}
         </button>
         {canDelete ? (
@@ -130,6 +143,37 @@ export function FlowPostActions({
             >
               <SendHorizonal className="mr-2 h-4 w-4" />
               {loadingReply ? "Gönderiliyor..." : "Cevapla"}
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {openRepost ? (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-3">
+          <Textarea
+            value={repostBody}
+            onChange={(e) => setRepostBody(e.target.value)}
+            placeholder="İstersen bu yeniden paylaşımın üstüne kısa bir not yaz..."
+            className="min-h-24 rounded-2xl border-emerald-200 bg-white"
+            maxLength={280}
+          />
+          <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
+            <span>Üstte görünen kısa bir yorum bırakabilirsin.</span>
+            <span>{repostBody.trim().length}/280</span>
+          </div>
+          {error ? <p className="mt-2 text-xs text-red-600">{error}</p> : null}
+          <div className="mt-3 flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => { setOpenRepost(false); setRepostBody(""); }}>
+              Vazgeç
+            </Button>
+            <Button
+              type="button"
+              onClick={repost}
+              disabled={loadingRepost}
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
+            >
+              <Repeat2 className="mr-2 h-4 w-4" />
+              {loadingRepost ? "Paylaşılıyor..." : "Yeniden Paylaş"}
             </Button>
           </div>
         </div>

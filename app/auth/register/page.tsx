@@ -212,12 +212,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-110px)] overflow-hidden rounded-[26px] border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-3 sm:min-h-[calc(100vh-120px)] sm:rounded-3xl sm:p-6 lg:p-8">
-      <div className="pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full bg-orange-200/45 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-amber-300/30 blur-3xl" />
+    <div className="relative min-h-[calc(100vh-110px)] overflow-hidden rounded-[26px] border border-amber-100 bg-[linear-gradient(180deg,#fffaf2_0%,#fffdf9_40%,#fff7ed_100%)] p-3 sm:min-h-[calc(100vh-120px)] sm:rounded-3xl sm:p-6 lg:p-8">
+      <div className="pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full bg-orange-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-amber-300/20 blur-3xl" />
 
-      <div className="relative mx-auto grid max-w-5xl items-start gap-4 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
-        <Card className="order-1 border-0 bg-white/75 shadow-xl backdrop-blur-md">
+      <div className="relative mx-auto grid max-w-5xl items-start gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6">
+        <Card className="order-1 border border-white/80 bg-white shadow-xl">
           <CardHeader className="space-y-3 p-5 sm:p-6">
             <BrandLogo className="mb-1" />
             <p className="inline-flex w-fit items-center gap-2 rounded-full border border-amber-200 bg-amber-100/70 px-3 py-1 text-xs font-semibold text-amber-800">
@@ -225,11 +225,15 @@ export default function RegisterPage() {
               Güvenli Komşu ağına Katıl
             </p>
             <CardTitle className="text-2xl font-extrabold tracking-tight text-zinc-900 sm:text-3xl">Kayıt Ol</CardTitle>
-            <p className="text-sm text-zinc-600">Kullanıcı adıni seç, Komşular seni bulabilsin.</p>
+            <p className="text-sm text-zinc-600">Temel bilgilerini gir, istersen e-postanı doğrula, ardından mahalle ağına katıl.</p>
           </CardHeader>
 
           <CardContent className="p-5 pt-0 sm:p-6 sm:pt-0">
             <form onSubmit={onSubmit} className="space-y-3">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4">
+                <p className="text-sm font-semibold text-zinc-900">Temel bilgiler</p>
+                <p className="mt-1 text-xs text-zinc-600">İsmin, kullanıcı adın ve şifrenle hesabın oluşur.</p>
+              </div>
               <div className="relative">
                 <User className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-zinc-500" />
                 <Input className="h-11 border-zinc-200 pl-9" placeholder="Ad Soyad" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -247,6 +251,10 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2 rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
+                <div>
+                  <p className="text-sm font-semibold text-zinc-900">E-posta doğrulaması</p>
+                  <p className="mt-1 text-xs text-zinc-600">İstersen e-posta adresini doğrula. Profilinde doğrulanmış kullanıcı rozeti görünür.</p>
+                </div>
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-zinc-500" />
                   <Input
@@ -264,7 +272,6 @@ export default function RegisterPage() {
                     }}
                   />
                 </div>
-                <p className="text-xs text-zinc-600">E-posta girersen doğrulama kodu gönderilir ve profilinde doğrulanmış kullanıcı rozeti görünür. Boş bırakabilirsin.</p>
                 {normalizedEmail ? (
                   <div className="space-y-3 rounded-[24px] border border-amber-200 bg-[linear-gradient(135deg,#fff8ee_0%,#ffe9c4_45%,#ffffff_100%)] p-4 shadow-[0_20px_45px_rgba(180,120,45,0.12)]">
                     <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-100 bg-white/80 px-3 py-2">
@@ -327,6 +334,10 @@ export default function RegisterPage() {
 
               {accountType === "BUSINESS" ? (
                 <>
+                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4">
+                    <p className="text-sm font-semibold text-zinc-900">İşletme bilgileri</p>
+                    <p className="mt-1 text-xs text-zinc-600">Kategori, logo ve kapalı saatlerini belirle. Çarşı sayfasında doğru görünür.</p>
+                  </div>
                   <div className="relative">
                     <Building2 className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-zinc-500" />
                     <select value={businessCategory} onChange={(e) => setBusinessCategory(e.target.value)} className="h-11 w-full rounded-md border border-zinc-200 bg-white pl-9 pr-3 text-sm" required>
@@ -400,7 +411,9 @@ export default function RegisterPage() {
                   </div>
                 </>
               ) : (
-                <div className="space-y-1">
+                <div className="space-y-1 rounded-2xl border border-zinc-200 bg-zinc-50/60 p-4">
+                  <p className="text-sm font-semibold text-zinc-900">Profil fotoğrafı</p>
+                  <p className="mt-1 text-xs text-zinc-600">İstersen şimdi ekle, istersen sonra profilinden güncellersin.</p>
                   <label className="inline-flex items-center gap-2 text-xs font-medium text-zinc-600"><Camera className="h-3.5 w-3.5" /> Profil fotoğrafı (opsiyonel)</label>
                   <Input type="file" className={uploadInputClass} accept="image/jpeg,image/png" onChange={(e) => setProfileImageFile(e.target.files?.[0] || null)} />
                   <CameraCaptureButton onCapture={(files) => setProfileImageFile(files[0] || null)} label="Kameradan Profil Çek" />
@@ -426,13 +439,21 @@ export default function RegisterPage() {
           </CardContent>
         </Card>
 
-        <div className="order-2 space-y-4 rounded-2xl border border-amber-200/80 bg-white/75 p-4 shadow-lg backdrop-blur-sm sm:p-6">
-          <h2 className="text-2xl font-bold text-zinc-900">Mahalle Ağı</h2>
-          <p className="text-sm leading-6 text-zinc-600">Mahallende güvenli alım-satım, duyuru ve mikro işler tek yerde. Komşu veya işletme olarak topluluğa katıl.</p>
+        <div className="order-2 space-y-4 rounded-2xl border border-amber-200/80 bg-white p-4 shadow-lg sm:p-6">
+          <h2 className="text-2xl font-bold text-zinc-900">Kısa Özet</h2>
           <div className="grid gap-3 text-sm">
-            <div className="rounded-xl border border-zinc-200 bg-white p-3 text-zinc-700">Gercek zamanli sohbet ve lokal feed</div>
-            <div className="rounded-xl border border-zinc-200 bg-white p-3 text-zinc-700">Haritada ilan, duyuru ve işletme görünümü</div>
-            <div className="rounded-xl border border-zinc-200 bg-white p-3 text-zinc-700">Kullanıcı adıyla hızlı kişi arama</div>
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-zinc-700">
+              <p className="font-semibold text-zinc-900">1. Hesabını oluştur</p>
+              <p className="mt-1 text-xs leading-5 text-zinc-600">Adın, kullanıcı adın ve güçlü bir şifre yeterli.</p>
+            </div>
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-zinc-700">
+              <p className="font-semibold text-zinc-900">2. İstersen e-postanı doğrula</p>
+              <p className="mt-1 text-xs leading-5 text-zinc-600">Doğrulanmış kullanıcı rozeti alırsın. Zorunlu değil.</p>
+            </div>
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-zinc-700">
+              <p className="font-semibold text-zinc-900">3. Mahallene bağlan</p>
+              <p className="mt-1 text-xs leading-5 text-zinc-600">İlan, duyuru, akış ve mesajlaşma doğrudan açılır.</p>
+            </div>
           </div>
         </div>
       </div>
