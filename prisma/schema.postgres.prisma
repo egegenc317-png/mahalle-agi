@@ -236,6 +236,18 @@ model UserWeeklyUsage {
   @@unique([userId, weekKey])
 }
 
+model SiteVisit {
+  id        String   @id
+  visitorId String
+  userId    String?
+  dateKey   String
+  pageCount Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  @@unique([visitorId, dateKey])
+}
+
 model GroupInvite {
   id              String   @id
   conversationId  String

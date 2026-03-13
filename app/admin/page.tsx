@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Activity, Building2, FileText, MessageCircle, Megaphone, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { Activity, Building2, Eye, FileText, MessageCircle, Megaphone, ShieldCheck, UserPlus, Users } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/prisma";
@@ -45,6 +45,14 @@ type WeeklyUsageRow = {
   userId: string;
   seconds: number;
   updatedAt?: Date | string;
+};
+
+type SiteVisitRow = {
+  visitorId: string;
+  userId?: string | null;
+  dateKey: string;
+  pageCount: number;
+  createdAt: Date | string;
 };
 
 function formatDate(value: Date | string | null | undefined) {
@@ -119,6 +127,24 @@ const statCards = [
     title: "Açık Rapor",
     icon: ShieldCheck,
     accent: "from-[#dc2626] to-[#f97316]"
+  },
+  {
+    key: "dailyVisitors",
+    title: "Günlük Görüntüleme",
+    icon: Eye,
+    accent: "from-[#0f766e] to-[#2dd4bf]"
+  },
+  {
+    key: "weeklyVisitors",
+    title: "Haftalık Görüntüleme",
+    icon: Eye,
+    accent: "from-[#0891b2] to-[#38bdf8]"
+  },
+  {
+    key: "monthlyVisitors",
+    title: "Aylık Görüntüleme",
+    icon: Eye,
+    accent: "from-[#4f46e5] to-[#818cf8]"
   }
 ] as const;
 
@@ -126,7 +152,7 @@ export default async function AdminPage() {
   const session = await auth();
   if (!session || (session.user.role !== "ADMIN" && session.user.role !== "MODERATOR")) redirect("/");
 
-  const [usersRaw, listingsRaw, boardPostsRaw, messagesRaw, reports, neighborhoodsRaw, weeklyUsageRaw] = await Promise.all([
+  const [usersRaw, listingsRaw, boardPostsRaw, messagesRaw, reports, neighborhoodsRaw, weeklyUsageRaw, siteVisitsRaw] = await Promise.all([
     db.user.findMany({
       orderBy: { createdAt: "desc" },
       include: { neighborhood: true }
@@ -136,7 +162,8 @@ export default async function AdminPage() {
     db.message.findMany({}),
     db.report.findMany({ where: { status: "OPEN" }, orderBy: { createdAt: "desc" } }),
     db.neighborhood.findMany({}),
-    db.userWeeklyUsage.findMany({})
+    db.userWeeklyUsage.findMany({}),
+    db.siteVisit.findMany({})
   ]);
 
   const users = usersRaw as AdminUser[];
@@ -145,9 +172,21 @@ export default async function AdminPage() {
   const messages = messagesRaw as ActivityMessage[];
   const neighborhoods = neighborhoodsRaw as NeighborhoodSummary[];
   const weeklyUsage = weeklyUsageRaw as WeeklyUsageRow[];
+  const siteVisits = siteVisitsRaw as SiteVisitRow[];
 
   const today = startOfToday();
   const onlineThreshold = minutesAgo(5);
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const weekThreshold = new Date();
+  weekThreshold.setDate(weekThreshold.getDate() - 6);
+  weekThreshold.setHours(0, 0, 0, 0);
+  const monthThreshold = new Date();
+  monthThreshold.setDate(monthThreshold.getDate() - 29);
+  monthThreshold.setHours(0, 0, 0, 0);
+
+  const dailyVisitors = siteVisits.filter((visit) => visit.dateKey === todayKey).length;
+  const weeklyVisitors = siteVisits.filter((visit) => new Date(visit.createdAt) >= weekThreshold).length;
+  const monthlyVisitors = siteVisits.filter((visit) => new Date(visit.createdAt) >= monthThreshold).length;
 
   const stats = {
     totalUsers: users.length,
@@ -157,7 +196,10 @@ export default async function AdminPage() {
     totalBoardPosts: boardPosts.length,
     businessUsers: users.filter((user) => user.accountType === "BUSINESS").length,
     totalMessages: messages.length,
-    openReports: reports.length
+    openReports: reports.length,
+    dailyVisitors,
+    weeklyVisitors,
+    monthlyVisitors
   };
 
   const recentUsers = users.slice(0, 6);

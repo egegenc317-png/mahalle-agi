@@ -100,6 +100,11 @@ function normalizeUserWeeklyUsage(item: any) {
   return item;
 }
 
+function normalizeSiteVisit(item: any) {
+  if (!item) return null;
+  return item;
+}
+
 function serializeUserData(data: any) {
   const next = { ...data };
   if ("businessClosedHours" in next) {
@@ -191,6 +196,21 @@ export const prisma = {
         })
       );
     }
+  },
+  siteVisit: {
+    findMany: async ({ where, orderBy }: any = {}) => (await db.siteVisit.findMany({ where, orderBy })).map(normalizeSiteVisit),
+    findFirst: async ({ where }: any) => normalizeSiteVisit(await db.siteVisit.findFirst({ where })),
+    upsert: async ({ where, create, update }: any) =>
+      normalizeSiteVisit(
+        await db.siteVisit.upsert({
+          where,
+          create: { id: create.id || randomUUID(), updatedAt: new Date(), ...create },
+          update: update?.pageCount?.increment
+            ? { pageCount: { increment: update.pageCount.increment }, updatedAt: new Date(), userId: update.userId }
+            : { ...update, updatedAt: new Date() }
+        })
+      ),
+    count: async ({ where }: any = {}) => await db.siteVisit.count({ where })
   },
   userRating: {
     findMany: async ({ where }: any = {}) => await db.userRating.findMany({ where }),

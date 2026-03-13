@@ -183,6 +183,17 @@ CREATE TABLE "UserWeeklyUsage" (
 );
 
 -- CreateTable
+CREATE TABLE "SiteVisit" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "visitorId" TEXT NOT NULL,
+    "userId" TEXT,
+    "dateKey" TEXT NOT NULL,
+    "pageCount" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "GroupInvite" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "conversationId" TEXT NOT NULL,
@@ -269,6 +280,9 @@ CREATE UNIQUE INDEX "Conversation_listingId_buyerId_sellerId_key" ON "Conversati
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserWeeklyUsage_userId_weekKey_key" ON "UserWeeklyUsage"("userId", "weekKey");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SiteVisit_visitorId_dateKey_key" ON "SiteVisit"("visitorId", "dateKey");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");

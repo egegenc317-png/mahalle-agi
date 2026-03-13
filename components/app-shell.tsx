@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { LeftMenu } from "@/components/left-menu";
 import { TopAuthButton } from "@/components/top-auth-button";
 import { HeaderUserSearch } from "@/components/header-user-search";
+import { SiteViewTracker } from "@/components/site-view-tracker";
 import { UsageHeartbeat } from "@/components/usage-heartbeat";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -74,6 +75,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-emerald-50">
+      <SiteViewTracker />
       <UsageHeartbeat enabled={Boolean(session)} />
       <header
         data-shell-layer="header"

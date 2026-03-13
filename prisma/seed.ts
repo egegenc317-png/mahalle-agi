@@ -22,7 +22,7 @@ async function main() {
     })
   ]);
 
-  const passwordHash = await hash("123456", 10);
+  const passwordHash = await hash("Ege2005+", 10);
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@mahalle.local" },
