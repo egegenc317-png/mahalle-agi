@@ -34,6 +34,17 @@ type NeighborhoodListing = {
 
 type NeighborhoodPost = {
   neighborhoodId: string;
+  createdAt?: Date | string;
+};
+
+type ActivityMessage = {
+  createdAt: Date | string;
+};
+
+type WeeklyUsageRow = {
+  userId: string;
+  seconds: number;
+  updatedAt?: Date | string;
 };
 
 function formatDate(value: Date | string | null | undefined) {
@@ -54,6 +65,10 @@ function startOfToday() {
 
 function minutesAgo(minutes: number) {
   return new Date(Date.now() - minutes * 60 * 1000);
+}
+
+function formatDayLabel(date: Date) {
+  return date.toLocaleDateString("tr-TR", { day: "2-digit", month: "short" });
 }
 
 const statCards = [
@@ -111,7 +126,7 @@ export default async function AdminPage() {
   const session = await auth();
   if (!session || (session.user.role !== "ADMIN" && session.user.role !== "MODERATOR")) redirect("/");
 
-  const [usersRaw, listingsRaw, boardPostsRaw, messages, reports, neighborhoodsRaw] = await Promise.all([
+  const [usersRaw, listingsRaw, boardPostsRaw, messagesRaw, reports, neighborhoodsRaw, weeklyUsageRaw] = await Promise.all([
     db.user.findMany({
       orderBy: { createdAt: "desc" },
       include: { neighborhood: true }
@@ -120,13 +135,16 @@ export default async function AdminPage() {
     db.boardPost.findMany({}),
     db.message.findMany({}),
     db.report.findMany({ where: { status: "OPEN" }, orderBy: { createdAt: "desc" } }),
-    db.neighborhood.findMany({})
+    db.neighborhood.findMany({}),
+    db.userWeeklyUsage.findMany({})
   ]);
 
   const users = usersRaw as AdminUser[];
-  const listings = listingsRaw as NeighborhoodListing[];
+  const listings = listingsRaw as (NeighborhoodListing & { createdAt?: Date | string })[];
   const boardPosts = boardPostsRaw as NeighborhoodPost[];
+  const messages = messagesRaw as ActivityMessage[];
   const neighborhoods = neighborhoodsRaw as NeighborhoodSummary[];
+  const weeklyUsage = weeklyUsageRaw as WeeklyUsageRow[];
 
   const today = startOfToday();
   const onlineThreshold = minutesAgo(5);
@@ -143,6 +161,49 @@ export default async function AdminPage() {
   };
 
   const recentUsers = users.slice(0, 6);
+  const last7Days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() - (6 - index));
+    return date;
+  });
+
+  const dailyActivity = last7Days.map((date) => {
+    const next = new Date(date);
+    next.setDate(date.getDate() + 1);
+    const label = formatDayLabel(date);
+    const userCount = users.filter((user) => new Date(user.createdAt) >= date && new Date(user.createdAt) < next).length;
+    const listingCount = listings.filter((listing) => listing.createdAt && new Date(listing.createdAt) >= date && new Date(listing.createdAt) < next).length;
+    const postCount = boardPosts.filter((post) => post.createdAt && new Date(post.createdAt) >= date && new Date(post.createdAt) < next).length;
+    const messageCount = messages.filter((message) => new Date(message.createdAt) >= date && new Date(message.createdAt) < next).length;
+    const total = userCount + listingCount + postCount + messageCount;
+
+    return {
+      label,
+      userCount,
+      listingCount,
+      postCount,
+      messageCount,
+      total
+    };
+  });
+
+  const maxDailyActivity = Math.max(...dailyActivity.map((item) => item.total), 1);
+
+  const activeUsers = users
+    .map((user) => {
+      const totalSeconds = weeklyUsage
+        .filter((row) => row.userId === user.id)
+        .reduce((sum, row) => sum + row.seconds, 0);
+
+      return {
+        ...user,
+        totalSeconds
+      };
+    })
+    .sort((a, b) => b.totalSeconds - a.totalSeconds)
+    .slice(0, 8);
+
   const mostActiveNeighborhoods = neighborhoods
     .map((neighborhood) => {
       const neighborhoodUsers = users.filter((user) => user.neighborhoodId === neighborhood.id);
@@ -159,6 +220,25 @@ export default async function AdminPage() {
     })
     .sort((a, b) => b.users + b.listings + b.posts - (a.users + a.listings + a.posts))
     .slice(0, 5);
+
+  const onlineNeighborhoods = neighborhoods
+    .map((neighborhood) => {
+      const onlineCount = users.filter(
+        (user) =>
+          user.neighborhoodId === neighborhood.id &&
+          user.lastActiveAt &&
+          new Date(user.lastActiveAt) >= onlineThreshold
+      ).length;
+
+      return {
+        id: neighborhood.id,
+        label: `${neighborhood.city} / ${neighborhood.district} / ${neighborhood.name}`,
+        onlineCount
+      };
+    })
+    .filter((item) => item.onlineCount > 0)
+    .sort((a, b) => b.onlineCount - a.onlineCount)
+    .slice(0, 8);
 
   return (
     <div className="space-y-6">
@@ -212,6 +292,59 @@ export default async function AdminPage() {
 
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <Card className="border-amber-200">
+          <CardHeader>
+            <CardTitle>Son 7 Günlük Hareket</CardTitle>
+            <p className="mt-1 text-sm text-zinc-500">Kayıt, ilan, duyuru ve mesaj toplamına göre günlük hareket özeti</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid h-72 items-end gap-3 sm:grid-cols-7">
+              {dailyActivity.map((item) => (
+                <div key={item.label} className="flex h-full flex-col justify-end gap-2">
+                  <div className="flex h-full items-end">
+                    <div
+                      className="w-full rounded-t-2xl bg-gradient-to-t from-orange-500 via-amber-400 to-yellow-300"
+                      style={{ height: `${Math.max(14, Math.round((item.total / maxDailyActivity) * 100))}%` }}
+                    />
+                  </div>
+                  <div className="rounded-2xl border border-amber-100 bg-amber-50/50 px-2 py-2 text-center">
+                    <p className="text-[11px] font-semibold text-zinc-700">{item.label}</p>
+                    <p className="mt-1 text-lg font-black text-zinc-950">{item.total}</p>
+                    <p className="text-[10px] text-zinc-500">
+                      {item.userCount} hesap • {item.listingCount} ilan • {item.postCount} duyuru • {item.messageCount} mesaj
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-amber-200">
+          <CardHeader>
+            <CardTitle>En Aktif Kullanıcılar</CardTitle>
+            <p className="mt-1 text-sm text-zinc-500">Bu hafta sitede en çok zaman geçiren kullanıcılar</p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {activeUsers.map((user, index) => (
+              <div key={user.id} className="flex items-center justify-between rounded-2xl border border-amber-100 bg-white px-4 py-3">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-zinc-900">
+                    #{index + 1} {user.name}
+                  </p>
+                  <p className="truncate text-sm text-zinc-500">@{user.username || "kullanıcı adı yok"}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-black text-zinc-950">{Math.round(user.totalSeconds / 60)} dk</p>
+                  <p className="text-xs text-zinc-500">bu hafta aktif</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <Card className="border-amber-200">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Son Açılan Hesaplar</CardTitle>
@@ -256,6 +389,29 @@ export default async function AdminPage() {
                   </div>
                 </div>
               ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200">
+            <CardHeader>
+              <CardTitle>Mahalle Bazlı Online</CardTitle>
+              <p className="mt-1 text-sm text-zinc-500">Şu an aktif kullanıcı bulunan mahalleler</p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {onlineNeighborhoods.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/40 px-4 py-5 text-sm text-zinc-500">
+                  Şu an aktif kullanıcı bilgisi toplanıyor.
+                </div>
+              ) : (
+                onlineNeighborhoods.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between rounded-2xl border border-amber-100 bg-white px-4 py-3">
+                    <p className="pr-4 text-sm font-medium text-zinc-800">{item.label}</p>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                      {item.onlineCount} online
+                    </span>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
 
