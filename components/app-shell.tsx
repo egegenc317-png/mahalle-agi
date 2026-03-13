@@ -35,7 +35,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
           : "/home";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-emerald-50">
+    <div className="min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-amber-50 via-white to-emerald-50">
       <SiteViewTracker />
       <UsageHeartbeat enabled={Boolean(session)} />
       <header
@@ -44,20 +44,20 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       >
         <div className="mx-auto max-w-6xl px-3 py-3 sm:px-4 sm:py-4">
           <div className="flex flex-col gap-3 lg:hidden">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex min-w-0 items-center gap-3">
+            <div className="flex min-w-0 items-center justify-between gap-1.5">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden">
                 <LeftMenu
                   isLoggedIn={Boolean(session)}
                   role={session?.user.role}
                   userId={session?.user.id}
                   accountType={dbUser?.accountType}
-                hasShop={hasShop}
-              />
-                <Link href={homeHref} prefetch className="inline-flex min-w-0 items-center">
-                  <BrandLogo />
+                  hasShop={hasShop}
+                />
+                <Link href={homeHref} prefetch className="inline-flex min-w-0 flex-1 items-center overflow-hidden">
+                  <BrandLogo className="min-w-0 max-w-full" />
                 </Link>
               </div>
-              <div className="shrink-0">
+              <div className="shrink-0 pl-1">
                 <TopAuthButton
                   isLoggedIn={Boolean(session)}
                   userId={session?.user.id}
@@ -103,13 +103,10 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       </header>
       <main
         data-shell-layer="main"
-        className="mx-auto max-w-6xl px-3 py-4 transition duration-300 sm:px-4 sm:py-5 lg:px-4 lg:py-6"
+        className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden px-3 py-4 transition duration-300 sm:px-4 sm:py-5 lg:px-4 lg:py-6"
       >
         {children}
       </main>
     </div>
   );
 }
-
-
-

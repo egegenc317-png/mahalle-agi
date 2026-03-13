@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -20,10 +20,19 @@
   --ring: 160 84% 25%;
 }
 
+html,
 body {
   @apply bg-background text-foreground;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+}
+
+body > div:first-child {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body.menu-open [data-shell-layer="header"],

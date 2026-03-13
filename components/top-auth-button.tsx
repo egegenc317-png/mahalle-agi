@@ -72,7 +72,7 @@ export function TopAuthButton({
 
   if (!isLoggedIn) {
     return (
-      <Button asChild size="sm" variant="outline" className={compact ? "h-10 rounded-xl px-3 text-sm" : undefined}>
+      <Button asChild size="sm" variant="outline" className={compact ? "h-9 rounded-xl px-2.5 text-xs font-semibold" : undefined}>
         <Link href="/auth/login" prefetch>
           Profile Giriş Yap
         </Link>
@@ -81,10 +81,10 @@ export function TopAuthButton({
   }
 
   return (
-    <div className={`inline-flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
-      <Button asChild type="button" size="icon" variant="outline" className={`relative border-amber-200 bg-white ${compact ? "h-10 w-10 rounded-2xl" : "h-12 w-12 rounded-full"}`}>
+    <div className={`inline-flex max-w-full items-center ${compact ? "gap-1" : "gap-2"}`}>
+      <Button asChild type="button" size="icon" variant="outline" className={`relative shrink-0 border-amber-200 bg-white ${compact ? "h-9 w-9 rounded-xl" : "h-12 w-12 rounded-full"}`}>
         <Link href={notificationHref} prefetch aria-label="Bildirimler">
-          <Bell className={`${compact ? "h-5 w-5" : "h-6 w-6"} text-amber-700`} />
+          <Bell className={`${compact ? "h-4.5 w-4.5" : "h-6 w-6"} text-amber-700`} />
           {liveUnreadCount > 0 ? (
             <span className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
           ) : null}
@@ -97,12 +97,12 @@ export function TopAuthButton({
       </Button>
 
       {userId ? (
-        <Link href={`/profile/${userId}`} prefetch aria-label="Profilim" className={`inline-flex items-center justify-center overflow-hidden border border-amber-200 bg-amber-50 ${compact ? "h-10 w-10 rounded-2xl" : "h-12 w-12 rounded-full"}`}>
+        <Link href={`/profile/${userId}`} prefetch aria-label="Profilim" className={`inline-flex shrink-0 items-center justify-center overflow-hidden border border-amber-200 bg-amber-50 ${compact ? "h-9 w-9 rounded-xl" : "h-12 w-12 rounded-full"}`}>
           {userImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={userImage} alt="Profil" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-lg font-bold text-amber-700">P</span>
+            <span className={compact ? "text-sm font-bold text-amber-700" : "text-lg font-bold text-amber-700"}>P</span>
           )}
         </Link>
       ) : null}
@@ -112,14 +112,14 @@ export function TopAuthButton({
         size={compact ? "icon" : "sm"}
         variant="outline"
         aria-label="Çıkış Yap"
-        className={compact ? "h-10 w-10 rounded-2xl border-amber-200 bg-white" : undefined}
+        className={compact ? "h-9 w-9 shrink-0 rounded-xl border-amber-200 bg-white" : undefined}
         onClick={async () => {
           await signOut({ redirect: false });
           router.push("/auth/login");
           router.refresh();
         }}
       >
-        {compact ? <LogOut className="h-4.5 w-4.5" /> : "Çıkış Yap"}
+        {compact ? <LogOut className="h-4 w-4" /> : "Çıkış Yap"}
       </Button>
     </div>
   );
