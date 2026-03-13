@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { validatePointInUserScope } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
+import { canCreateContentByRating, CONTENT_CREATOR_MIN_STARS } from "@/lib/user-rating";
 
 type BusinessClosedHour = {
   day: number;
@@ -56,6 +57,15 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
   if (user.accountType !== "BUSINESS") {
     return NextResponse.json({ error: "Sadece işletme hesapları Dükkan oluşturabilir" }, { status: 403 });
+  }
+  const ratingAccess = await canCreateContentByRating(user.id, user.role);
+  if (!ratingAccess.ok) {
+    return NextResponse.json(
+      {
+        error: `İşletme oluşturmak için ortalama puanın en az ${CONTENT_CREATOR_MIN_STARS.toFixed(1)} / 5 olması gerekiyor. Mevcut: ${(ratingAccess.average / 2).toFixed(1)} / 5`
+      },
+      { status: 403 }
+    );
   }
   if (!user.neighborhoodId || !user.locationScope) {
     return NextResponse.json({ error: "Kapsam/mahalle seçimi gerekli" }, { status: 400 });

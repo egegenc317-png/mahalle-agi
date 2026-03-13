@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export function ProfileRatingStarsForm({ targetUserId, defaultStars = 4 }: { targetUserId: string; defaultStars?: number }) {
+export function ProfileRatingStarsForm({ targetUserId, defaultStars = 3 }: { targetUserId: string; defaultStars?: number }) {
   const [selected, setSelected] = useState<number>(Math.min(5, Math.max(1, Math.round(defaultStars))));
   const [hovered, setHovered] = useState<number | null>(null);
 
