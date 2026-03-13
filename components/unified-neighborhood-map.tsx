@@ -196,11 +196,14 @@ export function UnifiedNeighborhoodMap({
       if (!active || !mapRef.current || !window.L) return;
 
       const L = window.L;
-      const initialCenter =
-        defaultCenter && typeof defaultCenter.lat === "number" && typeof defaultCenter.lng === "number"
-          ? [defaultCenter.lat, defaultCenter.lng]
-          : [39.0, 35.0];
-      const initialZoom = defaultCenter ? 15 : 6;
+      const hasPinnedNeighborhoodCenter =
+        Boolean(defaultCenter) &&
+        typeof defaultCenter?.lat === "number" &&
+        typeof defaultCenter?.lng === "number";
+      const initialCenter = hasPinnedNeighborhoodCenter
+        ? [defaultCenter!.lat, defaultCenter!.lng]
+        : [39.0, 35.0];
+      const initialZoom = hasPinnedNeighborhoodCenter ? 16 : 6;
       mapInstance = L.map(mapRef.current, {
         zoomControl: true
       }).setView(initialCenter as [number, number], initialZoom);
@@ -245,9 +248,12 @@ export function UnifiedNeighborhoodMap({
         markerCount += 1;
       }
 
-      if (markerCount > 0) {
+      if (markerCount > 0 && !hasPinnedNeighborhoodCenter) {
         mapInstance.fitBounds(bounds.pad(0.22));
         setStatusText(`${markerCount} konum haritada gösteriliyor.`);
+      } else if (markerCount > 0) {
+        mapInstance.setView(initialCenter as [number, number], initialZoom);
+        setStatusText(`${markerCount} konum bu mahallede gösteriliyor.`);
       } else {
         setStatusText(defaultCenter ? "Bu mahallede henüz konumlu içerik yok." : "Konum bulunamadı. İlan veya duyuruya konum ekleyin.");
       }

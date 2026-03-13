@@ -13,6 +13,20 @@ type ListingWithUser = Awaited<ReturnType<typeof prisma.listing.findMany>>[numbe
 type BoardPostWithUser = Awaited<ReturnType<typeof prisma.boardPost.findMany>>[number];
 type BusinessUser = Awaited<ReturnType<typeof prisma.user.findMany>>[number];
 
+function toRad(value: number) {
+  return (value * Math.PI) / 180;
+}
+
+function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 async function resolveNeighborhoodIdForPoint(input: {
   locationLat?: number | null;
   locationLng?: number | null;
@@ -53,6 +67,21 @@ export default async function MapPage() {
     prisma.neighborhood.findUnique({ where: { id: neighborhoodId } })
   ]);
   const businessUsers = await prisma.user.findMany();
+  const neighborhoodRadiusKm =
+    typeof neighborhood?.radiusKm === "number" && neighborhood.radiusKm > 0 ? neighborhood.radiusKm : 6;
+
+  const isInsideCurrentNeighborhoodRadius = (lat?: number | null, lng?: number | null) => {
+    if (
+      typeof lat !== "number" ||
+      typeof lng !== "number" ||
+      typeof neighborhood?.lat !== "number" ||
+      typeof neighborhood?.lng !== "number"
+    ) {
+      return false;
+    }
+
+    return distanceKm(lat, lng, neighborhood.lat, neighborhood.lng) <= neighborhoodRadiusKm;
+  };
 
   const listings = allListings.filter(
     (l: ListingWithUser) => Boolean(l.locationText) || (typeof l.locationLat === "number" && typeof l.locationLng === "number")
@@ -70,6 +99,7 @@ export default async function MapPage() {
           locationText: post.locationText ?? null
         });
         if (matchedNeighborhoodId !== neighborhoodId) return null;
+        if (!isInsideCurrentNeighborhoodRadius(post.locationLat, post.locationLng)) return null;
         return {
           id: post.id,
           kind: "BOARD" as const,
@@ -93,6 +123,7 @@ export default async function MapPage() {
           locationText: listing.locationText ?? null
         });
         if (matchedNeighborhoodId !== neighborhoodId) return null;
+        if (!isInsideCurrentNeighborhoodRadius(listing.locationLat, listing.locationLng)) return null;
         return {
           id: listing.id,
           kind: "LISTING" as const,
@@ -116,13 +147,14 @@ export default async function MapPage() {
             (typeof u.shopLocationLat === "number" || Boolean(u.shopLocationText))
         )
         .map(async (u: BusinessUser) => {
-          const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
-            locationLat: u.shopLocationLat ?? null,
-            locationLng: u.shopLocationLng ?? null,
-            locationText: u.shopLocationText ?? null
-          });
-          if (matchedNeighborhoodId !== neighborhoodId) return null;
-          return {
+        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
+          locationLat: u.shopLocationLat ?? null,
+          locationLng: u.shopLocationLng ?? null,
+          locationText: u.shopLocationText ?? null
+        });
+        if (matchedNeighborhoodId !== neighborhoodId) return null;
+        if (!isInsideCurrentNeighborhoodRadius(u.shopLocationLat, u.shopLocationLng)) return null;
+        return {
             id: `shop-${u.id}`,
             kind: "LISTING" as const,
             type: "SHOP",
