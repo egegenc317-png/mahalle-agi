@@ -31,6 +31,8 @@ const SAFE_MIME_TYPES = new Set([
   "video/quicktime"
 ]);
 const DANGEROUS_EXTENSIONS = new Set([".html", ".htm", ".svg", ".js", ".mjs", ".cjs", ".exe", ".bat", ".cmd", ".ps1", ".msi", ".dll", ".sh", ".php", ".py", ".rb", ".jar"]);
+const PUBLIC_UPLOAD_PURPOSES = new Set(["register-profile", "register-logo"]);
+const PUBLIC_UPLOAD_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
 
 function safeExtFromName(name: string) {
   const ext = path.extname(name || "").toLowerCase();
@@ -49,15 +51,21 @@ function looksLikeAllowedFile(bytes: Uint8Array, mimeType: string) {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
-
   const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0].trim();
-  if (!(await checkRateLimit(`upload:${session.user.id}:${ip}`, { windowMs: 60_000, maxAttempts: 15 })).ok) {
+  const fd = await req.formData();
+  const purpose = String(fd.get("purpose") || "").trim();
+  const session = await auth();
+  const allowPublicUpload = !session && PUBLIC_UPLOAD_PURPOSES.has(purpose);
+  if (!session && !allowPublicUpload) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
+  }
+
+  const rateLimitKey = session ? `upload:${session.user.id}:${ip}` : `upload-public:${purpose}:${ip}`;
+  const rateLimitMaxAttempts = allowPublicUpload ? 8 : 15;
+  if (!(await checkRateLimit(rateLimitKey, { windowMs: 60_000, maxAttempts: rateLimitMaxAttempts })).ok) {
     return NextResponse.json({ error: "Çok fazla dosya yükleme denemesi." }, { status: 429 });
   }
 
-  const fd = await req.formData();
   const file = fd.get("file") as File | null;
 
   if (!file) return NextResponse.json({ error: "Dosya yok" }, { status: 400 });
@@ -70,6 +78,9 @@ export async function POST(req: Request) {
   }
   if (!SAFE_MIME_TYPES.has(file.type)) {
     return NextResponse.json({ error: "Bu dosya türüne izin verilmiyor." }, { status: 400 });
+  }
+  if (allowPublicUpload && !PUBLIC_UPLOAD_MIME_TYPES.has(file.type)) {
+    return NextResponse.json({ error: "Kayıt ekranında sadece fotoğraf yükleyebilirsin." }, { status: 400 });
   }
   if (!looksLikeAllowedFile(bytes, file.type)) {
     return NextResponse.json({ error: "Dosya içeriği geçersiz görünüyor." }, { status: 400 });

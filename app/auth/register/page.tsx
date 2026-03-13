@@ -150,9 +150,10 @@ export default function RegisterPage() {
     }
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, purpose: "register-profile" | "register-logo") => {
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("purpose", purpose);
     const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
     if (!response.ok) {
       throw new Error(data.error || "Dosya yüklenemedi.");
@@ -178,8 +179,8 @@ export default function RegisterPage() {
     let shopLogo: string | undefined;
     try {
       const [uploadedProfileImage, uploadedShopLogo] = await Promise.all([
-        accountType === "NEIGHBOR" && profileImageFile ? uploadFile(profileImageFile) : Promise.resolve(undefined),
-        accountType === "BUSINESS" && shopLogoFile ? uploadFile(shopLogoFile) : Promise.resolve(undefined)
+        accountType === "NEIGHBOR" && profileImageFile ? uploadFile(profileImageFile, "register-profile") : Promise.resolve(undefined),
+        accountType === "BUSINESS" && shopLogoFile ? uploadFile(shopLogoFile, "register-logo") : Promise.resolve(undefined)
       ]);
       profileImage = uploadedProfileImage;
       shopLogo = uploadedShopLogo;
