@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { Flame, MapPin, Sparkles, Store, Tag } from "lucide-react";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
 import { getClosedStatus, getIstanbulNow } from "@/lib/shop-hours";
 import { Badge } from "@/components/ui/badge";
@@ -51,27 +50,21 @@ export default async function CarsiPage() {
   if (!session) redirect("/auth/login");
   if (!session.user.locationScope) redirect("/onboarding/scope");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
-
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-
-  const areaLabel = session.user.locationScope === "DISTRICT" ? "Semt" : "Mahalle";
+  const neighborhoodId = session.user.neighborhoodId;
 
   const [users, listings] = await Promise.all([
     prisma.user.findMany(),
     prisma.listing.findMany({
       where: {
         status: "ACTIVE",
-        neighborhoodId: scopeContext.ids.length === 1 ? scopeContext.ids[0] : { in: scopeContext.ids }
+        neighborhoodId
       },
       orderBy: { createdAt: "desc" }
     }) as Promise<ListingView[]>
   ]);
 
   const scopedShops = (users as ShopUser[])
-    .filter((user) => scopeContext.ids.includes(user.neighborhoodId || ""))
+    .filter((user) => user.neighborhoodId === neighborhoodId)
     .filter((user) => user.accountType === "BUSINESS")
     .filter((user) => Boolean(user.shopName || user.shopLocationText || user.shopLogo));
 
@@ -100,10 +93,10 @@ export default async function CarsiPage() {
 
         <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
           <div>
-            <Badge className="mb-3 bg-orange-500 text-white">{areaLabel} Çarşısı</Badge>
+            <Badge className="mb-3 bg-orange-500 text-white">Mahalle Çarşısı</Badge>
             <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 sm:text-3xl">Çarşı Sokağında Gezinti</h1>
             <p className="mt-2 max-w-2xl text-sm text-zinc-700">
-              Sıcak mahalle ruhuyla açılan işletmeleri keşfet. Vitrinlere bak, Komşu esnafa Uğra ve dükkandan ilana hızlı geç.
+              Sadece bulunduğun mahallenin dükkanlarını gör. Vitrinlere bak, komşu esnafa uğra ve dükkandan ilana hızlı geç.
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
               <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-700">{openShopCount} dükkan şu an açık</span>
@@ -123,13 +116,13 @@ export default async function CarsiPage() {
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {scopedShops.length === 0 ? (
-          <Card className="col-span-full border-dashed border-amber-300 bg-white/80">
-            <CardContent className="py-10 text-center">
-              <Store className="mx-auto mb-3 h-8 w-8 text-amber-500" />
-              <p className="text-sm text-zinc-600">Bu bölgede Henüz Dükkan açılmamış.</p>
-              <p className="mt-1 text-xs text-zinc-500">İşletme hesapları dükkanı oluşturunca burada listelenecek.</p>
-            </CardContent>
-          </Card>
+            <Card className="col-span-full border-dashed border-amber-300 bg-white/80">
+              <CardContent className="py-10 text-center">
+                <Store className="mx-auto mb-3 h-8 w-8 text-amber-500" />
+                <p className="text-sm text-zinc-600">Mahallende henüz dükkan açılmamış.</p>
+                <p className="mt-1 text-xs text-zinc-500">Aynı mahallede bir işletme hesap oluşturduğunda burada görünecek.</p>
+              </CardContent>
+            </Card>
         ) : (
           [...scopedShops]
             .sort((a, b) => {
