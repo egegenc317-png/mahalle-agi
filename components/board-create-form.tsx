@@ -24,6 +24,22 @@ function getCurrentPosition(): Promise<{ lat: number; lng: number }> {
   });
 }
 
+async function fetchJsonWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 20000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(input, {
+      ...init,
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => ({}));
+    return { response, data };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export function BoardCreateForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -55,62 +71,76 @@ export function BoardCreateForm() {
     setError(null);
     setLoading(true);
 
-    const form = new FormData(e.currentTarget);
-    const files = selectedPhotos.filter((f) => f.size > 0);
+    try {
+      const form = new FormData(e.currentTarget);
+      const files = selectedPhotos.filter((f) => f.size > 0);
 
-    if (files.length > 6) {
-      setLoading(false);
-      setError("En fazla 6 fotoğraf yüklenebilir.");
-      return;
-    }
-
-    const photos: string[] = [];
-    for (const file of files) {
-      const fd = new FormData();
-      fd.append("file", file);
-      const up = await fetch("/api/upload", { method: "POST", body: fd });
-      const upData = await up.json().catch(() => ({}));
-      if (!up.ok) {
-        setLoading(false);
-        setError(upData.error || "Fotoğraf yüklenemedi.");
+      if (files.length > 6) {
+        setError("En fazla 6 fotoğraf yüklenebilir.");
         return;
       }
-      photos.push(String(upData.url));
-    }
 
-    let coords: { lat: number; lng: number } | null = locationPreview;
-    try {
-      if (!coords) coords = await getCurrentPosition();
+      const photos: string[] = [];
+      for (const file of files) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+        if (!response.ok) {
+          setError(data.error || "Fotoğraf yüklenemedi.");
+          return;
+        }
+        photos.push(String(data.url));
+      }
+
+      let coords: { lat: number; lng: number } | null = locationPreview;
+      try {
+        if (!coords) coords = await getCurrentPosition();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Konum alınamadı.");
+        return;
+      }
+
+      const payload = {
+        type: String(form.get("type") || "ANNOUNCEMENT"),
+        title: String(form.get("title") || ""),
+        body: String(form.get("body") || ""),
+        photos,
+        locationLat: coords.lat,
+        locationLng: coords.lng
+      };
+
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/board",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        setError(data.error || "Duyuru kaydedilemedi.");
+        return;
+      }
+
+      if (!data.id) {
+        setError("Duyuru oluşturuldu ama yönlendirme bilgisi alınamadı. Lütfen panoyu yenileyin.");
+        return;
+      }
+
+      router.push(`/board/${data.id}`);
+      router.refresh();
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("İstek zaman aşımına uğradı. Lütfen tekrar deneyin.");
+        return;
+      }
+
+      setError(err instanceof Error ? err.message : "Duyuru yayınlanırken beklenmeyen bir hata oluştu.");
+    } finally {
       setLoading(false);
-      setError(err instanceof Error ? err.message : "Konum alınamadı.");
-      return;
     }
-
-    const payload = {
-      type: String(form.get("type") || "ANNOUNCEMENT"),
-      title: String(form.get("title") || ""),
-      body: String(form.get("body") || ""),
-      photos,
-      locationLat: coords.lat,
-      locationLng: coords.lng
-    };
-
-    const res = await fetch("/api/board", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json().catch(() => ({}));
-    setLoading(false);
-
-    if (!res.ok) {
-      setError(data.error || "Duyuru kaydedilemedi.");
-      return;
-    }
-
-    router.push(`/board/${data.id}`);
-    router.refresh();
   };
 
   return (
