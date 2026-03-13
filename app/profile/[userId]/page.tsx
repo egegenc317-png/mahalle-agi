@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgeCheck, CalendarClock, ExternalLink, Megaphone, MessageCircle, Star, Store, Tag } from "lucide-react";
+import { BadgeCheck, CalendarClock, ExternalLink, MapPinned, Megaphone, MessageCircle, Star, Store, Tag } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -43,6 +43,7 @@ export default async function ProfilePage({
 
   const averageStars = Number((rating.average / 2).toFixed(1));
   const userListings = user.listings || [];
+  const isOwner = Boolean(session && session.user.id === user.id);
 
   let showRatingForm = false;
   let defaultStars = 4;
@@ -86,6 +87,17 @@ export default async function ProfilePage({
             ) : null}
             {searchParams?.error ? <p className="text-sm text-red-600">{searchParams.error}</p> : null}
             {searchParams?.success ? <p className="text-sm text-emerald-700">{searchParams.success}</p> : null}
+            {isOwner ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Link
+                  href="/onboarding/neighborhood"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800 transition hover:bg-amber-100 sm:w-auto"
+                >
+                  <MapPinned className="h-4 w-4" />
+                  Konumu Yeniden Doğrula
+                </Link>
+              </div>
+            ) : null}
             {session && session.user.id !== user.id ? (
               <StartConversationLink
                 href={`/api/conversations/direct?userId=${encodeURIComponent(user.id)}&contextTitle=${encodeURIComponent(`${user.name} ile Sohbet`)}`}
