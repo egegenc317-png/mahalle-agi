@@ -61,7 +61,7 @@ function getS3Client() {
 
 async function uploadToLocal({ key, body }: UploadInput) {
   const uploadDir = getLocalUploadDir();
-  const full = path.join(process.cwd(), uploadDir);
+  const full = path.resolve(uploadDir);
   await fs.mkdir(full, { recursive: true });
   await fs.writeFile(path.join(full, key), Buffer.from(body));
   return { url: getLocalPublicUrl(key), provider: "local" as const };
@@ -120,7 +120,7 @@ export async function checkStorageHealth() {
     return { provider: "s3" as const, bucket: config.bucket };
   }
 
-  const uploadDir = path.join(process.cwd(), getLocalUploadDir());
+  const uploadDir = path.resolve(getLocalUploadDir());
   await fs.mkdir(uploadDir, { recursive: true });
   return { provider: "local" as const, bucket: uploadDir };
 }
