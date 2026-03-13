@@ -11,6 +11,7 @@ export async function fetchJsonWithTimeout(
   try {
     const response = await fetch(input, {
       ...init,
+      cache: init?.cache ?? "no-store",
       signal: controller.signal
     });
     const data = await response.json().catch(() => ({}));

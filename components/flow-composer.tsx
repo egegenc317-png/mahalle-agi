@@ -32,17 +32,17 @@ export function FlowComposer({ neighborhoodLabel, compact = false }: FlowCompose
     setLoading(true);
     setError(null);
     try {
-      const photos: string[] = [];
-      for (const file of selectedPhotos) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
-        if (!response.ok) {
-          setError(data.error || "Fotoğraf yüklenemedi.");
-          return;
-        }
-        photos.push(String(data.url));
-      }
+      const photos = await Promise.all(
+        selectedPhotos.map(async (file) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+          if (!response.ok) {
+            throw new Error(data.error || "Fotoğraf yüklenemedi.");
+          }
+          return String(data.url);
+        })
+      );
 
       const { response, data } = await fetchJsonWithTimeout(
         "/api/akis",

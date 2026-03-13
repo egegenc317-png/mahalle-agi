@@ -177,12 +177,12 @@ export default function RegisterPage() {
     let profileImage: string | undefined;
     let shopLogo: string | undefined;
     try {
-      if (accountType === "NEIGHBOR" && profileImageFile) {
-        profileImage = await uploadFile(profileImageFile);
-      }
-      if (accountType === "BUSINESS" && shopLogoFile) {
-        shopLogo = await uploadFile(shopLogoFile);
-      }
+      const [uploadedProfileImage, uploadedShopLogo] = await Promise.all([
+        accountType === "NEIGHBOR" && profileImageFile ? uploadFile(profileImageFile) : Promise.resolve(undefined),
+        accountType === "BUSINESS" && shopLogoFile ? uploadFile(shopLogoFile) : Promise.resolve(undefined)
+      ]);
+      profileImage = uploadedProfileImage;
+      shopLogo = uploadedShopLogo;
     } catch (err) {
       setSubmitting(false);
       setError(err instanceof Error ? err.message : "Dosya yüklenemedi.");

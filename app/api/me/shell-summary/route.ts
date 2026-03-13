@@ -22,11 +22,11 @@ export async function GET() {
 
   const latestMessages = await Promise.all(
     myConversations.map(async (conversation: any) => {
-      const msgs = await prisma.message.findMany({
+      const [last] = await prisma.message.findMany({
         where: { conversationId: conversation.id },
-        orderBy: { createdAt: "asc" }
+        orderBy: { createdAt: "desc" },
+        take: 1
       });
-      const last = msgs.length > 0 ? msgs[msgs.length - 1] : null;
       if (!last) return 0;
       const mySeenAt =
         conversation.conversationType === "GROUP"

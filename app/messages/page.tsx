@@ -38,12 +38,12 @@ export default async function MessagesPage() {
 
   const lastByConversation = await Promise.all(
     conversations.map(async (conversation) => {
-      const messages = await prisma.message.findMany({
+      const [last] = await prisma.message.findMany({
         where: { conversationId: conversation.id },
-        orderBy: { createdAt: "asc" }
+        orderBy: { createdAt: "desc" },
+        take: 1
       });
-      const last = messages.length > 0 ? messages[messages.length - 1] : null;
-      return { conversationId: conversation.id, last };
+      return { conversationId: conversation.id, last: last || null };
     })
   );
   const lastMap = new Map(lastByConversation.map((item) => [item.conversationId, item.last]));

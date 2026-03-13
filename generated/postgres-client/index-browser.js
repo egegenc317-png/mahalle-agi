@@ -145,6 +145,7 @@ exports.Prisma.UserScalarFieldEnum = {
   shopLocationLng: 'shopLocationLng',
   lastBoardSeenAt: 'lastBoardSeenAt',
   seenBoardPostIds: 'seenBoardPostIds',
+  lastActiveAt: 'lastActiveAt',
   createdAt: 'createdAt'
 };
 
@@ -293,6 +294,28 @@ exports.Prisma.UserWeeklyUsageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SiteVisitScalarFieldEnum = {
+  id: 'id',
+  visitorId: 'visitorId',
+  userId: 'userId',
+  dateKey: 'dateKey',
+  pageCount: 'pageCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SitePageViewScalarFieldEnum = {
+  id: 'id',
+  visitorId: 'visitorId',
+  userId: 'userId',
+  neighborhoodId: 'neighborhoodId',
+  dateKey: 'dateKey',
+  path: 'path',
+  viewCount: 'viewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.GroupInviteScalarFieldEnum = {
   id: 'id',
   conversationId: 'conversationId',
@@ -386,6 +409,8 @@ exports.Prisma.ModelName = {
   PollVote: 'PollVote',
   UserRating: 'UserRating',
   UserWeeklyUsage: 'UserWeeklyUsage',
+  SiteVisit: 'SiteVisit',
+  SitePageView: 'SitePageView',
   GroupInvite: 'GroupInvite',
   EmailVerification: 'EmailVerification',
   RateLimitEntry: 'RateLimitEntry',

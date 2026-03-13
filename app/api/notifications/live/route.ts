@@ -1,11 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-nocheck
-import { redirect } from "next/navigation";
-import { Bell } from "lucide-react";
+import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LiveNotificationsPanel } from "@/components/live-notifications-panel";
 
 const SYSTEM_MESSAGE_PREFIX = "__SYSTEM__|";
 
@@ -22,12 +20,16 @@ function getMentionToken(me: { username?: string | null; name?: string | null })
   return null;
 }
 
-export default async function NotificationsPage() {
+export async function GET() {
   const session = await auth();
-  if (!session) redirect("/auth/login");
+  if (!session?.user.id) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
+  }
 
   const me = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!me) redirect("/auth/login");
+  if (!me) {
+    return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
+  }
 
   const [conversations, boardPosts] = await Promise.all([
     prisma.conversation.findMany({
@@ -48,14 +50,16 @@ export default async function NotificationsPage() {
       : Promise.resolve([])
   ]);
 
+  const mentionToken = getMentionToken(me);
   const messageAlertsRaw = await Promise.all(
-    conversations.map(async (conversation) => {
+    conversations.map(async (conversation: any) => {
       const [last] = await prisma.message.findMany({
         where: { conversationId: conversation.id },
         include: { sender: { select: { id: true, name: true } } },
         orderBy: { createdAt: "desc" },
         take: 1
       });
+
       if (!last) return null;
 
       const mySeenAt =
@@ -64,6 +68,7 @@ export default async function NotificationsPage() {
           : conversation.buyerId === session.user.id
             ? conversation.lastSeenByBuyerAt
             : conversation.lastSeenBySellerAt;
+
       const isUnread =
         last.senderId !== session.user.id &&
         (!mySeenAt || new Date(last.createdAt).getTime() > new Date(mySeenAt).getTime());
@@ -75,6 +80,7 @@ export default async function NotificationsPage() {
           : conversation.buyerId === session.user.id
             ? conversation.seller.name
             : conversation.buyer.name;
+
       return {
         id: conversation.id,
         peer,
@@ -84,49 +90,24 @@ export default async function NotificationsPage() {
         senderName: (last as { sender?: { name?: string } }).sender?.name || "Bir kullanıcı",
         isMention: Boolean(
           conversation.conversationType === "GROUP" &&
-          getMentionToken(me) &&
-          stripSpecialMessage(last.body).includes(getMentionToken(me) as string)
+          mentionToken &&
+          stripSpecialMessage(last.body).includes(mentionToken)
         )
       };
     })
   );
-  const messageAlerts = messageAlertsRaw.filter(Boolean) as Array<{
-    id: string;
-    peer: string;
-    body: string;
-    createdAt: Date;
-    isGroup?: boolean;
-    senderName: string;
-    isMention: boolean;
-  }>;
 
   const lastSeen = me.lastBoardSeenAt ? new Date(me.lastBoardSeenAt).getTime() : 0;
-  const boardAlerts = boardPosts.filter(
-    (post) => post.userId !== session.user.id && new Date(post.createdAt).getTime() > lastSeen
-  );
+  const boardAlerts = boardPosts
+    .filter((post: any) => post.userId !== session.user.id && new Date(post.createdAt).getTime() > lastSeen)
+    .map((post: any) => ({
+      id: post.id,
+      title: post.title,
+      userName: post.user.name
+    }));
 
-  return (
-    <Card className="overflow-hidden rounded-[24px] border-amber-200 bg-gradient-to-b from-[#fff7eb] to-white shadow-sm sm:rounded-[28px]">
-      <CardHeader className="border-b border-amber-100 bg-gradient-to-r from-amber-50 to-orange-50 p-4 sm:p-6">
-        <CardTitle className="inline-flex items-center gap-2 text-zinc-900">
-          <Bell className="h-5 w-5 text-orange-500" />
-          Bildirimler
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <LiveNotificationsPanel
-          initialMessageAlerts={messageAlerts}
-          initialBoardAlerts={boardAlerts.map((post) => ({
-            id: post.id,
-            title: post.title,
-            userName: post.user.name
-          }))}
-        />
-      </CardContent>
-    </Card>
-  );
+  return NextResponse.json({
+    messageAlerts: messageAlertsRaw.filter(Boolean),
+    boardAlerts
+  });
 }
-
-
-
-

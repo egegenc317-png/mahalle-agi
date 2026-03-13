@@ -79,6 +79,16 @@ export type UserRating = $Result.DefaultSelection<Prisma.$UserRatingPayload>
  */
 export type UserWeeklyUsage = $Result.DefaultSelection<Prisma.$UserWeeklyUsagePayload>
 /**
+ * Model SiteVisit
+ * 
+ */
+export type SiteVisit = $Result.DefaultSelection<Prisma.$SiteVisitPayload>
+/**
+ * Model SitePageView
+ * 
+ */
+export type SitePageView = $Result.DefaultSelection<Prisma.$SitePageViewPayload>
+/**
  * Model GroupInvite
  * 
  */
@@ -364,6 +374,26 @@ export class PrismaClient<
     * ```
     */
   get userWeeklyUsage(): Prisma.UserWeeklyUsageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.siteVisit`: Exposes CRUD operations for the **SiteVisit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SiteVisits
+    * const siteVisits = await prisma.siteVisit.findMany()
+    * ```
+    */
+  get siteVisit(): Prisma.SiteVisitDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sitePageView`: Exposes CRUD operations for the **SitePageView** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SitePageViews
+    * const sitePageViews = await prisma.sitePageView.findMany()
+    * ```
+    */
+  get sitePageView(): Prisma.SitePageViewDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.groupInvite`: Exposes CRUD operations for the **GroupInvite** model.
@@ -881,6 +911,8 @@ export namespace Prisma {
     PollVote: 'PollVote',
     UserRating: 'UserRating',
     UserWeeklyUsage: 'UserWeeklyUsage',
+    SiteVisit: 'SiteVisit',
+    SitePageView: 'SitePageView',
     GroupInvite: 'GroupInvite',
     EmailVerification: 'EmailVerification',
     RateLimitEntry: 'RateLimitEntry',
@@ -903,7 +935,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "neighborhood" | "listing" | "conversation" | "message" | "report" | "boardPost" | "flowPost" | "flowPostLike" | "poll" | "pollVote" | "userRating" | "userWeeklyUsage" | "groupInvite" | "emailVerification" | "rateLimitEntry" | "auditLog" | "account" | "session" | "verificationToken"
+      modelProps: "user" | "neighborhood" | "listing" | "conversation" | "message" | "report" | "boardPost" | "flowPost" | "flowPostLike" | "poll" | "pollVote" | "userRating" | "userWeeklyUsage" | "siteVisit" | "sitePageView" | "groupInvite" | "emailVerification" | "rateLimitEntry" | "auditLog" | "account" | "session" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1869,6 +1901,154 @@ export namespace Prisma {
           }
         }
       }
+      SiteVisit: {
+        payload: Prisma.$SiteVisitPayload<ExtArgs>
+        fields: Prisma.SiteVisitFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SiteVisitFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SiteVisitFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          findFirst: {
+            args: Prisma.SiteVisitFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SiteVisitFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          findMany: {
+            args: Prisma.SiteVisitFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>[]
+          }
+          create: {
+            args: Prisma.SiteVisitCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          createMany: {
+            args: Prisma.SiteVisitCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SiteVisitCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>[]
+          }
+          delete: {
+            args: Prisma.SiteVisitDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          update: {
+            args: Prisma.SiteVisitUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          deleteMany: {
+            args: Prisma.SiteVisitDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SiteVisitUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SiteVisitUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>[]
+          }
+          upsert: {
+            args: Prisma.SiteVisitUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteVisitPayload>
+          }
+          aggregate: {
+            args: Prisma.SiteVisitAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSiteVisit>
+          }
+          groupBy: {
+            args: Prisma.SiteVisitGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SiteVisitGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SiteVisitCountArgs<ExtArgs>
+            result: $Utils.Optional<SiteVisitCountAggregateOutputType> | number
+          }
+        }
+      }
+      SitePageView: {
+        payload: Prisma.$SitePageViewPayload<ExtArgs>
+        fields: Prisma.SitePageViewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SitePageViewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SitePageViewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          findFirst: {
+            args: Prisma.SitePageViewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SitePageViewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          findMany: {
+            args: Prisma.SitePageViewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>[]
+          }
+          create: {
+            args: Prisma.SitePageViewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          createMany: {
+            args: Prisma.SitePageViewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SitePageViewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>[]
+          }
+          delete: {
+            args: Prisma.SitePageViewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          update: {
+            args: Prisma.SitePageViewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          deleteMany: {
+            args: Prisma.SitePageViewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SitePageViewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SitePageViewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>[]
+          }
+          upsert: {
+            args: Prisma.SitePageViewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SitePageViewPayload>
+          }
+          aggregate: {
+            args: Prisma.SitePageViewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSitePageView>
+          }
+          groupBy: {
+            args: Prisma.SitePageViewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SitePageViewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SitePageViewCountArgs<ExtArgs>
+            result: $Utils.Optional<SitePageViewCountAggregateOutputType> | number
+          }
+        }
+      }
       GroupInvite: {
         payload: Prisma.$GroupInvitePayload<ExtArgs>
         fields: Prisma.GroupInviteFieldRefs
@@ -2508,6 +2688,8 @@ export namespace Prisma {
     pollVote?: PollVoteOmit
     userRating?: UserRatingOmit
     userWeeklyUsage?: UserWeeklyUsageOmit
+    siteVisit?: SiteVisitOmit
+    sitePageView?: SitePageViewOmit
     groupInvite?: GroupInviteOmit
     emailVerification?: EmailVerificationOmit
     rateLimitEntry?: RateLimitEntryOmit
@@ -3007,6 +3189,7 @@ export namespace Prisma {
     shopLocationLng: number | null
     lastBoardSeenAt: Date | null
     seenBoardPostIds: string | null
+    lastActiveAt: Date | null
     createdAt: Date | null
   }
 
@@ -3035,6 +3218,7 @@ export namespace Prisma {
     shopLocationLng: number | null
     lastBoardSeenAt: Date | null
     seenBoardPostIds: string | null
+    lastActiveAt: Date | null
     createdAt: Date | null
   }
 
@@ -3063,6 +3247,7 @@ export namespace Prisma {
     shopLocationLng: number
     lastBoardSeenAt: number
     seenBoardPostIds: number
+    lastActiveAt: number
     createdAt: number
     _all: number
   }
@@ -3103,6 +3288,7 @@ export namespace Prisma {
     shopLocationLng?: true
     lastBoardSeenAt?: true
     seenBoardPostIds?: true
+    lastActiveAt?: true
     createdAt?: true
   }
 
@@ -3131,6 +3317,7 @@ export namespace Prisma {
     shopLocationLng?: true
     lastBoardSeenAt?: true
     seenBoardPostIds?: true
+    lastActiveAt?: true
     createdAt?: true
   }
 
@@ -3159,6 +3346,7 @@ export namespace Prisma {
     shopLocationLng?: true
     lastBoardSeenAt?: true
     seenBoardPostIds?: true
+    lastActiveAt?: true
     createdAt?: true
     _all?: true
   }
@@ -3274,6 +3462,7 @@ export namespace Prisma {
     shopLocationLng: number | null
     lastBoardSeenAt: Date | null
     seenBoardPostIds: string | null
+    lastActiveAt: Date | null
     createdAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -3321,6 +3510,7 @@ export namespace Prisma {
     shopLocationLng?: boolean
     lastBoardSeenAt?: boolean
     seenBoardPostIds?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
     neighborhood?: boolean | User$neighborhoodArgs<ExtArgs>
     listings?: boolean | User$listingsArgs<ExtArgs>
@@ -3366,6 +3556,7 @@ export namespace Prisma {
     shopLocationLng?: boolean
     lastBoardSeenAt?: boolean
     seenBoardPostIds?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
     neighborhood?: boolean | User$neighborhoodArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -3395,6 +3586,7 @@ export namespace Prisma {
     shopLocationLng?: boolean
     lastBoardSeenAt?: boolean
     seenBoardPostIds?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
     neighborhood?: boolean | User$neighborhoodArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -3424,10 +3616,11 @@ export namespace Prisma {
     shopLocationLng?: boolean
     lastBoardSeenAt?: boolean
     seenBoardPostIds?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "username" | "email" | "emailVerified" | "passwordHash" | "image" | "role" | "locationScope" | "neighborhoodId" | "verifiedAt" | "suspendedUntil" | "birthDate" | "showAge" | "accountType" | "businessCategory" | "businessClosedHours" | "shopName" | "shopLogo" | "shopLocationText" | "shopLocationLat" | "shopLocationLng" | "lastBoardSeenAt" | "seenBoardPostIds" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "username" | "email" | "emailVerified" | "passwordHash" | "image" | "role" | "locationScope" | "neighborhoodId" | "verifiedAt" | "suspendedUntil" | "birthDate" | "showAge" | "accountType" | "businessCategory" | "businessClosedHours" | "shopName" | "shopLogo" | "shopLocationText" | "shopLocationLat" | "shopLocationLng" | "lastBoardSeenAt" | "seenBoardPostIds" | "lastActiveAt" | "createdAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     neighborhood?: boolean | User$neighborhoodArgs<ExtArgs>
     listings?: boolean | User$listingsArgs<ExtArgs>
@@ -3499,6 +3692,7 @@ export namespace Prisma {
       shopLocationLng: number | null
       lastBoardSeenAt: Date | null
       seenBoardPostIds: string | null
+      lastActiveAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -3963,6 +4157,7 @@ export namespace Prisma {
     readonly shopLocationLng: FieldRef<"User", 'Float'>
     readonly lastBoardSeenAt: FieldRef<"User", 'DateTime'>
     readonly seenBoardPostIds: FieldRef<"User", 'String'>
+    readonly lastActiveAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
     
@@ -18768,6 +18963,2142 @@ export namespace Prisma {
 
 
   /**
+   * Model SiteVisit
+   */
+
+  export type AggregateSiteVisit = {
+    _count: SiteVisitCountAggregateOutputType | null
+    _avg: SiteVisitAvgAggregateOutputType | null
+    _sum: SiteVisitSumAggregateOutputType | null
+    _min: SiteVisitMinAggregateOutputType | null
+    _max: SiteVisitMaxAggregateOutputType | null
+  }
+
+  export type SiteVisitAvgAggregateOutputType = {
+    pageCount: number | null
+  }
+
+  export type SiteVisitSumAggregateOutputType = {
+    pageCount: number | null
+  }
+
+  export type SiteVisitMinAggregateOutputType = {
+    id: string | null
+    visitorId: string | null
+    userId: string | null
+    dateKey: string | null
+    pageCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteVisitMaxAggregateOutputType = {
+    id: string | null
+    visitorId: string | null
+    userId: string | null
+    dateKey: string | null
+    pageCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteVisitCountAggregateOutputType = {
+    id: number
+    visitorId: number
+    userId: number
+    dateKey: number
+    pageCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SiteVisitAvgAggregateInputType = {
+    pageCount?: true
+  }
+
+  export type SiteVisitSumAggregateInputType = {
+    pageCount?: true
+  }
+
+  export type SiteVisitMinAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    dateKey?: true
+    pageCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteVisitMaxAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    dateKey?: true
+    pageCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteVisitCountAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    dateKey?: true
+    pageCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SiteVisitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteVisit to aggregate.
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteVisits to fetch.
+     */
+    orderBy?: SiteVisitOrderByWithRelationInput | SiteVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SiteVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SiteVisits
+    **/
+    _count?: true | SiteVisitCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SiteVisitAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SiteVisitSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SiteVisitMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SiteVisitMaxAggregateInputType
+  }
+
+  export type GetSiteVisitAggregateType<T extends SiteVisitAggregateArgs> = {
+        [P in keyof T & keyof AggregateSiteVisit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSiteVisit[P]>
+      : GetScalarType<T[P], AggregateSiteVisit[P]>
+  }
+
+
+
+
+  export type SiteVisitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SiteVisitWhereInput
+    orderBy?: SiteVisitOrderByWithAggregationInput | SiteVisitOrderByWithAggregationInput[]
+    by: SiteVisitScalarFieldEnum[] | SiteVisitScalarFieldEnum
+    having?: SiteVisitScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SiteVisitCountAggregateInputType | true
+    _avg?: SiteVisitAvgAggregateInputType
+    _sum?: SiteVisitSumAggregateInputType
+    _min?: SiteVisitMinAggregateInputType
+    _max?: SiteVisitMaxAggregateInputType
+  }
+
+  export type SiteVisitGroupByOutputType = {
+    id: string
+    visitorId: string
+    userId: string | null
+    dateKey: string
+    pageCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: SiteVisitCountAggregateOutputType | null
+    _avg: SiteVisitAvgAggregateOutputType | null
+    _sum: SiteVisitSumAggregateOutputType | null
+    _min: SiteVisitMinAggregateOutputType | null
+    _max: SiteVisitMaxAggregateOutputType | null
+  }
+
+  type GetSiteVisitGroupByPayload<T extends SiteVisitGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SiteVisitGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SiteVisitGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SiteVisitGroupByOutputType[P]>
+            : GetScalarType<T[P], SiteVisitGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SiteVisitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    dateKey?: boolean
+    pageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteVisit"]>
+
+  export type SiteVisitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    dateKey?: boolean
+    pageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteVisit"]>
+
+  export type SiteVisitSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    dateKey?: boolean
+    pageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteVisit"]>
+
+  export type SiteVisitSelectScalar = {
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    dateKey?: boolean
+    pageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SiteVisitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "visitorId" | "userId" | "dateKey" | "pageCount" | "createdAt" | "updatedAt", ExtArgs["result"]["siteVisit"]>
+
+  export type $SiteVisitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SiteVisit"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      visitorId: string
+      userId: string | null
+      dateKey: string
+      pageCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["siteVisit"]>
+    composites: {}
+  }
+
+  type SiteVisitGetPayload<S extends boolean | null | undefined | SiteVisitDefaultArgs> = $Result.GetResult<Prisma.$SiteVisitPayload, S>
+
+  type SiteVisitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SiteVisitFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SiteVisitCountAggregateInputType | true
+    }
+
+  export interface SiteVisitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SiteVisit'], meta: { name: 'SiteVisit' } }
+    /**
+     * Find zero or one SiteVisit that matches the filter.
+     * @param {SiteVisitFindUniqueArgs} args - Arguments to find a SiteVisit
+     * @example
+     * // Get one SiteVisit
+     * const siteVisit = await prisma.siteVisit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SiteVisitFindUniqueArgs>(args: SelectSubset<T, SiteVisitFindUniqueArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SiteVisit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SiteVisitFindUniqueOrThrowArgs} args - Arguments to find a SiteVisit
+     * @example
+     * // Get one SiteVisit
+     * const siteVisit = await prisma.siteVisit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SiteVisitFindUniqueOrThrowArgs>(args: SelectSubset<T, SiteVisitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SiteVisit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitFindFirstArgs} args - Arguments to find a SiteVisit
+     * @example
+     * // Get one SiteVisit
+     * const siteVisit = await prisma.siteVisit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SiteVisitFindFirstArgs>(args?: SelectSubset<T, SiteVisitFindFirstArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SiteVisit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitFindFirstOrThrowArgs} args - Arguments to find a SiteVisit
+     * @example
+     * // Get one SiteVisit
+     * const siteVisit = await prisma.siteVisit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SiteVisitFindFirstOrThrowArgs>(args?: SelectSubset<T, SiteVisitFindFirstOrThrowArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SiteVisits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SiteVisits
+     * const siteVisits = await prisma.siteVisit.findMany()
+     * 
+     * // Get first 10 SiteVisits
+     * const siteVisits = await prisma.siteVisit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const siteVisitWithIdOnly = await prisma.siteVisit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SiteVisitFindManyArgs>(args?: SelectSubset<T, SiteVisitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SiteVisit.
+     * @param {SiteVisitCreateArgs} args - Arguments to create a SiteVisit.
+     * @example
+     * // Create one SiteVisit
+     * const SiteVisit = await prisma.siteVisit.create({
+     *   data: {
+     *     // ... data to create a SiteVisit
+     *   }
+     * })
+     * 
+     */
+    create<T extends SiteVisitCreateArgs>(args: SelectSubset<T, SiteVisitCreateArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SiteVisits.
+     * @param {SiteVisitCreateManyArgs} args - Arguments to create many SiteVisits.
+     * @example
+     * // Create many SiteVisits
+     * const siteVisit = await prisma.siteVisit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SiteVisitCreateManyArgs>(args?: SelectSubset<T, SiteVisitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SiteVisits and returns the data saved in the database.
+     * @param {SiteVisitCreateManyAndReturnArgs} args - Arguments to create many SiteVisits.
+     * @example
+     * // Create many SiteVisits
+     * const siteVisit = await prisma.siteVisit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SiteVisits and only return the `id`
+     * const siteVisitWithIdOnly = await prisma.siteVisit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SiteVisitCreateManyAndReturnArgs>(args?: SelectSubset<T, SiteVisitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SiteVisit.
+     * @param {SiteVisitDeleteArgs} args - Arguments to delete one SiteVisit.
+     * @example
+     * // Delete one SiteVisit
+     * const SiteVisit = await prisma.siteVisit.delete({
+     *   where: {
+     *     // ... filter to delete one SiteVisit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SiteVisitDeleteArgs>(args: SelectSubset<T, SiteVisitDeleteArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SiteVisit.
+     * @param {SiteVisitUpdateArgs} args - Arguments to update one SiteVisit.
+     * @example
+     * // Update one SiteVisit
+     * const siteVisit = await prisma.siteVisit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SiteVisitUpdateArgs>(args: SelectSubset<T, SiteVisitUpdateArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SiteVisits.
+     * @param {SiteVisitDeleteManyArgs} args - Arguments to filter SiteVisits to delete.
+     * @example
+     * // Delete a few SiteVisits
+     * const { count } = await prisma.siteVisit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SiteVisitDeleteManyArgs>(args?: SelectSubset<T, SiteVisitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SiteVisits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SiteVisits
+     * const siteVisit = await prisma.siteVisit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SiteVisitUpdateManyArgs>(args: SelectSubset<T, SiteVisitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SiteVisits and returns the data updated in the database.
+     * @param {SiteVisitUpdateManyAndReturnArgs} args - Arguments to update many SiteVisits.
+     * @example
+     * // Update many SiteVisits
+     * const siteVisit = await prisma.siteVisit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SiteVisits and only return the `id`
+     * const siteVisitWithIdOnly = await prisma.siteVisit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SiteVisitUpdateManyAndReturnArgs>(args: SelectSubset<T, SiteVisitUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SiteVisit.
+     * @param {SiteVisitUpsertArgs} args - Arguments to update or create a SiteVisit.
+     * @example
+     * // Update or create a SiteVisit
+     * const siteVisit = await prisma.siteVisit.upsert({
+     *   create: {
+     *     // ... data to create a SiteVisit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SiteVisit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SiteVisitUpsertArgs>(args: SelectSubset<T, SiteVisitUpsertArgs<ExtArgs>>): Prisma__SiteVisitClient<$Result.GetResult<Prisma.$SiteVisitPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SiteVisits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitCountArgs} args - Arguments to filter SiteVisits to count.
+     * @example
+     * // Count the number of SiteVisits
+     * const count = await prisma.siteVisit.count({
+     *   where: {
+     *     // ... the filter for the SiteVisits we want to count
+     *   }
+     * })
+    **/
+    count<T extends SiteVisitCountArgs>(
+      args?: Subset<T, SiteVisitCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SiteVisitCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SiteVisit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SiteVisitAggregateArgs>(args: Subset<T, SiteVisitAggregateArgs>): Prisma.PrismaPromise<GetSiteVisitAggregateType<T>>
+
+    /**
+     * Group by SiteVisit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteVisitGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SiteVisitGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SiteVisitGroupByArgs['orderBy'] }
+        : { orderBy?: SiteVisitGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SiteVisitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSiteVisitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SiteVisit model
+   */
+  readonly fields: SiteVisitFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SiteVisit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SiteVisitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SiteVisit model
+   */
+  interface SiteVisitFieldRefs {
+    readonly id: FieldRef<"SiteVisit", 'String'>
+    readonly visitorId: FieldRef<"SiteVisit", 'String'>
+    readonly userId: FieldRef<"SiteVisit", 'String'>
+    readonly dateKey: FieldRef<"SiteVisit", 'String'>
+    readonly pageCount: FieldRef<"SiteVisit", 'Int'>
+    readonly createdAt: FieldRef<"SiteVisit", 'DateTime'>
+    readonly updatedAt: FieldRef<"SiteVisit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SiteVisit findUnique
+   */
+  export type SiteVisitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteVisit to fetch.
+     */
+    where: SiteVisitWhereUniqueInput
+  }
+
+  /**
+   * SiteVisit findUniqueOrThrow
+   */
+  export type SiteVisitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteVisit to fetch.
+     */
+    where: SiteVisitWhereUniqueInput
+  }
+
+  /**
+   * SiteVisit findFirst
+   */
+  export type SiteVisitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteVisit to fetch.
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteVisits to fetch.
+     */
+    orderBy?: SiteVisitOrderByWithRelationInput | SiteVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteVisits.
+     */
+    cursor?: SiteVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteVisits.
+     */
+    distinct?: SiteVisitScalarFieldEnum | SiteVisitScalarFieldEnum[]
+  }
+
+  /**
+   * SiteVisit findFirstOrThrow
+   */
+  export type SiteVisitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteVisit to fetch.
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteVisits to fetch.
+     */
+    orderBy?: SiteVisitOrderByWithRelationInput | SiteVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteVisits.
+     */
+    cursor?: SiteVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteVisits.
+     */
+    distinct?: SiteVisitScalarFieldEnum | SiteVisitScalarFieldEnum[]
+  }
+
+  /**
+   * SiteVisit findMany
+   */
+  export type SiteVisitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteVisits to fetch.
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteVisits to fetch.
+     */
+    orderBy?: SiteVisitOrderByWithRelationInput | SiteVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SiteVisits.
+     */
+    cursor?: SiteVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteVisits.
+     */
+    skip?: number
+    distinct?: SiteVisitScalarFieldEnum | SiteVisitScalarFieldEnum[]
+  }
+
+  /**
+   * SiteVisit create
+   */
+  export type SiteVisitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SiteVisit.
+     */
+    data: XOR<SiteVisitCreateInput, SiteVisitUncheckedCreateInput>
+  }
+
+  /**
+   * SiteVisit createMany
+   */
+  export type SiteVisitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SiteVisits.
+     */
+    data: SiteVisitCreateManyInput | SiteVisitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteVisit createManyAndReturn
+   */
+  export type SiteVisitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * The data used to create many SiteVisits.
+     */
+    data: SiteVisitCreateManyInput | SiteVisitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteVisit update
+   */
+  export type SiteVisitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SiteVisit.
+     */
+    data: XOR<SiteVisitUpdateInput, SiteVisitUncheckedUpdateInput>
+    /**
+     * Choose, which SiteVisit to update.
+     */
+    where: SiteVisitWhereUniqueInput
+  }
+
+  /**
+   * SiteVisit updateMany
+   */
+  export type SiteVisitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SiteVisits.
+     */
+    data: XOR<SiteVisitUpdateManyMutationInput, SiteVisitUncheckedUpdateManyInput>
+    /**
+     * Filter which SiteVisits to update
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * Limit how many SiteVisits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteVisit updateManyAndReturn
+   */
+  export type SiteVisitUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * The data used to update SiteVisits.
+     */
+    data: XOR<SiteVisitUpdateManyMutationInput, SiteVisitUncheckedUpdateManyInput>
+    /**
+     * Filter which SiteVisits to update
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * Limit how many SiteVisits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteVisit upsert
+   */
+  export type SiteVisitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SiteVisit to update in case it exists.
+     */
+    where: SiteVisitWhereUniqueInput
+    /**
+     * In case the SiteVisit found by the `where` argument doesn't exist, create a new SiteVisit with this data.
+     */
+    create: XOR<SiteVisitCreateInput, SiteVisitUncheckedCreateInput>
+    /**
+     * In case the SiteVisit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SiteVisitUpdateInput, SiteVisitUncheckedUpdateInput>
+  }
+
+  /**
+   * SiteVisit delete
+   */
+  export type SiteVisitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+    /**
+     * Filter which SiteVisit to delete.
+     */
+    where: SiteVisitWhereUniqueInput
+  }
+
+  /**
+   * SiteVisit deleteMany
+   */
+  export type SiteVisitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteVisits to delete
+     */
+    where?: SiteVisitWhereInput
+    /**
+     * Limit how many SiteVisits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteVisit without action
+   */
+  export type SiteVisitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteVisit
+     */
+    select?: SiteVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteVisit
+     */
+    omit?: SiteVisitOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SitePageView
+   */
+
+  export type AggregateSitePageView = {
+    _count: SitePageViewCountAggregateOutputType | null
+    _avg: SitePageViewAvgAggregateOutputType | null
+    _sum: SitePageViewSumAggregateOutputType | null
+    _min: SitePageViewMinAggregateOutputType | null
+    _max: SitePageViewMaxAggregateOutputType | null
+  }
+
+  export type SitePageViewAvgAggregateOutputType = {
+    viewCount: number | null
+  }
+
+  export type SitePageViewSumAggregateOutputType = {
+    viewCount: number | null
+  }
+
+  export type SitePageViewMinAggregateOutputType = {
+    id: string | null
+    visitorId: string | null
+    userId: string | null
+    neighborhoodId: string | null
+    dateKey: string | null
+    path: string | null
+    viewCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SitePageViewMaxAggregateOutputType = {
+    id: string | null
+    visitorId: string | null
+    userId: string | null
+    neighborhoodId: string | null
+    dateKey: string | null
+    path: string | null
+    viewCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SitePageViewCountAggregateOutputType = {
+    id: number
+    visitorId: number
+    userId: number
+    neighborhoodId: number
+    dateKey: number
+    path: number
+    viewCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SitePageViewAvgAggregateInputType = {
+    viewCount?: true
+  }
+
+  export type SitePageViewSumAggregateInputType = {
+    viewCount?: true
+  }
+
+  export type SitePageViewMinAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    neighborhoodId?: true
+    dateKey?: true
+    path?: true
+    viewCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SitePageViewMaxAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    neighborhoodId?: true
+    dateKey?: true
+    path?: true
+    viewCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SitePageViewCountAggregateInputType = {
+    id?: true
+    visitorId?: true
+    userId?: true
+    neighborhoodId?: true
+    dateKey?: true
+    path?: true
+    viewCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SitePageViewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SitePageView to aggregate.
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SitePageViews to fetch.
+     */
+    orderBy?: SitePageViewOrderByWithRelationInput | SitePageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SitePageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SitePageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SitePageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SitePageViews
+    **/
+    _count?: true | SitePageViewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SitePageViewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SitePageViewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SitePageViewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SitePageViewMaxAggregateInputType
+  }
+
+  export type GetSitePageViewAggregateType<T extends SitePageViewAggregateArgs> = {
+        [P in keyof T & keyof AggregateSitePageView]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSitePageView[P]>
+      : GetScalarType<T[P], AggregateSitePageView[P]>
+  }
+
+
+
+
+  export type SitePageViewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SitePageViewWhereInput
+    orderBy?: SitePageViewOrderByWithAggregationInput | SitePageViewOrderByWithAggregationInput[]
+    by: SitePageViewScalarFieldEnum[] | SitePageViewScalarFieldEnum
+    having?: SitePageViewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SitePageViewCountAggregateInputType | true
+    _avg?: SitePageViewAvgAggregateInputType
+    _sum?: SitePageViewSumAggregateInputType
+    _min?: SitePageViewMinAggregateInputType
+    _max?: SitePageViewMaxAggregateInputType
+  }
+
+  export type SitePageViewGroupByOutputType = {
+    id: string
+    visitorId: string
+    userId: string | null
+    neighborhoodId: string | null
+    dateKey: string
+    path: string
+    viewCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: SitePageViewCountAggregateOutputType | null
+    _avg: SitePageViewAvgAggregateOutputType | null
+    _sum: SitePageViewSumAggregateOutputType | null
+    _min: SitePageViewMinAggregateOutputType | null
+    _max: SitePageViewMaxAggregateOutputType | null
+  }
+
+  type GetSitePageViewGroupByPayload<T extends SitePageViewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SitePageViewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SitePageViewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SitePageViewGroupByOutputType[P]>
+            : GetScalarType<T[P], SitePageViewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SitePageViewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    neighborhoodId?: boolean
+    dateKey?: boolean
+    path?: boolean
+    viewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sitePageView"]>
+
+  export type SitePageViewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    neighborhoodId?: boolean
+    dateKey?: boolean
+    path?: boolean
+    viewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sitePageView"]>
+
+  export type SitePageViewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    neighborhoodId?: boolean
+    dateKey?: boolean
+    path?: boolean
+    viewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sitePageView"]>
+
+  export type SitePageViewSelectScalar = {
+    id?: boolean
+    visitorId?: boolean
+    userId?: boolean
+    neighborhoodId?: boolean
+    dateKey?: boolean
+    path?: boolean
+    viewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SitePageViewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "visitorId" | "userId" | "neighborhoodId" | "dateKey" | "path" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["sitePageView"]>
+
+  export type $SitePageViewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SitePageView"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      visitorId: string
+      userId: string | null
+      neighborhoodId: string | null
+      dateKey: string
+      path: string
+      viewCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["sitePageView"]>
+    composites: {}
+  }
+
+  type SitePageViewGetPayload<S extends boolean | null | undefined | SitePageViewDefaultArgs> = $Result.GetResult<Prisma.$SitePageViewPayload, S>
+
+  type SitePageViewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SitePageViewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SitePageViewCountAggregateInputType | true
+    }
+
+  export interface SitePageViewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SitePageView'], meta: { name: 'SitePageView' } }
+    /**
+     * Find zero or one SitePageView that matches the filter.
+     * @param {SitePageViewFindUniqueArgs} args - Arguments to find a SitePageView
+     * @example
+     * // Get one SitePageView
+     * const sitePageView = await prisma.sitePageView.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SitePageViewFindUniqueArgs>(args: SelectSubset<T, SitePageViewFindUniqueArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SitePageView that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SitePageViewFindUniqueOrThrowArgs} args - Arguments to find a SitePageView
+     * @example
+     * // Get one SitePageView
+     * const sitePageView = await prisma.sitePageView.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SitePageViewFindUniqueOrThrowArgs>(args: SelectSubset<T, SitePageViewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SitePageView that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewFindFirstArgs} args - Arguments to find a SitePageView
+     * @example
+     * // Get one SitePageView
+     * const sitePageView = await prisma.sitePageView.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SitePageViewFindFirstArgs>(args?: SelectSubset<T, SitePageViewFindFirstArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SitePageView that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewFindFirstOrThrowArgs} args - Arguments to find a SitePageView
+     * @example
+     * // Get one SitePageView
+     * const sitePageView = await prisma.sitePageView.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SitePageViewFindFirstOrThrowArgs>(args?: SelectSubset<T, SitePageViewFindFirstOrThrowArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SitePageViews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SitePageViews
+     * const sitePageViews = await prisma.sitePageView.findMany()
+     * 
+     * // Get first 10 SitePageViews
+     * const sitePageViews = await prisma.sitePageView.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sitePageViewWithIdOnly = await prisma.sitePageView.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SitePageViewFindManyArgs>(args?: SelectSubset<T, SitePageViewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SitePageView.
+     * @param {SitePageViewCreateArgs} args - Arguments to create a SitePageView.
+     * @example
+     * // Create one SitePageView
+     * const SitePageView = await prisma.sitePageView.create({
+     *   data: {
+     *     // ... data to create a SitePageView
+     *   }
+     * })
+     * 
+     */
+    create<T extends SitePageViewCreateArgs>(args: SelectSubset<T, SitePageViewCreateArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SitePageViews.
+     * @param {SitePageViewCreateManyArgs} args - Arguments to create many SitePageViews.
+     * @example
+     * // Create many SitePageViews
+     * const sitePageView = await prisma.sitePageView.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SitePageViewCreateManyArgs>(args?: SelectSubset<T, SitePageViewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SitePageViews and returns the data saved in the database.
+     * @param {SitePageViewCreateManyAndReturnArgs} args - Arguments to create many SitePageViews.
+     * @example
+     * // Create many SitePageViews
+     * const sitePageView = await prisma.sitePageView.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SitePageViews and only return the `id`
+     * const sitePageViewWithIdOnly = await prisma.sitePageView.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SitePageViewCreateManyAndReturnArgs>(args?: SelectSubset<T, SitePageViewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SitePageView.
+     * @param {SitePageViewDeleteArgs} args - Arguments to delete one SitePageView.
+     * @example
+     * // Delete one SitePageView
+     * const SitePageView = await prisma.sitePageView.delete({
+     *   where: {
+     *     // ... filter to delete one SitePageView
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SitePageViewDeleteArgs>(args: SelectSubset<T, SitePageViewDeleteArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SitePageView.
+     * @param {SitePageViewUpdateArgs} args - Arguments to update one SitePageView.
+     * @example
+     * // Update one SitePageView
+     * const sitePageView = await prisma.sitePageView.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SitePageViewUpdateArgs>(args: SelectSubset<T, SitePageViewUpdateArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SitePageViews.
+     * @param {SitePageViewDeleteManyArgs} args - Arguments to filter SitePageViews to delete.
+     * @example
+     * // Delete a few SitePageViews
+     * const { count } = await prisma.sitePageView.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SitePageViewDeleteManyArgs>(args?: SelectSubset<T, SitePageViewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SitePageViews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SitePageViews
+     * const sitePageView = await prisma.sitePageView.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SitePageViewUpdateManyArgs>(args: SelectSubset<T, SitePageViewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SitePageViews and returns the data updated in the database.
+     * @param {SitePageViewUpdateManyAndReturnArgs} args - Arguments to update many SitePageViews.
+     * @example
+     * // Update many SitePageViews
+     * const sitePageView = await prisma.sitePageView.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SitePageViews and only return the `id`
+     * const sitePageViewWithIdOnly = await prisma.sitePageView.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SitePageViewUpdateManyAndReturnArgs>(args: SelectSubset<T, SitePageViewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SitePageView.
+     * @param {SitePageViewUpsertArgs} args - Arguments to update or create a SitePageView.
+     * @example
+     * // Update or create a SitePageView
+     * const sitePageView = await prisma.sitePageView.upsert({
+     *   create: {
+     *     // ... data to create a SitePageView
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SitePageView we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SitePageViewUpsertArgs>(args: SelectSubset<T, SitePageViewUpsertArgs<ExtArgs>>): Prisma__SitePageViewClient<$Result.GetResult<Prisma.$SitePageViewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SitePageViews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewCountArgs} args - Arguments to filter SitePageViews to count.
+     * @example
+     * // Count the number of SitePageViews
+     * const count = await prisma.sitePageView.count({
+     *   where: {
+     *     // ... the filter for the SitePageViews we want to count
+     *   }
+     * })
+    **/
+    count<T extends SitePageViewCountArgs>(
+      args?: Subset<T, SitePageViewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SitePageViewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SitePageView.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SitePageViewAggregateArgs>(args: Subset<T, SitePageViewAggregateArgs>): Prisma.PrismaPromise<GetSitePageViewAggregateType<T>>
+
+    /**
+     * Group by SitePageView.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SitePageViewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SitePageViewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SitePageViewGroupByArgs['orderBy'] }
+        : { orderBy?: SitePageViewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SitePageViewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSitePageViewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SitePageView model
+   */
+  readonly fields: SitePageViewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SitePageView.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SitePageViewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SitePageView model
+   */
+  interface SitePageViewFieldRefs {
+    readonly id: FieldRef<"SitePageView", 'String'>
+    readonly visitorId: FieldRef<"SitePageView", 'String'>
+    readonly userId: FieldRef<"SitePageView", 'String'>
+    readonly neighborhoodId: FieldRef<"SitePageView", 'String'>
+    readonly dateKey: FieldRef<"SitePageView", 'String'>
+    readonly path: FieldRef<"SitePageView", 'String'>
+    readonly viewCount: FieldRef<"SitePageView", 'Int'>
+    readonly createdAt: FieldRef<"SitePageView", 'DateTime'>
+    readonly updatedAt: FieldRef<"SitePageView", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SitePageView findUnique
+   */
+  export type SitePageViewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter, which SitePageView to fetch.
+     */
+    where: SitePageViewWhereUniqueInput
+  }
+
+  /**
+   * SitePageView findUniqueOrThrow
+   */
+  export type SitePageViewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter, which SitePageView to fetch.
+     */
+    where: SitePageViewWhereUniqueInput
+  }
+
+  /**
+   * SitePageView findFirst
+   */
+  export type SitePageViewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter, which SitePageView to fetch.
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SitePageViews to fetch.
+     */
+    orderBy?: SitePageViewOrderByWithRelationInput | SitePageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SitePageViews.
+     */
+    cursor?: SitePageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SitePageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SitePageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SitePageViews.
+     */
+    distinct?: SitePageViewScalarFieldEnum | SitePageViewScalarFieldEnum[]
+  }
+
+  /**
+   * SitePageView findFirstOrThrow
+   */
+  export type SitePageViewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter, which SitePageView to fetch.
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SitePageViews to fetch.
+     */
+    orderBy?: SitePageViewOrderByWithRelationInput | SitePageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SitePageViews.
+     */
+    cursor?: SitePageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SitePageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SitePageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SitePageViews.
+     */
+    distinct?: SitePageViewScalarFieldEnum | SitePageViewScalarFieldEnum[]
+  }
+
+  /**
+   * SitePageView findMany
+   */
+  export type SitePageViewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter, which SitePageViews to fetch.
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SitePageViews to fetch.
+     */
+    orderBy?: SitePageViewOrderByWithRelationInput | SitePageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SitePageViews.
+     */
+    cursor?: SitePageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SitePageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SitePageViews.
+     */
+    skip?: number
+    distinct?: SitePageViewScalarFieldEnum | SitePageViewScalarFieldEnum[]
+  }
+
+  /**
+   * SitePageView create
+   */
+  export type SitePageViewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SitePageView.
+     */
+    data: XOR<SitePageViewCreateInput, SitePageViewUncheckedCreateInput>
+  }
+
+  /**
+   * SitePageView createMany
+   */
+  export type SitePageViewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SitePageViews.
+     */
+    data: SitePageViewCreateManyInput | SitePageViewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SitePageView createManyAndReturn
+   */
+  export type SitePageViewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * The data used to create many SitePageViews.
+     */
+    data: SitePageViewCreateManyInput | SitePageViewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SitePageView update
+   */
+  export type SitePageViewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SitePageView.
+     */
+    data: XOR<SitePageViewUpdateInput, SitePageViewUncheckedUpdateInput>
+    /**
+     * Choose, which SitePageView to update.
+     */
+    where: SitePageViewWhereUniqueInput
+  }
+
+  /**
+   * SitePageView updateMany
+   */
+  export type SitePageViewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SitePageViews.
+     */
+    data: XOR<SitePageViewUpdateManyMutationInput, SitePageViewUncheckedUpdateManyInput>
+    /**
+     * Filter which SitePageViews to update
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * Limit how many SitePageViews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SitePageView updateManyAndReturn
+   */
+  export type SitePageViewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * The data used to update SitePageViews.
+     */
+    data: XOR<SitePageViewUpdateManyMutationInput, SitePageViewUncheckedUpdateManyInput>
+    /**
+     * Filter which SitePageViews to update
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * Limit how many SitePageViews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SitePageView upsert
+   */
+  export type SitePageViewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SitePageView to update in case it exists.
+     */
+    where: SitePageViewWhereUniqueInput
+    /**
+     * In case the SitePageView found by the `where` argument doesn't exist, create a new SitePageView with this data.
+     */
+    create: XOR<SitePageViewCreateInput, SitePageViewUncheckedCreateInput>
+    /**
+     * In case the SitePageView was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SitePageViewUpdateInput, SitePageViewUncheckedUpdateInput>
+  }
+
+  /**
+   * SitePageView delete
+   */
+  export type SitePageViewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+    /**
+     * Filter which SitePageView to delete.
+     */
+    where: SitePageViewWhereUniqueInput
+  }
+
+  /**
+   * SitePageView deleteMany
+   */
+  export type SitePageViewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SitePageViews to delete
+     */
+    where?: SitePageViewWhereInput
+    /**
+     * Limit how many SitePageViews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SitePageView without action
+   */
+  export type SitePageViewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SitePageView
+     */
+    select?: SitePageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SitePageView
+     */
+    omit?: SitePageViewOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model GroupInvite
    */
 
@@ -26176,6 +28507,7 @@ export namespace Prisma {
     shopLocationLng: 'shopLocationLng',
     lastBoardSeenAt: 'lastBoardSeenAt',
     seenBoardPostIds: 'seenBoardPostIds',
+    lastActiveAt: 'lastActiveAt',
     createdAt: 'createdAt'
   };
 
@@ -26361,6 +28693,34 @@ export namespace Prisma {
   };
 
   export type UserWeeklyUsageScalarFieldEnum = (typeof UserWeeklyUsageScalarFieldEnum)[keyof typeof UserWeeklyUsageScalarFieldEnum]
+
+
+  export const SiteVisitScalarFieldEnum: {
+    id: 'id',
+    visitorId: 'visitorId',
+    userId: 'userId',
+    dateKey: 'dateKey',
+    pageCount: 'pageCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SiteVisitScalarFieldEnum = (typeof SiteVisitScalarFieldEnum)[keyof typeof SiteVisitScalarFieldEnum]
+
+
+  export const SitePageViewScalarFieldEnum: {
+    id: 'id',
+    visitorId: 'visitorId',
+    userId: 'userId',
+    neighborhoodId: 'neighborhoodId',
+    dateKey: 'dateKey',
+    path: 'path',
+    viewCount: 'viewCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SitePageViewScalarFieldEnum = (typeof SitePageViewScalarFieldEnum)[keyof typeof SitePageViewScalarFieldEnum]
 
 
   export const GroupInviteScalarFieldEnum: {
@@ -26584,6 +28944,7 @@ export namespace Prisma {
     shopLocationLng?: FloatNullableFilter<"User"> | number | null
     lastBoardSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null
     seenBoardPostIds?: StringNullableFilter<"User"> | string | null
+    lastActiveAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     neighborhood?: XOR<NeighborhoodNullableScalarRelationFilter, NeighborhoodWhereInput> | null
     listings?: ListingListRelationFilter
@@ -26628,6 +28989,7 @@ export namespace Prisma {
     shopLocationLng?: SortOrderInput | SortOrder
     lastBoardSeenAt?: SortOrderInput | SortOrder
     seenBoardPostIds?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     neighborhood?: NeighborhoodOrderByWithRelationInput
     listings?: ListingOrderByRelationAggregateInput
@@ -26675,6 +29037,7 @@ export namespace Prisma {
     shopLocationLng?: FloatNullableFilter<"User"> | number | null
     lastBoardSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null
     seenBoardPostIds?: StringNullableFilter<"User"> | string | null
+    lastActiveAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     neighborhood?: XOR<NeighborhoodNullableScalarRelationFilter, NeighborhoodWhereInput> | null
     listings?: ListingListRelationFilter
@@ -26719,6 +29082,7 @@ export namespace Prisma {
     shopLocationLng?: SortOrderInput | SortOrder
     lastBoardSeenAt?: SortOrderInput | SortOrder
     seenBoardPostIds?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -26755,6 +29119,7 @@ export namespace Prisma {
     shopLocationLng?: FloatNullableWithAggregatesFilter<"User"> | number | null
     lastBoardSeenAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     seenBoardPostIds?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastActiveAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
@@ -27741,6 +30106,146 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"UserWeeklyUsage"> | Date | string
   }
 
+  export type SiteVisitWhereInput = {
+    AND?: SiteVisitWhereInput | SiteVisitWhereInput[]
+    OR?: SiteVisitWhereInput[]
+    NOT?: SiteVisitWhereInput | SiteVisitWhereInput[]
+    id?: StringFilter<"SiteVisit"> | string
+    visitorId?: StringFilter<"SiteVisit"> | string
+    userId?: StringNullableFilter<"SiteVisit"> | string | null
+    dateKey?: StringFilter<"SiteVisit"> | string
+    pageCount?: IntFilter<"SiteVisit"> | number
+    createdAt?: DateTimeFilter<"SiteVisit"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteVisit"> | Date | string
+  }
+
+  export type SiteVisitOrderByWithRelationInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    dateKey?: SortOrder
+    pageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteVisitWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    visitorId_dateKey?: SiteVisitVisitorIdDateKeyCompoundUniqueInput
+    AND?: SiteVisitWhereInput | SiteVisitWhereInput[]
+    OR?: SiteVisitWhereInput[]
+    NOT?: SiteVisitWhereInput | SiteVisitWhereInput[]
+    visitorId?: StringFilter<"SiteVisit"> | string
+    userId?: StringNullableFilter<"SiteVisit"> | string | null
+    dateKey?: StringFilter<"SiteVisit"> | string
+    pageCount?: IntFilter<"SiteVisit"> | number
+    createdAt?: DateTimeFilter<"SiteVisit"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteVisit"> | Date | string
+  }, "id" | "visitorId_dateKey">
+
+  export type SiteVisitOrderByWithAggregationInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    dateKey?: SortOrder
+    pageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SiteVisitCountOrderByAggregateInput
+    _avg?: SiteVisitAvgOrderByAggregateInput
+    _max?: SiteVisitMaxOrderByAggregateInput
+    _min?: SiteVisitMinOrderByAggregateInput
+    _sum?: SiteVisitSumOrderByAggregateInput
+  }
+
+  export type SiteVisitScalarWhereWithAggregatesInput = {
+    AND?: SiteVisitScalarWhereWithAggregatesInput | SiteVisitScalarWhereWithAggregatesInput[]
+    OR?: SiteVisitScalarWhereWithAggregatesInput[]
+    NOT?: SiteVisitScalarWhereWithAggregatesInput | SiteVisitScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SiteVisit"> | string
+    visitorId?: StringWithAggregatesFilter<"SiteVisit"> | string
+    userId?: StringNullableWithAggregatesFilter<"SiteVisit"> | string | null
+    dateKey?: StringWithAggregatesFilter<"SiteVisit"> | string
+    pageCount?: IntWithAggregatesFilter<"SiteVisit"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"SiteVisit"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SiteVisit"> | Date | string
+  }
+
+  export type SitePageViewWhereInput = {
+    AND?: SitePageViewWhereInput | SitePageViewWhereInput[]
+    OR?: SitePageViewWhereInput[]
+    NOT?: SitePageViewWhereInput | SitePageViewWhereInput[]
+    id?: StringFilter<"SitePageView"> | string
+    visitorId?: StringFilter<"SitePageView"> | string
+    userId?: StringNullableFilter<"SitePageView"> | string | null
+    neighborhoodId?: StringNullableFilter<"SitePageView"> | string | null
+    dateKey?: StringFilter<"SitePageView"> | string
+    path?: StringFilter<"SitePageView"> | string
+    viewCount?: IntFilter<"SitePageView"> | number
+    createdAt?: DateTimeFilter<"SitePageView"> | Date | string
+    updatedAt?: DateTimeFilter<"SitePageView"> | Date | string
+  }
+
+  export type SitePageViewOrderByWithRelationInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    neighborhoodId?: SortOrderInput | SortOrder
+    dateKey?: SortOrder
+    path?: SortOrder
+    viewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SitePageViewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    visitorId_dateKey_path?: SitePageViewVisitorIdDateKeyPathCompoundUniqueInput
+    AND?: SitePageViewWhereInput | SitePageViewWhereInput[]
+    OR?: SitePageViewWhereInput[]
+    NOT?: SitePageViewWhereInput | SitePageViewWhereInput[]
+    visitorId?: StringFilter<"SitePageView"> | string
+    userId?: StringNullableFilter<"SitePageView"> | string | null
+    neighborhoodId?: StringNullableFilter<"SitePageView"> | string | null
+    dateKey?: StringFilter<"SitePageView"> | string
+    path?: StringFilter<"SitePageView"> | string
+    viewCount?: IntFilter<"SitePageView"> | number
+    createdAt?: DateTimeFilter<"SitePageView"> | Date | string
+    updatedAt?: DateTimeFilter<"SitePageView"> | Date | string
+  }, "id" | "visitorId_dateKey_path">
+
+  export type SitePageViewOrderByWithAggregationInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    neighborhoodId?: SortOrderInput | SortOrder
+    dateKey?: SortOrder
+    path?: SortOrder
+    viewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SitePageViewCountOrderByAggregateInput
+    _avg?: SitePageViewAvgOrderByAggregateInput
+    _max?: SitePageViewMaxOrderByAggregateInput
+    _min?: SitePageViewMinOrderByAggregateInput
+    _sum?: SitePageViewSumOrderByAggregateInput
+  }
+
+  export type SitePageViewScalarWhereWithAggregatesInput = {
+    AND?: SitePageViewScalarWhereWithAggregatesInput | SitePageViewScalarWhereWithAggregatesInput[]
+    OR?: SitePageViewScalarWhereWithAggregatesInput[]
+    NOT?: SitePageViewScalarWhereWithAggregatesInput | SitePageViewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SitePageView"> | string
+    visitorId?: StringWithAggregatesFilter<"SitePageView"> | string
+    userId?: StringNullableWithAggregatesFilter<"SitePageView"> | string | null
+    neighborhoodId?: StringNullableWithAggregatesFilter<"SitePageView"> | string | null
+    dateKey?: StringWithAggregatesFilter<"SitePageView"> | string
+    path?: StringWithAggregatesFilter<"SitePageView"> | string
+    viewCount?: IntWithAggregatesFilter<"SitePageView"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"SitePageView"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SitePageView"> | Date | string
+  }
+
   export type GroupInviteWhereInput = {
     AND?: GroupInviteWhereInput | GroupInviteWhereInput[]
     OR?: GroupInviteWhereInput[]
@@ -28181,6 +30686,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -28225,6 +30731,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -28267,6 +30774,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -28311,6 +30819,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -28354,6 +30863,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -28381,6 +30891,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28409,6 +30920,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29449,6 +31961,160 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SiteVisitCreateInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    dateKey: string
+    pageCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SiteVisitUncheckedCreateInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    dateKey: string
+    pageCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SiteVisitUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    pageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteVisitUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    pageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteVisitCreateManyInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    dateKey: string
+    pageCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SiteVisitUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    pageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteVisitUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    pageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SitePageViewCreateInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    neighborhoodId?: string | null
+    dateKey: string
+    path: string
+    viewCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SitePageViewUncheckedCreateInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    neighborhoodId?: string | null
+    dateKey: string
+    path: string
+    viewCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SitePageViewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    neighborhoodId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    viewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SitePageViewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    neighborhoodId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    viewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SitePageViewCreateManyInput = {
+    id: string
+    visitorId: string
+    userId?: string | null
+    neighborhoodId?: string | null
+    dateKey: string
+    path: string
+    viewCount?: number
+    createdAt?: Date | string
+    updatedAt: Date | string
+  }
+
+  export type SitePageViewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    neighborhoodId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    viewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SitePageViewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    neighborhoodId?: NullableStringFieldUpdateOperationsInput | string | null
+    dateKey?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    viewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type GroupInviteCreateInput = {
     id: string
     conversationId: string
@@ -30120,6 +32786,7 @@ export namespace Prisma {
     shopLocationLng?: SortOrder
     lastBoardSeenAt?: SortOrder
     seenBoardPostIds?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30153,6 +32820,7 @@ export namespace Prisma {
     shopLocationLng?: SortOrder
     lastBoardSeenAt?: SortOrder
     seenBoardPostIds?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30181,6 +32849,7 @@ export namespace Prisma {
     shopLocationLng?: SortOrder
     lastBoardSeenAt?: SortOrder
     seenBoardPostIds?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30897,6 +33566,99 @@ export namespace Prisma {
 
   export type UserWeeklyUsageSumOrderByAggregateInput = {
     seconds?: SortOrder
+  }
+
+  export type SiteVisitVisitorIdDateKeyCompoundUniqueInput = {
+    visitorId: string
+    dateKey: string
+  }
+
+  export type SiteVisitCountOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    dateKey?: SortOrder
+    pageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteVisitAvgOrderByAggregateInput = {
+    pageCount?: SortOrder
+  }
+
+  export type SiteVisitMaxOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    dateKey?: SortOrder
+    pageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteVisitMinOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    dateKey?: SortOrder
+    pageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteVisitSumOrderByAggregateInput = {
+    pageCount?: SortOrder
+  }
+
+  export type SitePageViewVisitorIdDateKeyPathCompoundUniqueInput = {
+    visitorId: string
+    dateKey: string
+    path: string
+  }
+
+  export type SitePageViewCountOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    neighborhoodId?: SortOrder
+    dateKey?: SortOrder
+    path?: SortOrder
+    viewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SitePageViewAvgOrderByAggregateInput = {
+    viewCount?: SortOrder
+  }
+
+  export type SitePageViewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    neighborhoodId?: SortOrder
+    dateKey?: SortOrder
+    path?: SortOrder
+    viewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SitePageViewMinOrderByAggregateInput = {
+    id?: SortOrder
+    visitorId?: SortOrder
+    userId?: SortOrder
+    neighborhoodId?: SortOrder
+    dateKey?: SortOrder
+    path?: SortOrder
+    viewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SitePageViewSumOrderByAggregateInput = {
+    viewCount?: SortOrder
   }
 
   export type GroupInviteCountOrderByAggregateInput = {
@@ -34017,6 +36779,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationCreateNestedManyWithoutBuyerInput
@@ -34059,6 +36822,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -34285,6 +37049,7 @@ export namespace Prisma {
     shopLocationLng?: FloatNullableFilter<"User"> | number | null
     lastBoardSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null
     seenBoardPostIds?: StringNullableFilter<"User"> | string | null
+    lastActiveAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
   }
 
@@ -34411,6 +37176,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     buyerConversations?: ConversationCreateNestedManyWithoutBuyerInput
@@ -34454,6 +37220,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
     sellerConversations?: ConversationUncheckedCreateNestedManyWithoutSellerInput
@@ -34608,6 +37375,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     buyerConversations?: ConversationUpdateManyWithoutBuyerNestedInput
@@ -34651,6 +37419,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
     sellerConversations?: ConversationUncheckedUpdateManyWithoutSellerNestedInput
@@ -34755,6 +37524,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -34798,6 +37568,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     sellerConversations?: ConversationUncheckedCreateNestedManyWithoutSellerInput
@@ -34844,6 +37615,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -34887,6 +37659,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -35025,6 +37798,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -35068,6 +37842,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     sellerConversations?: ConversationUncheckedUpdateManyWithoutSellerNestedInput
@@ -35120,6 +37895,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -35163,6 +37939,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -35271,6 +38048,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -35314,6 +38092,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -35428,6 +38207,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -35471,6 +38251,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -35512,6 +38293,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -35555,6 +38337,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -35612,6 +38395,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -35655,6 +38439,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -35731,6 +38516,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -35774,6 +38560,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -35872,6 +38659,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -35915,6 +38703,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -35991,6 +38780,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -36034,6 +38824,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -36288,6 +39079,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -36331,6 +39123,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -36525,6 +39318,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -36568,6 +39362,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -36662,6 +39457,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -36705,6 +39501,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -36781,6 +39578,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -36824,6 +39622,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -36948,6 +39747,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -36991,6 +39791,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -37112,6 +39913,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -37155,6 +39957,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -37201,6 +40004,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -37244,6 +40048,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -37301,6 +40106,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -37344,6 +40150,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -37396,6 +40203,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -37439,6 +40247,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -37480,6 +40289,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -37523,6 +40333,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -37580,6 +40391,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -37623,6 +40435,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -37664,6 +40477,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -37707,6 +40521,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -37764,6 +40579,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -37807,6 +40623,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -37848,6 +40665,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -37891,6 +40709,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -37948,6 +40767,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -37991,6 +40811,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -38032,6 +40853,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
     listings?: ListingCreateNestedManyWithoutUserInput
@@ -38075,6 +40897,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
     listings?: ListingUncheckedCreateNestedManyWithoutUserInput
     buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
@@ -38132,6 +40955,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
     listings?: ListingUpdateManyWithoutUserNestedInput
@@ -38175,6 +40999,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -38926,6 +41751,7 @@ export namespace Prisma {
     shopLocationLng?: number | null
     lastBoardSeenAt?: Date | string | null
     seenBoardPostIds?: string | null
+    lastActiveAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -39005,6 +41831,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUpdateManyWithoutBuyerNestedInput
@@ -39047,6 +41874,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
     buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
@@ -39089,6 +41917,7 @@ export namespace Prisma {
     shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
     lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActiveAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

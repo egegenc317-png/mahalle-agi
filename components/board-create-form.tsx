@@ -80,17 +80,17 @@ export function BoardCreateForm() {
         return;
       }
 
-      const photos: string[] = [];
-      for (const file of files) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
-        if (!response.ok) {
-          setError(data.error || "Fotoğraf yüklenemedi.");
-          return;
-        }
-        photos.push(String(data.url));
-      }
+      const uploadedPhotos = await Promise.all(
+        files.map(async (file) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+          if (!response.ok) {
+            throw new Error(data.error || "Fotoğraf yüklenemedi.");
+          }
+          return String(data.url);
+        })
+      );
 
       let coords: { lat: number; lng: number } | null = locationPreview;
       try {
@@ -104,7 +104,7 @@ export function BoardCreateForm() {
         type: String(form.get("type") || "ANNOUNCEMENT"),
         title: String(form.get("title") || ""),
         body: String(form.get("body") || ""),
-        photos,
+        photos: uploadedPhotos,
         locationLat: coords.lat,
         locationLng: coords.lng
       };

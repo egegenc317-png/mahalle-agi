@@ -34,6 +34,7 @@ export function TopAuthButton({
     if (!isLoggedIn) return;
 
     let cancelled = false;
+    let intervalId: number | null = null;
 
     const loadSummary = async () => {
       try {
@@ -48,12 +49,24 @@ export function TopAuthButton({
       }
     };
 
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") {
+        void loadSummary();
+      }
+    };
+
     loadSummary();
-    const timer = window.setInterval(loadSummary, 45000);
+    intervalId = window.setInterval(refreshIfVisible, 5000);
+    window.addEventListener("focus", refreshIfVisible);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("mahalle:refresh-summary", refreshIfVisible as EventListener);
 
     return () => {
       cancelled = true;
-      window.clearInterval(timer);
+      if (intervalId) window.clearInterval(intervalId);
+      window.removeEventListener("focus", refreshIfVisible);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("mahalle:refresh-summary", refreshIfVisible as EventListener);
     };
   }, [isLoggedIn]);
 

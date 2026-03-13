@@ -308,9 +308,9 @@ export const prisma = {
     create: async ({ data }: any) => normalizeConversation(await db.conversation.create({ data: { id: data.id || randomUUID(), ...serializeConversationData(data) } })),
     update: async ({ where, data }: any) => normalizeConversation(await db.conversation.update({ where, data: serializeConversationData(data) }))
   },
-  message: {
-    findMany: async ({ where, include, orderBy }: any) =>
-      (await db.message.findMany({ where, include: { sender: Boolean(include?.sender) }, orderBy })).map(normalizeMessage),
+    message: {
+      findMany: async ({ where, include, orderBy, take }: any = {}) =>
+        (await db.message.findMany({ where, include: { sender: Boolean(include?.sender) }, orderBy, take })).map(normalizeMessage),
     findUnique: async ({ where }: any) => normalizeMessage(await db.message.findUnique({ where })),
     create: async ({ data }: any) => normalizeMessage(await db.message.create({ data: { id: data.id || randomUUID(), ...data } })),
     update: async ({ where, data }: any) => normalizeMessage(await db.message.update({ where, data }))

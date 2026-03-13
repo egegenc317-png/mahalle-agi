@@ -104,17 +104,17 @@ export default function NewListingPage() {
         return;
       }
 
-      const photos: string[] = [];
-      for (const file of files) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
-        if (!response.ok) {
-          setError(data.error || "Foto yüklenemedi");
-          return;
-        }
-        photos.push(String(data.url));
-      }
+      const photos = await Promise.all(
+        files.map(async (file) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+          if (!response.ok) {
+            throw new Error(data.error || "Foto yüklenemedi");
+          }
+          return String(data.url);
+        })
+      );
 
       let coords: { lat: number; lng: number } | null = locationPreview;
       try {

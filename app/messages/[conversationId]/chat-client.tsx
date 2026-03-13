@@ -7,6 +7,7 @@ import { Camera, Check, CheckCheck, FileText, Paperclip, Pin, PinOff, SendHorizo
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 import { normalizeMediaUrl } from "@/lib/media-url";
 
 type Message = {
@@ -159,6 +160,11 @@ export function ChatClient({
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
   const messageRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const notifyShellRefresh = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("mahalle:refresh-summary"));
+    }
+  };
 
   const mentionQuery = useMemo(() => {
     const match = body.match(/(?:^|\s)@([a-zA-Z0-9_çğıöşüÇĞİÖŞÜ]*)$/);
@@ -291,6 +297,7 @@ export function ChatClient({
 
       if (res.ok) {
         await fetchMessages();
+        notifyShellRefresh();
         return;
       }
 
@@ -350,14 +357,12 @@ export function ChatClient({
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const uploadRes = await fetch("/api/upload", { method: "POST", body: fd });
+      const { response: uploadRes, data: uploadData } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
       if (!uploadRes.ok) {
         setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
-        setError("Dosya yüklenemedi. Lütfen tekrar dene.");
+        setError(uploadData?.error || "Dosya yüklenemedi. Lütfen tekrar dene.");
         return;
       }
-
-      const uploadData = await uploadRes.json();
       const uploadedUrl = typeof uploadData?.url === "string" ? uploadData.url : "";
       if (!uploadedUrl) {
         setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
@@ -378,6 +383,7 @@ export function ChatClient({
       }
 
       await fetchMessages();
+      notifyShellRefresh();
     } catch {
       setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
       setError("Dosya gönderiminde bağlantı hatası olustu.");
