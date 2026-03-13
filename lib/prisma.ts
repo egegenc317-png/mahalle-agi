@@ -105,6 +105,11 @@ function normalizeSiteVisit(item: any) {
   return item;
 }
 
+function normalizeSitePageView(item: any) {
+  if (!item) return null;
+  return item;
+}
+
 function serializeUserData(data: any) {
   const next = { ...data };
   if ("businessClosedHours" in next) {
@@ -209,8 +214,28 @@ export const prisma = {
             ? { pageCount: { increment: update.pageCount.increment }, updatedAt: new Date(), userId: update.userId }
             : { ...update, updatedAt: new Date() }
         })
-      ),
+        ),
     count: async ({ where }: any = {}) => await db.siteVisit.count({ where })
+  },
+  sitePageView: {
+    findMany: async ({ where, orderBy }: any = {}) => (await db.sitePageView.findMany({ where, orderBy })).map(normalizeSitePageView),
+    findFirst: async ({ where }: any) => normalizeSitePageView(await db.sitePageView.findFirst({ where })),
+    upsert: async ({ where, create, update }: any) =>
+      normalizeSitePageView(
+        await db.sitePageView.upsert({
+          where,
+          create: { id: create.id || randomUUID(), updatedAt: new Date(), ...create },
+          update: update?.viewCount?.increment
+            ? {
+                viewCount: { increment: update.viewCount.increment },
+                updatedAt: new Date(),
+                userId: update.userId,
+                neighborhoodId: update.neighborhoodId
+              }
+            : { ...update, updatedAt: new Date() }
+        })
+      ),
+    count: async ({ where }: any = {}) => await db.sitePageView.count({ where })
   },
   userRating: {
     findMany: async ({ where }: any = {}) => await db.userRating.findMany({ where }),

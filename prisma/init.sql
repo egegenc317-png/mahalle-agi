@@ -194,6 +194,19 @@ CREATE TABLE "SiteVisit" (
 );
 
 -- CreateTable
+CREATE TABLE "SitePageView" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "visitorId" TEXT NOT NULL,
+    "userId" TEXT,
+    "neighborhoodId" TEXT,
+    "dateKey" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "viewCount" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "GroupInvite" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "conversationId" TEXT NOT NULL,
@@ -283,6 +296,9 @@ CREATE UNIQUE INDEX "UserWeeklyUsage_userId_weekKey_key" ON "UserWeeklyUsage"("u
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SiteVisit_visitorId_dateKey_key" ON "SiteVisit"("visitorId", "dateKey");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SitePageView_visitorId_dateKey_path_key" ON "SitePageView"("visitorId", "dateKey", "path");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");

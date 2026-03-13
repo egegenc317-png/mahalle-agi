@@ -55,6 +55,16 @@ type SiteVisitRow = {
   createdAt: Date | string;
 };
 
+type SitePageViewRow = {
+  visitorId: string;
+  userId?: string | null;
+  neighborhoodId?: string | null;
+  dateKey: string;
+  path: string;
+  viewCount: number;
+  createdAt: Date | string;
+};
+
 function formatDate(value: Date | string | null | undefined) {
   if (!value) return "-";
   return new Date(value).toLocaleString("tr-TR", {
@@ -152,7 +162,7 @@ export default async function AdminPage() {
   const session = await auth();
   if (!session || (session.user.role !== "ADMIN" && session.user.role !== "MODERATOR")) redirect("/");
 
-  const [usersRaw, listingsRaw, boardPostsRaw, messagesRaw, reports, neighborhoodsRaw, weeklyUsageRaw, siteVisitsRaw] = await Promise.all([
+  const [usersRaw, listingsRaw, boardPostsRaw, messagesRaw, reports, neighborhoodsRaw, weeklyUsageRaw, siteVisitsRaw, sitePageViewsRaw] = await Promise.all([
     db.user.findMany({
       orderBy: { createdAt: "desc" },
       include: { neighborhood: true }
@@ -163,7 +173,8 @@ export default async function AdminPage() {
     db.report.findMany({ where: { status: "OPEN" }, orderBy: { createdAt: "desc" } }),
     db.neighborhood.findMany({}),
     db.userWeeklyUsage.findMany({}),
-    db.siteVisit.findMany({})
+    db.siteVisit.findMany({}),
+    db.sitePageView.findMany({})
   ]);
 
   const users = usersRaw as AdminUser[];
@@ -173,6 +184,7 @@ export default async function AdminPage() {
   const neighborhoods = neighborhoodsRaw as NeighborhoodSummary[];
   const weeklyUsage = weeklyUsageRaw as WeeklyUsageRow[];
   const siteVisits = siteVisitsRaw as SiteVisitRow[];
+  const sitePageViews = sitePageViewsRaw as SitePageViewRow[];
 
   const today = startOfToday();
   const onlineThreshold = minutesAgo(5);
@@ -209,6 +221,16 @@ export default async function AdminPage() {
     date.setDate(date.getDate() - (6 - index));
     return date;
   });
+
+  const uniqueVisitorTrend = last7Days.map((date) => {
+    const dateKey = date.toISOString().slice(0, 10);
+    return {
+      label: formatDayLabel(date),
+      uniqueVisitors: new Set(siteVisits.filter((visit) => visit.dateKey === dateKey).map((visit) => visit.visitorId)).size
+    };
+  });
+
+  const maxUniqueVisitors = Math.max(...uniqueVisitorTrend.map((item) => item.uniqueVisitors), 1);
 
   const dailyActivity = last7Days.map((date) => {
     const next = new Date(date);
@@ -280,6 +302,38 @@ export default async function AdminPage() {
     })
     .filter((item) => item.onlineCount > 0)
     .sort((a, b) => b.onlineCount - a.onlineCount)
+    .slice(0, 8);
+
+  const topPagesMap = sitePageViews.reduce<Record<string, { path: string; views: number; visitors: Set<string> }>>((acc, item) => {
+    if (!acc[item.path]) {
+      acc[item.path] = { path: item.path, views: 0, visitors: new Set<string>() };
+    }
+    acc[item.path].views += item.viewCount;
+    acc[item.path].visitors.add(item.visitorId);
+    return acc;
+  }, {});
+
+  const topPages = Object.values(topPagesMap)
+    .map((item) => ({
+      path: item.path,
+      views: item.views,
+      uniqueVisitors: item.visitors.size
+    }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 8);
+
+  const todayNeighborhoodTraffic = neighborhoods
+    .map((neighborhood) => {
+      const todaysViews = sitePageViews.filter((item) => item.dateKey === todayKey && item.neighborhoodId === neighborhood.id);
+      return {
+        id: neighborhood.id,
+        label: `${neighborhood.city} / ${neighborhood.district} / ${neighborhood.name}`,
+        views: todaysViews.reduce((sum, item) => sum + item.viewCount, 0),
+        uniqueVisitors: new Set(todaysViews.map((item) => item.visitorId)).size
+      };
+    })
+    .filter((item) => item.views > 0)
+    .sort((a, b) => b.views - a.views)
     .slice(0, 8);
 
   return (
@@ -385,6 +439,60 @@ export default async function AdminPage() {
         </Card>
       </section>
 
+      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <Card className="border-amber-200">
+          <CardHeader>
+            <CardTitle>Tekil Ziyaretçi Grafiği</CardTitle>
+            <p className="mt-1 text-sm text-zinc-500">Son 7 gündeki benzersiz ziyaretçi sayısı</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid h-64 items-end gap-3 sm:grid-cols-7">
+              {uniqueVisitorTrend.map((item) => (
+                <div key={item.label} className="flex h-full flex-col justify-end gap-2">
+                  <div className="flex h-full items-end">
+                    <div
+                      className="w-full rounded-t-2xl bg-gradient-to-t from-sky-500 via-cyan-400 to-teal-300"
+                      style={{ height: `${Math.max(14, Math.round((item.uniqueVisitors / maxUniqueVisitors) * 100))}%` }}
+                    />
+                  </div>
+                  <div className="rounded-2xl border border-sky-100 bg-sky-50/40 px-2 py-2 text-center">
+                    <p className="text-[11px] font-semibold text-zinc-700">{item.label}</p>
+                    <p className="mt-1 text-lg font-black text-zinc-950">{item.uniqueVisitors}</p>
+                    <p className="text-[10px] text-zinc-500">tekil ziyaretçi</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-amber-200">
+          <CardHeader>
+            <CardTitle>En Çok Görüntülenen Sayfalar</CardTitle>
+            <p className="mt-1 text-sm text-zinc-500">Toplam görüntülenmeye göre en çok ziyaret alan sayfalar</p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {topPages.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/40 px-4 py-5 text-sm text-zinc-500">
+                Sayfa görüntülenme verisi toplanıyor.
+              </div>
+            ) : (
+              topPages.map((item) => (
+                <div key={item.path} className="flex items-center justify-between rounded-2xl border border-amber-100 bg-white px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-zinc-900">{item.path}</p>
+                    <p className="text-xs text-zinc-500">{item.uniqueVisitors} tekil ziyaretçi</p>
+                  </div>
+                  <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                    {item.views} görüntüleme
+                  </span>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <Card className="border-amber-200">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -451,6 +559,32 @@ export default async function AdminPage() {
                     <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
                       {item.onlineCount} online
                     </span>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200">
+            <CardHeader>
+              <CardTitle>Bugün En Çok Giriş Alan Mahalleler</CardTitle>
+              <p className="mt-1 text-sm text-zinc-500">Bugünkü mahalle bazlı ziyaret trafiği</p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {todayNeighborhoodTraffic.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/40 px-4 py-5 text-sm text-zinc-500">
+                  Bugünkü mahalle trafiği henüz oluşmadı.
+                </div>
+              ) : (
+                todayNeighborhoodTraffic.map((item) => (
+                  <div key={item.id} className="rounded-2xl border border-amber-100 bg-white px-4 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-medium text-zinc-800">{item.label}</p>
+                      <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
+                        {item.views} giriş
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-zinc-500">{item.uniqueVisitors} tekil ziyaretçi</p>
                   </div>
                 ))
               )}
