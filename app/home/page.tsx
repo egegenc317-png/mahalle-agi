@@ -106,6 +106,9 @@ export default async function UnifiedHomePage() {
             <h1 className="text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl lg:text-4xl">
               Komşularınla Güvende Kal, alışveriş Yap, Dayanışmaya Katıl
             </h1>
+            <p className="text-base font-semibold tracking-wide text-zinc-900 sm:text-lg">
+              Seni seviyorum nazar ve doga
+            </p>
             <p className="max-w-2xl text-sm text-zinc-700 lg:text-base">{heroText}</p>
             <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:flex-wrap">
               <Button asChild className="bg-orange-500 hover:bg-orange-600">
