@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { MapPin } from "lucide-react";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UnifiedNeighborhoodMap } from "@/components/unified-neighborhood-map";
@@ -17,27 +16,20 @@ export default async function MapPage() {
   if (!session) redirect("/auth/login");
   if (!session.user.locationScope) redirect("/onboarding/scope");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
-
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-  const neighborhoodIds = scopeContext.ids;
-  const whereNeighborhood =
-    neighborhoodIds.length === 1 ? neighborhoodIds[0] : { in: neighborhoodIds };
+  const neighborhoodId = session.user.neighborhoodId;
 
   const [allListings, allPosts, neighborhood] = await Promise.all([
     prisma.listing.findMany({
-      where: { neighborhoodId: whereNeighborhood, status: "ACTIVE" },
+      where: { neighborhoodId, status: "ACTIVE" },
       include: { user: { select: { id: true, name: true } } },
       orderBy: { createdAt: "desc" }
     }),
     prisma.boardPost.findMany({
-      where: { neighborhoodId: whereNeighborhood },
+      where: { neighborhoodId },
       include: { user: { select: { id: true, name: true } } },
       orderBy: { createdAt: "desc" }
     }),
-    prisma.neighborhood.findUnique({ where: { id: session.user.neighborhoodId } })
+    prisma.neighborhood.findUnique({ where: { id: neighborhoodId } })
   ]);
   const businessUsers = await prisma.user.findMany();
 
@@ -81,7 +73,7 @@ export default async function MapPage() {
           u.accountType === "BUSINESS" &&
           typeof u.shopLocationLat === "number" &&
           typeof u.shopLocationLng === "number" &&
-          (u.neighborhoodId ? (Array.isArray(neighborhoodIds) ? neighborhoodIds.includes(u.neighborhoodId) : true) : false)
+          u.neighborhoodId === neighborhoodId
       )
       .map((u: BusinessUser) => ({
         id: `shop-${u.id}`,
@@ -110,22 +102,27 @@ export default async function MapPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-sm text-zinc-600">
-            {session.user.locationScope === "DISTRICT"
-              ? `${neighborhood?.city} / ${neighborhood?.district} semti için konumlu ilan ve duyurular.`
-              : `${neighborhood?.city} / ${neighborhood?.district} / ${neighborhood?.name} için konumlu ilan ve duyurular.`}
+            {`${neighborhood?.city} / ${neighborhood?.district} / ${neighborhood?.name} mahallesi için konumlu ilan, duyuru ve işletmeler.`}
           </p>
           <p className="text-xs text-zinc-500">
-            Konum eklemek için Pazar sekmesindeki İlan Ekle veya Pano sayfasındaki duyuru akışını kullanabilirsiniz.
+            Konum yenileyince harita ve içerikler otomatik olarak geçtiğin mahalleye göre güncellenir.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Tüm Konumlar Tek Haritada ({mapItems.length})</CardTitle>
+          <CardTitle>Mahallendeki Konumlar ({mapItems.length})</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6">
-          <UnifiedNeighborhoodMap items={mapItems} />
+          <UnifiedNeighborhoodMap
+            items={mapItems}
+            defaultCenter={
+              typeof neighborhood?.lat === "number" && typeof neighborhood?.lng === "number"
+                ? { lat: neighborhood.lat, lng: neighborhood.lng }
+                : null
+            }
+          />
         </CardContent>
       </Card>
     </div>

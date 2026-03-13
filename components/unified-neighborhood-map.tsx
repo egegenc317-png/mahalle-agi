@@ -166,7 +166,13 @@ function buildPopupNode(item: MapItem) {
   return root;
 }
 
-export function UnifiedNeighborhoodMap({ items }: { items: MapItem[] }) {
+export function UnifiedNeighborhoodMap({
+  items,
+  defaultCenter
+}: {
+  items: MapItem[];
+  defaultCenter?: { lat: number; lng: number } | null;
+}) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [statusText, setStatusText] = useState("Harita hazırlanıyor...");
 
@@ -190,9 +196,14 @@ export function UnifiedNeighborhoodMap({ items }: { items: MapItem[] }) {
       if (!active || !mapRef.current || !window.L) return;
 
       const L = window.L;
+      const initialCenter =
+        defaultCenter && typeof defaultCenter.lat === "number" && typeof defaultCenter.lng === "number"
+          ? [defaultCenter.lat, defaultCenter.lng]
+          : [39.0, 35.0];
+      const initialZoom = defaultCenter ? 15 : 6;
       mapInstance = L.map(mapRef.current, {
         zoomControl: true
-      }).setView([39.0, 35.0], 6);
+      }).setView(initialCenter as [number, number], initialZoom);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: tileAttribution
@@ -238,7 +249,7 @@ export function UnifiedNeighborhoodMap({ items }: { items: MapItem[] }) {
         mapInstance.fitBounds(bounds.pad(0.22));
         setStatusText(`${markerCount} konum haritada gösteriliyor.`);
       } else {
-        setStatusText("Konum bulunamadı. İlan veya duyuruya konum ekleyin.");
+        setStatusText(defaultCenter ? "Bu mahallede henüz konumlu içerik yok." : "Konum bulunamadı. İlan veya duyuruya konum ekleyin.");
       }
     };
 
@@ -252,7 +263,7 @@ export function UnifiedNeighborhoodMap({ items }: { items: MapItem[] }) {
         mapInstance.remove();
       }
     };
-  }, [sortedItems]);
+  }, [defaultCenter, sortedItems]);
 
   return (
     <div className="space-y-3">
