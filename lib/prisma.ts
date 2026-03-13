@@ -315,8 +315,10 @@ export const prisma = {
   },
   flowPostLike: {
     findFirst: async ({ where }: any) => await db.flowPostLike.findFirst({ where }),
+    findMany: async ({ where }: any = {}) => await db.flowPostLike.findMany({ where }),
     create: async ({ data }: any) => await db.flowPostLike.create({ data: { id: data.id || randomUUID(), ...data } }),
     delete: async ({ where }: any) => await db.flowPostLike.delete({ where }),
+    deleteMany: async ({ where }: any) => await db.flowPostLike.deleteMany({ where }),
     count: async ({ where }: any) => await db.flowPostLike.count({ where })
   },
   poll: {

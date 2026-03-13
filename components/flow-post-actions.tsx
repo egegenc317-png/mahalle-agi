@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Heart, MessageCircle, Repeat2, SendHorizonal } from "lucide-react";
+import { Heart, MessageCircle, Repeat2, SendHorizonal, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,7 @@ type FlowPostActionsProps = {
   likeCount: number;
   replyCount: number;
   repostCount: number;
+  canDelete?: boolean;
 };
 
 export function FlowPostActions({
@@ -20,7 +21,8 @@ export function FlowPostActions({
   likedByMe,
   likeCount,
   replyCount,
-  repostCount
+  repostCount,
+  canDelete = false
 }: FlowPostActionsProps) {
   const router = useRouter();
   const [liked, setLiked] = useState(likedByMe);
@@ -55,6 +57,13 @@ export function FlowPostActions({
         repostOfPostId: postId
       })
     });
+    if (res.ok) router.refresh();
+  };
+
+  const remove = async () => {
+    const ok = window.confirm("Bu paylaşımı silmek istiyor musun?");
+    if (!ok) return;
+    const res = await fetch(`/api/akis/${postId}`, { method: "DELETE" });
     if (res.ok) router.refresh();
   };
 
@@ -96,6 +105,11 @@ export function FlowPostActions({
         <button type="button" onClick={repost} className="inline-flex items-center gap-1.5 transition hover:text-emerald-600">
           <Repeat2 className="h-4 w-4" /> {repostCount}
         </button>
+        {canDelete ? (
+          <button type="button" onClick={remove} className="inline-flex items-center gap-1.5 transition hover:text-red-600">
+            <Trash2 className="h-4 w-4" /> Sil
+          </button>
+        ) : null}
       </div>
 
       {openReply ? (

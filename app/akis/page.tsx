@@ -158,6 +158,7 @@ export default async function AkisPage() {
                           likeCount={post.likes?.length || 0}
                           replyCount={post.replies?.length || 0}
                           repostCount={post.reposts?.length || 0}
+                          canDelete={post.userId === session.user.id || session.user.role === "ADMIN"}
                         />
 
                         {post.replies?.length ? (
