@@ -6,12 +6,52 @@ import { prisma } from "@/lib/prisma";
 import { MessagesHub } from "@/components/messages-hub";
 
 const SYSTEM_MESSAGE_PREFIX = "__SYSTEM__|";
+const FILE_MESSAGE_PREFIX = "__FILE__|";
+const FILE_JSON_PREFIX = "__FILEJSON__";
+const FILE_ONCE_CONSUMED_PREFIX = "__FILE_ONCE_CONSUMED__|";
 type DeliveryStatus = "seen" | "delivered" | null;
+
+function isImageFile(name?: string | null, url?: string | null) {
+  const candidate = `${name || ""} ${url || ""}`.toLowerCase();
+  return /\.(png|jpe?g|webp|gif|avif|bmp|svg)(\?|$)/.test(candidate);
+}
+
+function formatFilePreview(body: string) {
+  if (body.startsWith(FILE_ONCE_CONSUMED_PREFIX)) {
+    return "Tek bakmalık Fotoğraf";
+  }
+
+  if (body.startsWith(FILE_JSON_PREFIX)) {
+    try {
+      const payload = JSON.parse(body.slice(FILE_JSON_PREFIX.length));
+      if (payload?.viewOnce) return "Tek bakmalık Fotoğraf";
+      return isImageFile(payload?.name, payload?.url) ? "Fotoğraf" : "Dosya";
+    } catch {
+      return "Dosya";
+    }
+  }
+
+  if (body.startsWith(FILE_MESSAGE_PREFIX)) {
+    const parts = body.slice(FILE_MESSAGE_PREFIX.length).split("|");
+    const name = parts[0];
+    const url = parts[1];
+    return isImageFile(name, url) ? "Fotoğraf" : "Dosya";
+  }
+
+  return body;
+}
 
 function formatPreview(body?: string | null) {
   if (!body) return "Sohbeti aç ve yazışmaya başla";
   if (body.startsWith(SYSTEM_MESSAGE_PREFIX)) {
     return body.slice(SYSTEM_MESSAGE_PREFIX.length).trim();
+  }
+  if (
+    body.startsWith(FILE_JSON_PREFIX) ||
+    body.startsWith(FILE_MESSAGE_PREFIX) ||
+    body.startsWith(FILE_ONCE_CONSUMED_PREFIX)
+  ) {
+    return formatFilePreview(body);
   }
   return body;
 }
@@ -51,7 +91,8 @@ export default async function MessagesPage() {
   const userMap = new Map(users.map((item) => [item.id, item.name]));
   const me = users.find((item) => item.id === session.user.id) || null;
   const mentionToken = getMentionToken(me || {});
-  const conversationItems = conversations.map((c) => {
+  const conversationItems = conversations
+    .map((c) => {
     const isGroup = c.conversationType === "GROUP";
     const members = (c.participantIds || []).map((id) => userMap.get(id)).filter(Boolean) as string[];
     const peer = isGroup ? c.groupName || c.contextTitle || "Grup Sohbeti" : c.buyerId === session.user.id ? c.seller.name : c.buyer.name;
@@ -78,8 +119,24 @@ export default async function MessagesPage() {
         (!mySeenAt || new Date(last.createdAt).getTime() > new Date(mySeenAt).getTime()) &&
         formatPreview(last.body).includes(mentionToken)
       );
-    return { id: c.id, peer, title, preview: formatPreview(preview), time, deliveryStatus, isGroup, image: c.groupImage || null, hasMention };
-  });
+      return {
+        id: c.id,
+        peer,
+        title,
+        preview: formatPreview(preview),
+        time,
+        deliveryStatus,
+        isGroup,
+        image: c.groupImage || null,
+        hasMention,
+        sortDate: last?.createdAt ? new Date(last.createdAt).getTime() : new Date(c.createdAt).getTime()
+      };
+    })
+    .sort((a, b) => b.sortDate - a.sortDate)
+    .map((item) => {
+      delete item.sortDate;
+      return item;
+    });
 
   return <MessagesHub currentUserId={session.user.id} conversations={conversationItems} />;
 }
