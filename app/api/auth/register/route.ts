@@ -16,7 +16,13 @@ function getAge(date: Date) {
 }
 
 function createLocalLoginEmail(username: string) {
-  return `${username}.${Date.now()}@mahalle.local`;
+  const safeLocalPart =
+    username
+      .normalize("NFKD")
+      .replace(/[^\w.-]+/g, ".")
+      .replace(/\.{2,}/g, ".")
+      .replace(/^[.-]+|[.-]+$/g, "") || "kullanici";
+  return `${safeLocalPart}.${Date.now()}@mahalle.local`;
 }
 
 export async function POST(req: NextRequest) {
@@ -30,8 +36,8 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
   const allUsers = await prisma.user.findMany();
-  const username = parsed.data.username.trim().toLowerCase();
-  const usernameExists = allUsers.some((u: { username?: string | null }) => (u.username || "").toLowerCase() === username);
+  const username = parsed.data.username.trim();
+  const usernameExists = allUsers.some((u: { username?: string | null }) => (u.username || "").trim().toLowerCase() === username.toLowerCase());
   if (usernameExists) return NextResponse.json({ error: "Kullanıcı adı zaten alınmış" }, { status: 409 });
 
   const normalizedEmail = parsed.data.email?.trim().toLowerCase() || "";

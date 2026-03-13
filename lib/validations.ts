@@ -12,18 +12,20 @@ const optionalLng = z.preprocess((value) => {
 
 export const registerSchema = z.object({
   name: z.string().min(2).max(80),
-  username: z
-    .string()
-    .min(3)
-    .max(24)
-    .regex(/^[a-zA-Z0-9_]+$/, "Kullanici adi sadece harf, rakam ve _ icerebilir."),
+  username: z.string().trim().min(1, "Kullanıcı adı zorunlu."),
   email: z
     .string()
     .trim()
     .optional()
     .transform((value) => (value ? value.toLowerCase() : ""))
     .refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(value), "Geçerli bir e-posta adresi girin."),
-  password: z.string().min(6).max(64),
+  password: z
+    .string()
+    .min(6)
+    .max(64)
+    .refine((value) => /[A-Z]/.test(value), "Şifre en az bir büyük harf içermeli.")
+    .refine((value) => /[a-z]/.test(value), "Şifre en az bir küçük harf içermeli.")
+    .refine((value) => /\d/.test(value), "Şifre en az bir sayı içermeli."),
   birthDate: z.coerce.date(),
   showAge: z.coerce.boolean().optional().default(false),
   accountType: z.enum(["NEIGHBOR", "BUSINESS"]),

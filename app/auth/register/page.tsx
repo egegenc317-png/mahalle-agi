@@ -51,6 +51,10 @@ export default function RegisterPage() {
   const uploadInputClass = "h-11 border-amber-200 bg-white file:mr-3 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-[#f59e0b] file:to-[#ea580c] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:from-[#d97706] hover:file:to-[#c2410c]";
   const normalizedEmail = useMemo(() => email.trim().toLowerCase(), [email]);
   const emailLooksValid = normalizedEmail.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(normalizedEmail);
+  const passwordHasUpper = /[A-Z]/.test(password);
+  const passwordHasLower = /[a-z]/.test(password);
+  const passwordHasDigit = /\d/.test(password);
+  const passwordRulesSatisfied = passwordHasUpper && passwordHasLower && passwordHasDigit;
   const emailCodeExpired = Boolean(emailCodeExpiresAt && emailCountdown <= 0 && !emailVerified);
   const formattedCountdown = useMemo(() => {
     const minutes = String(Math.floor(emailCountdown / 60)).padStart(2, "0");
@@ -136,6 +140,10 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     setEmailStatus(null);
+    if (!passwordRulesSatisfied) {
+      setError("Şifre en az bir büyük harf, bir küçük harf ve bir sayı içermeli.");
+      return;
+    }
     if (normalizedEmail && !emailVerified) {
       setError("E-posta girdiysen önce doğrulama kodunu onaylamalısın.");
       return;
@@ -231,12 +239,9 @@ export default function RegisterPage() {
                 <AtSign className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-zinc-500" />
                 <Input
                   className="h-11 border-zinc-200 pl-9"
-                  placeholder="Kullanıcı adı (or: mehmet34)"
+                  placeholder="Kullanıcı adı"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))}
-                  minLength={3}
-                  maxLength={24}
-                  pattern="[A-Za-z0-9_]+"
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
@@ -305,7 +310,15 @@ export default function RegisterPage() {
                 ) : null}
               </div>
 
-              <Input type="password" className="h-11 border-zinc-200" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <div className="space-y-2">
+                <Input type="password" className="h-11 border-zinc-200" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="grid gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600 sm:grid-cols-3">
+                  <div className={passwordHasUpper ? "text-emerald-700" : "text-red-600"}>En az bir büyük harf</div>
+                  <div className={passwordHasLower ? "text-emerald-700" : "text-red-600"}>En az bir küçük harf</div>
+                  <div className={passwordHasDigit ? "text-emerald-700" : "text-red-600"}>En az bir sayı</div>
+                </div>
+                {password && !passwordRulesSatisfied ? <p className="text-xs text-red-600">Şifre güçlü değil. En az bir büyük harf, bir küçük harf ve bir sayı içermeli.</p> : null}
+              </div>
 
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <Button type="button" variant={accountType === "NEIGHBOR" ? "default" : "outline"} onClick={() => setAccountType("NEIGHBOR")} className={accountType === "NEIGHBOR" ? "bg-zinc-900 text-white hover:bg-zinc-800" : "border-zinc-300"}>Komşu Hesabı</Button>
