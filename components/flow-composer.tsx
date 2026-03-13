@@ -11,9 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 type FlowComposerProps = {
   neighborhoodLabel: string;
+  compact?: boolean;
 };
 
-export function FlowComposer({ neighborhoodLabel }: FlowComposerProps) {
+export function FlowComposer({ neighborhoodLabel, compact = false }: FlowComposerProps) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
@@ -65,9 +66,9 @@ export function FlowComposer({ neighborhoodLabel }: FlowComposerProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[26px] border border-amber-200 bg-[linear-gradient(145deg,#fffdf7_0%,#fff8ee_56%,#fff4e8_100%)] shadow-[0_18px_50px_rgba(199,132,44,0.12)]"
+      className={`overflow-hidden border border-amber-200 ${compact ? "rounded-[24px] bg-white shadow-sm" : "rounded-[26px] bg-[linear-gradient(145deg,#fffdf7_0%,#fff8ee_56%,#fff4e8_100%)] shadow-[0_18px_50px_rgba(199,132,44,0.12)]"}`}
     >
-      <div className="border-b border-amber-200/80 bg-white/75 px-4 py-3 backdrop-blur sm:px-5">
+      <div className={`border-b border-amber-200/80 px-4 py-3 sm:px-5 ${compact ? "bg-amber-50/70" : "bg-white/75 backdrop-blur"}`}>
         <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-orange-600">
           <Sparkles className="h-3.5 w-3.5" /> {neighborhoodLabel} Akışı
         </p>
