@@ -5,7 +5,6 @@ import { Megaphone, BriefcaseBusiness, ClipboardList, Crown, Flame, Sparkles, Tr
 import Image from "next/image";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { getWeeklyNeighborhoodMukhtar } from "@/lib/mukhtar";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -38,21 +37,13 @@ export default async function UnifiedHomePage() {
   if (!session) redirect("/auth/login");
   if (!session.user.locationScope) redirect("/onboarding/scope");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
-
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-  const neighborhoodIds = scopeContext.ids;
-  if (neighborhoodIds.length === 0) redirect("/onboarding/neighborhood");
-  const whereNeighborhood =
-    neighborhoodIds.length === 1 ? neighborhoodIds[0] : { in: neighborhoodIds };
+  const neighborhoodId = session.user.neighborhoodId;
 
   const [listings, boardPosts, listingCandidates, boardCandidates, polls, neighborhood, mukhtar] = await Promise.all([
     prisma.listing.findMany({
       where: {
         status: "ACTIVE",
-        neighborhoodId: whereNeighborhood
+        neighborhoodId
       },
       include: { user: { select: { id: true, name: true, username: true, image: true } } },
       orderBy: { createdAt: "desc" },
@@ -60,7 +51,7 @@ export default async function UnifiedHomePage() {
     }),
     prisma.boardPost.findMany({
       where: {
-        neighborhoodId: whereNeighborhood
+        neighborhoodId
       },
       include: { user: { select: { id: true, name: true, username: true, image: true } } },
       orderBy: { createdAt: "desc" },
@@ -69,26 +60,26 @@ export default async function UnifiedHomePage() {
     prisma.listing.findMany({
       where: {
         status: "ACTIVE",
-        neighborhoodId: whereNeighborhood
+        neighborhoodId
       },
       include: { user: { select: { id: true, name: true, username: true, image: true } } }
     }),
     prisma.boardPost.findMany({
       where: {
-        neighborhoodId: whereNeighborhood
+        neighborhoodId
       },
       include: { user: { select: { id: true, name: true, username: true, image: true } } }
     }) as Promise<BoardPostView[]>,
     prisma.poll.findMany({
       where: {
-        neighborhoodId: whereNeighborhood
+        neighborhoodId
       },
       include: { user: { select: { id: true, name: true } }, votes: true },
       orderBy: { createdAt: "desc" },
       take: 3
     }) as Promise<PollView[]>,
-    prisma.neighborhood.findUnique({ where: { id: session.user.neighborhoodId! } }),
-    getWeeklyNeighborhoodMukhtar(session.user.neighborhoodId),
+    prisma.neighborhood.findUnique({ where: { id: neighborhoodId } }),
+    getWeeklyNeighborhoodMukhtar(neighborhoodId),
   ]);
 
   const topListings = [...(listingCandidates as ListingView[])]
@@ -98,13 +89,10 @@ export default async function UnifiedHomePage() {
     .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0) || +b.createdAt - +a.createdAt)
     .slice(0, 3);
 
-  const areaLabel = session.user.locationScope === "DISTRICT" ? "Semt" : "Mahalle";
-  const heroText =
-    session.user.locationScope === "DISTRICT"
-      ? "Semtindeki ilanları, duyuruları ve oylamaları tek ekranda takip et. Sıcak, güvenli ve yerel bir topluluk deneyimi."
-      : "Mahallendeki ilanları, duyuruları ve oylamaları tek ekranda takip et. Sıcak, güvenli ve yerel bir topluluk deneyimi.";
-  const joinText = session.user.locationScope === "DISTRICT" ? "Semte Katıl" : "Mahalleye Katıl";
-  const goText = session.user.locationScope === "DISTRICT" ? "Semtime Git" : "Mahalleme Git";
+  const areaLabel = "Mahalle";
+  const heroText = "Mahallendeki ilanları, duyuruları ve oylamaları tek ekranda takip et. Sıcak, güvenli ve yerel bir topluluk deneyimi.";
+  const joinText = "Mahalleye Katıl";
+  const goText = "Mahalleme Git";
 
   return (
     <div className="space-y-5 pb-24 lg:space-y-6 lg:pb-0">

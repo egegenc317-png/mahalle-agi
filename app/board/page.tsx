@@ -5,7 +5,6 @@ import { Megaphone, Plus, Search } from "lucide-react";
 import Image from "next/image";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,16 +39,8 @@ export default async function BoardPage({
   if (!session.user.locationScope) redirect("/onboarding/scope");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
 
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-  const neighborhoodIds = scopeContext.ids;
-  const whereNeighborhood =
-    neighborhoodIds.length === 1 ? neighborhoodIds[0] : { in: neighborhoodIds };
-
   const where: Record<string, unknown> = {
-    neighborhoodId: whereNeighborhood
+    neighborhoodId: session.user.neighborhoodId
   };
 
   if (searchParams.type && searchParams.type !== "ALL") where.type = searchParams.type;
@@ -67,7 +58,6 @@ export default async function BoardPage({
     orderBy: { createdAt: "desc" }
   });
 
-  const areaLabel = session.user.locationScope === "DISTRICT" ? "Semt" : "Mahalle";
   const activeType = searchParams.type || "ALL";
 
   return (
@@ -77,7 +67,7 @@ export default async function BoardPage({
           <div className="rounded-lg border border-[#9b744f] bg-[#f4e4cc] p-3 shadow-inner sm:p-4">
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#5b3a22] sm:text-2xl">
-                <Megaphone className="h-5 w-5 text-[#d2751f]" /> {areaLabel} Panosu
+                <Megaphone className="h-5 w-5 text-[#d2751f]" /> Mahalle Panosu
               </h1>
               <Button asChild className="w-full bg-[#e58a2d] text-white hover:bg-[#d97f23] sm:w-auto">
                 <Link href="/board/new" className="inline-flex items-center gap-1.5">

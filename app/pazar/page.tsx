@@ -16,8 +16,12 @@ export default async function PazarPage({
 }) {
   const session = await auth();
   if (!session) redirect("/auth/login");
+  if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
 
-  const where: Record<string, unknown> = { status: "ACTIVE" };
+  const where: Record<string, unknown> = {
+    status: "ACTIVE",
+    neighborhoodId: session.user.neighborhoodId
+  };
   if (searchParams.type) where.type = searchParams.type;
   if (searchParams.category) where.category = searchParams.category;
 
@@ -54,10 +58,10 @@ export default async function PazarPage({
               <Store className="h-4 w-4" /> Pazar
             </p>
             <h1 className="mt-2 text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">Mahalle Pazarı</h1>
-            <p className="text-sm text-zinc-700">Tezgah tezgah dolaş, komşularının Tüm aktif ilanlarını sıcak pazar havasinda keşfet.</p>
+            <p className="text-sm text-zinc-700">Tezgah tezgah dolaş, sadece kendi mahallendeki aktif ilanları sıcak pazar havasında keşfet.</p>
             <div className="mt-2 flex flex-wrap gap-2 text-xs">
               <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">{listings.length} aktif ilan</span>
-              <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">Yerel esnaf ve Komşu satıcılar</span>
+              <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">Sadece bu mahalledeki satıcılar</span>
             </div>
           </div>
 
