@@ -57,7 +57,7 @@ export default function NeighborhoodOnboardingPage() {
         setMessage("Konum izni verilmedi veya konum alınamadı.");
         setLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 

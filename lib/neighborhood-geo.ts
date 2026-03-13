@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { prisma } from "@/lib/prisma";
+import { reverseGeocodeLocation } from "@/lib/geocode";
 
 type NeighborhoodRecord = {
   id: string;
@@ -25,6 +26,23 @@ function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+function normalizeText(value?: string | null) {
+  return (value || "")
+    .toLocaleLowerCase("tr-TR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function includesNormalized(source?: string | null, target?: string | null) {
+  const a = normalizeText(source);
+  const b = normalizeText(target);
+  if (!a || !b) return false;
+  return a.includes(b) || b.includes(a);
+}
+
 export async function findNeighborhoodByLocation(lat: number, lng: number) {
   const all = (await prisma.neighborhood.findMany()) as NeighborhoodRecord[];
   const ranked = all
@@ -34,8 +52,18 @@ export async function findNeighborhoodByLocation(lat: number, lng: number) {
     }))
     .sort((a, b) => a.distance - b.distance);
 
-  const best = ranked[0];
-  if (!best) return null;
-  return best;
+  const reverse = await reverseGeocodeLocation(lat, lng);
+  const inRadius = ranked.filter((item) => item.distance <= (typeof item.radiusKm === "number" ? item.radiusKm : 12));
+  if (inRadius.length === 0) {
+    return null;
+  }
+
+  const districtMatched = inRadius.find((item) =>
+    includesNormalized(reverse?.district, item.district) ||
+    includesNormalized(reverse?.suburb, item.name) ||
+    includesNormalized(reverse?.displayName, `${item.district} ${item.name}`)
+  );
+
+  return districtMatched || inRadius[0] || null;
 }
 

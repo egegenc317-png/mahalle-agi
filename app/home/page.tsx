@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ListingCard } from "@/components/listing-card";
+import { NeighborhoodPreviewMap } from "@/components/neighborhood-preview-map";
 
 type PollVoteView = { optionIndex: number };
 type PollView = { id: string; question: string; options: string[]; user: { name: string }; votes: PollVoteView[] };
@@ -137,15 +138,9 @@ export default async function UnifiedHomePage() {
           <div className="relative min-h-[220px] overflow-hidden rounded-2xl border border-amber-100 bg-zinc-900/90 shadow-lg">
             {neighborhood ? (
               <>
-                <iframe
-                  title={`${areaLabel} Uydu Haritası`}
-                  className="h-full min-h-[220px] w-full"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://maps.google.com/maps?q=${neighborhood.lat},${neighborhood.lng}&t=k&z=15&ie=UTF8&iwloc=&output=embed`}
-                />
+                <NeighborhoodPreviewMap lat={neighborhood.lat} lng={neighborhood.lng} />
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/65 to-transparent p-4">
-                  <p className="text-xs uppercase tracking-wide text-amber-200/90">Uydu Görünümü</p>
+                  <p className="text-xs uppercase tracking-wide text-amber-200/90">Mahalle Haritası</p>
                   <p className="text-sm font-medium text-white">
                     {neighborhood.city} / {neighborhood.district} / {neighborhood.name}
                   </p>

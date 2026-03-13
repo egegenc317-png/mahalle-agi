@@ -3,6 +3,13 @@ type GeocodePoint = {
   lng: number;
 };
 
+export type ReverseGeocodeDetails = {
+  city?: string | null;
+  district?: string | null;
+  suburb?: string | null;
+  displayName?: string | null;
+};
+
 async function geocodeWithPhoton(query: string): Promise<GeocodePoint | null> {
   const q = query.trim();
   if (!q) return null;
@@ -115,4 +122,52 @@ export async function geocodeLocationText(
   }
 
   return null;
+}
+
+export async function reverseGeocodeLocation(lat: number, lng: number): Promise<ReverseGeocodeDetails | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 7000);
+
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(String(lat))}&lon=${encodeURIComponent(String(lng))}&zoom=16&addressdetails=1`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Accept-Language": "tr,en",
+          "User-Agent": "MahalleAgiMVP/1.0"
+        },
+        signal: controller.signal,
+        cache: "no-store"
+      }
+    );
+
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as {
+      display_name?: string;
+      address?: {
+        city?: string;
+        town?: string;
+        municipality?: string;
+        suburb?: string;
+        borough?: string;
+        city_district?: string;
+        state_district?: string;
+        county?: string;
+      };
+    };
+
+    const address = data.address || {};
+    return {
+      city: address.city || address.town || address.municipality || null,
+      district: address.city_district || address.state_district || address.county || null,
+      suburb: address.suburb || address.borough || null,
+      displayName: data.display_name || null
+    };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
 }

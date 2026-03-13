@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
+import { reverseGeocodeLocation } from "@/lib/geocode";
 import { findNeighborhoodByLocation } from "@/lib/neighborhood-geo";
 import { prisma } from "@/lib/prisma";
 
@@ -21,7 +22,16 @@ export async function POST(req: NextRequest) {
 
   const neighborhood = await findNeighborhoodByLocation(parsed.data.lat, parsed.data.lng);
   if (!neighborhood) {
-    return NextResponse.json({ error: "Konumunuz desteklenen mahallelerle eslesmedi." }, { status: 400 });
+    const reverse = await reverseGeocodeLocation(parsed.data.lat, parsed.data.lng);
+    const detectedLabel =
+      [reverse?.city, reverse?.district, reverse?.suburb].filter(Boolean).join(" / ") ||
+      reverse?.displayName ||
+      "bulunduğunuz bölge";
+
+    return NextResponse.json(
+      { error: `Konumunuz şu an ${detectedLabel} olarak görünüyor. Sistem desteklenen mahallelerle eşleşmedi.` },
+      { status: 400 }
+    );
   }
 
   const byId = await prisma.user.findUnique({ where: { id: session.user.id } });
