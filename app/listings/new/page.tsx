@@ -41,8 +41,7 @@ function readApiError(payload: unknown, fallback: string) {
 export default function NewListingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, status } = useSession();
-  const isBusiness = session?.user?.accountType === "BUSINESS";
+  const { status } = useSession();
 
   const initialType = useMemo(() => {
     const raw = searchParams.get("type");
@@ -59,12 +58,8 @@ export default function NewListingPage() {
   const uploadInputClass = "h-11 rounded-xl border-amber-200 bg-white file:mr-3 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-[#f59e0b] file:to-[#ea580c] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:from-[#d97706] hover:file:to-[#c2410c]";
 
   useEffect(() => {
-    if (!isBusiness) {
-      setType("JOB");
-      return;
-    }
     setType(initialType);
-  }, [initialType, isBusiness]);
+  }, [initialType]);
 
   const getCurrentPosition = () =>
     new Promise<{ lat: number; lng: number }>((resolve, reject) => {
@@ -130,7 +125,7 @@ export default function NewListingPage() {
       }
 
       const payload = {
-        type: isBusiness ? type : "JOB",
+        type,
         title: form.get("title"),
         description: form.get("description"),
         category: form.get("category"),
@@ -196,23 +191,13 @@ export default function NewListingPage() {
                 <select
                   name="type"
                   className="h-11 w-full rounded-xl border border-amber-200 bg-white px-3 text-sm text-zinc-800 shadow-sm focus:border-orange-400 focus:outline-none"
-                  value={isBusiness ? type : "JOB"}
+                  value={type}
                   onChange={(e) => setType(e.target.value as ListingType)}
-                  disabled={!isBusiness}
                 >
-                  {isBusiness ? (
-                    <>
-                      <option value="PRODUCT">PRODUCT</option>
-                      <option value="SERVICE">SERVICE</option>
-                      <option value="JOB">JOB</option>
-                    </>
-                  ) : (
-                    <option value="JOB">JOB</option>
-                  )}
+                  <option value="PRODUCT">PRODUCT</option>
+                  <option value="SERVICE">SERVICE</option>
+                  <option value="JOB">JOB</option>
                 </select>
-                {!isBusiness && status !== "loading" ? (
-                  <p className="text-xs text-amber-700">Ürün ve hizmet ilanı sadece işletme sahipleri için açıktır.</p>
-                ) : null}
               </div>
 
               <Input name="title" placeholder="Başlık" required className="h-11 rounded-xl border-amber-200 bg-white shadow-sm focus-visible:ring-orange-300" />

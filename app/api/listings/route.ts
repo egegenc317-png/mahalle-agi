@@ -6,7 +6,6 @@ import { geocodeLocationText } from "@/lib/geocode";
 import { validatePointInUserScope } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/ratelimit";
-import { canCreateContentByRating, CONTENT_CREATOR_MIN_STARS } from "@/lib/user-rating";
 import { listingCreateSchema } from "@/lib/validations";
 
 export async function GET(req: NextRequest) {
@@ -36,7 +35,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
-  if (!session.user.locationScope) return NextResponse.json({ error: "Kapsam seçimi gerekli" }, { status: 400 });
 
   const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0]?.trim() || "local";
   const createLimit = await checkRateLimit(`listing-create:${session.user.id}:${ip}`, {
@@ -47,16 +45,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Kısa sürede çok fazla ilan oluşturdun. Lütfen biraz sonra tekrar dene." }, { status: 429 });
   }
 
-  const ratingAccess = await canCreateContentByRating(session.user.id, session.user.role);
-  if (!ratingAccess.ok) {
-    return NextResponse.json(
-      {
-        error: `İlan oluşturmak için ortalama puanın en az ${CONTENT_CREATOR_MIN_STARS.toFixed(1)} / 5 olması gerekiyor. Mevcut: ${(ratingAccess.average / 2).toFixed(1)} / 5`
-      },
-      { status: 403 }
-    );
-  }
-
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user?.neighborhoodId) return NextResponse.json({ error: "Mahalle doğrulayın" }, { status: 400 });
   const neighborhood = await prisma.neighborhood.findUnique({ where: { id: user.neighborhoodId } });
@@ -64,17 +52,6 @@ export async function POST(req: NextRequest) {
   const json = await req.json();
   const parsed = listingCreateSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-
-  const isBusiness = user.accountType === "BUSINESS";
-  const hasShop = Boolean(user.shopName || (typeof user.shopLocationLat === "number" && typeof user.shopLocationLng === "number"));
-  const isShopListing = parsed.data.type === "PRODUCT" || parsed.data.type === "SERVICE";
-
-  if (!isBusiness && isShopListing) {
-    return NextResponse.json({ error: "Sadece işletme sahipleri ürün veya hizmet ilanı açabilir." }, { status: 403 });
-  }
-  if (isBusiness && isShopListing && !hasShop) {
-    return NextResponse.json({ error: "Ürün veya hizmet ilanı için Önce Dükkan bilgilerini tamamlamalısın." }, { status: 403 });
-  }
 
   let locationLat = parsed.data.locationLat ?? null;
   let locationLng = parsed.data.locationLng ?? null;
@@ -109,7 +86,7 @@ export async function POST(req: NextRequest) {
         lat: locationLat,
         lng: locationLng,
         neighborhoodId: user.neighborhoodId,
-        locationScope: session.user.locationScope
+        locationScope: session.user.locationScope || "NEIGHBORHOOD"
       });
 
       if (!scopeCheck.ok) {
