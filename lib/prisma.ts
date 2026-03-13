@@ -195,8 +195,9 @@ export const prisma = {
   userRating: {
     findMany: async ({ where }: any = {}) => await db.userRating.findMany({ where }),
     findFirst: async ({ where }: any) => await db.userRating.findFirst({ where }),
-    create: async ({ data }: any) => await db.userRating.create({ data: { id: data.id || randomUUID(), ...data } }),
-    update: async ({ where, data }: any) => await db.userRating.update({ where, data })
+    create: async ({ data }: any) =>
+      await db.userRating.create({ data: { id: data.id || randomUUID(), updatedAt: new Date(), ...data } }),
+    update: async ({ where, data }: any) => await db.userRating.update({ where, data: { ...data, updatedAt: new Date() } })
   },
   neighborhood: {
     findMany: async ({ where, orderBy }: any = {}) => await db.neighborhood.findMany({ where, orderBy }),
@@ -213,8 +214,18 @@ export const prisma = {
       (await db.listing.findMany({ where, include: attachListingIncludes(include), orderBy, take })).map(normalizeListing),
     findUnique: async ({ where, include }: any) =>
       normalizeListing(await db.listing.findUnique({ where, include: attachListingIncludes(include) })),
-    create: async ({ data }: any) => normalizeListing(await db.listing.create({ data: { id: data.id || randomUUID(), ...data } })),
-    update: async ({ where, data }: any) => normalizeListing(await db.listing.update({ where, data })),
+    create: async ({ data }: any) =>
+      normalizeListing(
+        await db.listing.create({
+          data: {
+            id: data.id || randomUUID(),
+            updatedAt: new Date(),
+            ...data
+          }
+        })
+      ),
+    update: async ({ where, data }: any) =>
+      normalizeListing(await db.listing.update({ where, data: { ...data, updatedAt: new Date() } })),
     delete: async ({ where }: any) => normalizeListing(await db.listing.delete({ where }))
   },
   conversation: {
