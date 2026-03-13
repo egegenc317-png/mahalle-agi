@@ -77,7 +77,11 @@ function normalizeFlowPost(post: any) {
   return {
     ...post,
     photos: parseJson<string[]>(post.photos, []),
-    user: normalizeUser(post.user)
+    user: normalizeUser(post.user),
+    likes: post.likes || [],
+    replies: (post.replies || []).map(normalizeFlowPost),
+    reposts: (post.reposts || []).map(normalizeFlowPost),
+    repostOfPost: normalizeFlowPost(post.repostOfPost)
   };
 }
 
@@ -271,12 +275,49 @@ export const prisma = {
   },
   flowPost: {
     findMany: async ({ where, include, orderBy, take }: any = {}) =>
-      (await db.flowPost.findMany({ where, include: { user: Boolean(include?.user) }, orderBy, take })).map(normalizeFlowPost),
+      (await db.flowPost.findMany({
+        where,
+        include: {
+          user: Boolean(include?.user),
+          likes: Boolean(include?.likes),
+          replies: include?.replies ? { include: { user: true }, orderBy: { createdAt: "asc" } } : false,
+          reposts: Boolean(include?.reposts),
+          repostOfPost: include?.repostOfPost ? { include: { user: true } } : false
+        },
+        orderBy,
+        take
+      })).map(normalizeFlowPost),
     create: async ({ data }: any) =>
       normalizeFlowPost(await db.flowPost.create({ data: { id: data.id || randomUUID(), ...data, photos: JSON.stringify(data.photos || []) } })),
     findUnique: async ({ where, include }: any) =>
-      normalizeFlowPost(await db.flowPost.findUnique({ where, include: { user: Boolean(include?.user) } })),
+      normalizeFlowPost(await db.flowPost.findUnique({
+        where,
+        include: {
+          user: Boolean(include?.user),
+          likes: Boolean(include?.likes),
+          replies: include?.replies ? { include: { user: true }, orderBy: { createdAt: "asc" } } : false,
+          reposts: Boolean(include?.reposts),
+          repostOfPost: include?.repostOfPost ? { include: { user: true } } : false
+        }
+      })),
+    findFirst: async ({ where, include }: any) =>
+      normalizeFlowPost(await db.flowPost.findFirst({
+        where,
+        include: {
+          user: Boolean(include?.user),
+          likes: Boolean(include?.likes),
+          replies: include?.replies ? { include: { user: true }, orderBy: { createdAt: "asc" } } : false,
+          reposts: Boolean(include?.reposts),
+          repostOfPost: include?.repostOfPost ? { include: { user: true } } : false
+        }
+      })),
     delete: async ({ where }: any) => normalizeFlowPost(await db.flowPost.delete({ where }))
+  },
+  flowPostLike: {
+    findFirst: async ({ where }: any) => await db.flowPostLike.findFirst({ where }),
+    create: async ({ data }: any) => await db.flowPostLike.create({ data: { id: data.id || randomUUID(), ...data } }),
+    delete: async ({ where }: any) => await db.flowPostLike.delete({ where }),
+    count: async ({ where }: any) => await db.flowPostLike.count({ where })
   },
   poll: {
     findMany: async ({ where, include, orderBy, take }: any = {}) =>

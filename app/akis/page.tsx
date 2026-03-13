@@ -2,12 +2,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Flame, MapPin, MessageCircleMore, Sparkles } from "lucide-react";
+import { Flame, MapPin, Repeat2, Sparkles } from "lucide-react";
 
 import { FlowComposer } from "@/components/flow-composer";
+import { FlowPostActions } from "@/components/flow-post-actions";
 import { Badge } from "@/components/ui/badge";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+type FlowLike = { userId: string };
+type FlowReply = {
+  id: string;
+  body: string;
+  createdAt: Date;
+  user: { id: string; name: string; username?: string | null };
+};
 
 function formatRelative(date: Date) {
   const diffMs = Date.now() - new Date(date).getTime();
@@ -27,8 +36,8 @@ export default async function AkisPage() {
   const [neighborhood, posts] = await Promise.all([
     prisma.neighborhood.findUnique({ where: { id: session.user.neighborhoodId } }),
     prisma.flowPost.findMany({
-      where: { neighborhoodId: session.user.neighborhoodId },
-      include: { user: true },
+      where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null },
+      include: { user: true, likes: true, replies: true, reposts: true, repostOfPost: true },
       orderBy: { createdAt: "desc" },
       take: 60
     })
@@ -100,6 +109,12 @@ export default async function AkisPage() {
                       </Link>
 
                       <div className="min-w-0 flex-1">
+                        {post.repostOfPost ? (
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                            <Repeat2 className="h-3.5 w-3.5" /> Yeniden paylaşıldı
+                          </div>
+                        ) : null}
+
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                           <Link href={`/profile/${post.user.id}`} className="text-base font-bold text-zinc-900 hover:text-orange-600">
                             {post.user.name}
@@ -110,6 +125,16 @@ export default async function AkisPage() {
                         </div>
 
                         <p className="mt-2 whitespace-pre-wrap text-[15px] leading-7 text-zinc-800">{post.body}</p>
+
+                        {post.repostOfPost ? (
+                          <div className="mt-4 rounded-[24px] border border-amber-200 bg-[linear-gradient(180deg,#fffdf7_0%,#fff8ee_100%)] p-4">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                              <span className="text-sm font-bold text-zinc-900">{post.repostOfPost.user?.name}</span>
+                              <span className="text-sm text-zinc-500">@{post.repostOfPost.user?.username || post.repostOfPost.user?.name}</span>
+                            </div>
+                            <p className="mt-2 whitespace-pre-wrap text-[15px] leading-7 text-zinc-800">{post.repostOfPost.body}</p>
+                          </div>
+                        ) : null}
 
                         {post.photos?.length ? (
                           <div className={`mt-4 grid gap-2 ${post.photos.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
@@ -127,12 +152,31 @@ export default async function AkisPage() {
                           </div>
                         ) : null}
 
-                        <div className="mt-4 flex items-center gap-5 text-sm text-zinc-500">
-                          <span className="inline-flex items-center gap-1.5">
-                            <MessageCircleMore className="h-4 w-4 text-orange-500" /> Yazan kişi görünür
-                          </span>
-                          <span>{neighborhood?.name || "Mahalle"} içi paylaşım</span>
-                        </div>
+                        <FlowPostActions
+                          postId={post.id}
+                          likedByMe={Boolean(post.likes?.some((like: FlowLike) => like.userId === session.user.id))}
+                          likeCount={post.likes?.length || 0}
+                          replyCount={post.replies?.length || 0}
+                          repostCount={post.reposts?.length || 0}
+                        />
+
+                        {post.replies?.length ? (
+                          <div className="mt-4 space-y-3 rounded-[24px] border border-amber-100 bg-amber-50/35 p-3">
+                            {post.replies.map((reply: FlowReply) => (
+                              <div key={reply.id} className="rounded-2xl border border-amber-100 bg-white px-3 py-3">
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                  <Link href={`/profile/${reply.user.id}`} className="text-sm font-bold text-zinc-900 hover:text-orange-600">
+                                    {reply.user.name}
+                                  </Link>
+                                  <span className="text-xs text-zinc-500">@{reply.user.username || reply.user.name}</span>
+                                  <span className="text-xs text-zinc-400">·</span>
+                                  <span className="text-xs text-zinc-500">{formatRelative(reply.createdAt)}</span>
+                                </div>
+                                <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">{reply.body}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </article>

@@ -245,6 +245,15 @@ exports.Prisma.FlowPostScalarFieldEnum = {
   userId: 'userId',
   body: 'body',
   photos: 'photos',
+  parentPostId: 'parentPostId',
+  repostOfPostId: 'repostOfPostId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.FlowPostLikeScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
   createdAt: 'createdAt'
 };
 
@@ -372,6 +381,7 @@ exports.Prisma.ModelName = {
   Report: 'Report',
   BoardPost: 'BoardPost',
   FlowPost: 'FlowPost',
+  FlowPostLike: 'FlowPostLike',
   Poll: 'Poll',
   PollVote: 'PollVote',
   UserRating: 'UserRating',

@@ -13,8 +13,8 @@ export async function GET() {
   if (!session.user.neighborhoodId) return NextResponse.json({ error: "Mahalle seçimi gerekli" }, { status: 400 });
 
   const items = await prisma.flowPost.findMany({
-    where: { neighborhoodId: session.user.neighborhoodId },
-    include: { user: true },
+    where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null },
+    include: { user: true, likes: true, replies: true, reposts: true, repostOfPost: true },
     orderBy: { createdAt: "desc" },
     take: 60
   });
@@ -55,7 +55,9 @@ export async function POST(req: NextRequest) {
       neighborhoodId: session.user.neighborhoodId,
       userId: session.user.id,
       body: parsed.data.body,
-      photos: parsed.data.photos || []
+      photos: parsed.data.photos || [],
+      parentPostId: parsed.data.parentPostId,
+      repostOfPostId: parsed.data.repostOfPostId
     }
   });
 

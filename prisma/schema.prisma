@@ -40,6 +40,7 @@ model User {
   reportsMade         Report[]       @relation("ReporterReports")
   boardPosts          BoardPost[]
   flowPosts           FlowPost[]
+  flowLikes           FlowPostLike[]
   polls               Poll[]
   ratingsGiven        UserRating[]   @relation("RatingRater")
   ratingsReceived     UserRating[]   @relation("RatingTarget")
@@ -167,7 +168,25 @@ model FlowPost {
   user           User         @relation(fields: [userId], references: [id])
   body           String
   photos         String
+  parentPostId   String?
+  parentPost     FlowPost?    @relation("FlowReplies", fields: [parentPostId], references: [id])
+  replies        FlowPost[]   @relation("FlowReplies")
+  repostOfPostId String?
+  repostOfPost   FlowPost?    @relation("FlowReposts", fields: [repostOfPostId], references: [id])
+  reposts        FlowPost[]   @relation("FlowReposts")
+  likes          FlowPostLike[]
   createdAt      DateTime     @default(now())
+}
+
+model FlowPostLike {
+  id         String   @id
+  postId     String
+  post       FlowPost @relation(fields: [postId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([postId, userId])
 }
 
 model Poll {

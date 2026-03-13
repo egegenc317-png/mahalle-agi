@@ -129,7 +129,9 @@ export const boardPostCreateSchema = z.object({
 
 export const flowPostCreateSchema = z.object({
   body: z.string().min(2).max(560),
-  photos: z.array(z.string().max(300)).max(4).optional()
+  photos: z.array(z.string().max(300)).max(4).optional(),
+  parentPostId: z.string().min(1).optional(),
+  repostOfPostId: z.string().min(1).optional()
 });
 
 export const pollCreateSchema = z.object({

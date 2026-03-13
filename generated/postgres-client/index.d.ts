@@ -54,6 +54,11 @@ export type BoardPost = $Result.DefaultSelection<Prisma.$BoardPostPayload>
  */
 export type FlowPost = $Result.DefaultSelection<Prisma.$FlowPostPayload>
 /**
+ * Model FlowPostLike
+ * 
+ */
+export type FlowPostLike = $Result.DefaultSelection<Prisma.$FlowPostLikePayload>
+/**
  * Model Poll
  * 
  */
@@ -309,6 +314,16 @@ export class PrismaClient<
     * ```
     */
   get flowPost(): Prisma.FlowPostDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.flowPostLike`: Exposes CRUD operations for the **FlowPostLike** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FlowPostLikes
+    * const flowPostLikes = await prisma.flowPostLike.findMany()
+    * ```
+    */
+  get flowPostLike(): Prisma.FlowPostLikeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.poll`: Exposes CRUD operations for the **Poll** model.
@@ -861,6 +876,7 @@ export namespace Prisma {
     Report: 'Report',
     BoardPost: 'BoardPost',
     FlowPost: 'FlowPost',
+    FlowPostLike: 'FlowPostLike',
     Poll: 'Poll',
     PollVote: 'PollVote',
     UserRating: 'UserRating',
@@ -887,7 +903,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "neighborhood" | "listing" | "conversation" | "message" | "report" | "boardPost" | "flowPost" | "poll" | "pollVote" | "userRating" | "userWeeklyUsage" | "groupInvite" | "emailVerification" | "rateLimitEntry" | "auditLog" | "account" | "session" | "verificationToken"
+      modelProps: "user" | "neighborhood" | "listing" | "conversation" | "message" | "report" | "boardPost" | "flowPost" | "flowPostLike" | "poll" | "pollVote" | "userRating" | "userWeeklyUsage" | "groupInvite" | "emailVerification" | "rateLimitEntry" | "auditLog" | "account" | "session" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1480,6 +1496,80 @@ export namespace Prisma {
           count: {
             args: Prisma.FlowPostCountArgs<ExtArgs>
             result: $Utils.Optional<FlowPostCountAggregateOutputType> | number
+          }
+        }
+      }
+      FlowPostLike: {
+        payload: Prisma.$FlowPostLikePayload<ExtArgs>
+        fields: Prisma.FlowPostLikeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FlowPostLikeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FlowPostLikeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          findFirst: {
+            args: Prisma.FlowPostLikeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FlowPostLikeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          findMany: {
+            args: Prisma.FlowPostLikeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>[]
+          }
+          create: {
+            args: Prisma.FlowPostLikeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          createMany: {
+            args: Prisma.FlowPostLikeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FlowPostLikeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>[]
+          }
+          delete: {
+            args: Prisma.FlowPostLikeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          update: {
+            args: Prisma.FlowPostLikeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          deleteMany: {
+            args: Prisma.FlowPostLikeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FlowPostLikeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FlowPostLikeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>[]
+          }
+          upsert: {
+            args: Prisma.FlowPostLikeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FlowPostLikePayload>
+          }
+          aggregate: {
+            args: Prisma.FlowPostLikeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFlowPostLike>
+          }
+          groupBy: {
+            args: Prisma.FlowPostLikeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FlowPostLikeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FlowPostLikeCountArgs<ExtArgs>
+            result: $Utils.Optional<FlowPostLikeCountAggregateOutputType> | number
           }
         }
       }
@@ -2413,6 +2503,7 @@ export namespace Prisma {
     report?: ReportOmit
     boardPost?: BoardPostOmit
     flowPost?: FlowPostOmit
+    flowPostLike?: FlowPostLikeOmit
     poll?: PollOmit
     pollVote?: PollVoteOmit
     userRating?: UserRatingOmit
@@ -2511,6 +2602,7 @@ export namespace Prisma {
     reportsMade: number
     boardPosts: number
     flowPosts: number
+    flowLikes: number
     polls: number
     ratingsGiven: number
     ratingsReceived: number
@@ -2528,6 +2620,7 @@ export namespace Prisma {
     reportsMade?: boolean | UserCountOutputTypeCountReportsMadeArgs
     boardPosts?: boolean | UserCountOutputTypeCountBoardPostsArgs
     flowPosts?: boolean | UserCountOutputTypeCountFlowPostsArgs
+    flowLikes?: boolean | UserCountOutputTypeCountFlowLikesArgs
     polls?: boolean | UserCountOutputTypeCountPollsArgs
     ratingsGiven?: boolean | UserCountOutputTypeCountRatingsGivenArgs
     ratingsReceived?: boolean | UserCountOutputTypeCountRatingsReceivedArgs
@@ -2595,6 +2688,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFlowPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FlowPostWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFlowLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowPostLikeWhereInput
   }
 
   /**
@@ -2773,6 +2873,55 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+
+  /**
+   * Count Type FlowPostCountOutputType
+   */
+
+  export type FlowPostCountOutputType = {
+    replies: number
+    reposts: number
+    likes: number
+  }
+
+  export type FlowPostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    replies?: boolean | FlowPostCountOutputTypeCountRepliesArgs
+    reposts?: boolean | FlowPostCountOutputTypeCountRepostsArgs
+    likes?: boolean | FlowPostCountOutputTypeCountLikesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FlowPostCountOutputType without action
+   */
+  export type FlowPostCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostCountOutputType
+     */
+    select?: FlowPostCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FlowPostCountOutputType without action
+   */
+  export type FlowPostCountOutputTypeCountRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowPostWhereInput
+  }
+
+  /**
+   * FlowPostCountOutputType without action
+   */
+  export type FlowPostCountOutputTypeCountRepostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowPostWhereInput
+  }
+
+  /**
+   * FlowPostCountOutputType without action
+   */
+  export type FlowPostCountOutputTypeCountLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowPostLikeWhereInput
   }
 
 
@@ -3181,6 +3330,7 @@ export namespace Prisma {
     reportsMade?: boolean | User$reportsMadeArgs<ExtArgs>
     boardPosts?: boolean | User$boardPostsArgs<ExtArgs>
     flowPosts?: boolean | User$flowPostsArgs<ExtArgs>
+    flowLikes?: boolean | User$flowLikesArgs<ExtArgs>
     polls?: boolean | User$pollsArgs<ExtArgs>
     ratingsGiven?: boolean | User$ratingsGivenArgs<ExtArgs>
     ratingsReceived?: boolean | User$ratingsReceivedArgs<ExtArgs>
@@ -3287,6 +3437,7 @@ export namespace Prisma {
     reportsMade?: boolean | User$reportsMadeArgs<ExtArgs>
     boardPosts?: boolean | User$boardPostsArgs<ExtArgs>
     flowPosts?: boolean | User$flowPostsArgs<ExtArgs>
+    flowLikes?: boolean | User$flowLikesArgs<ExtArgs>
     polls?: boolean | User$pollsArgs<ExtArgs>
     ratingsGiven?: boolean | User$ratingsGivenArgs<ExtArgs>
     ratingsReceived?: boolean | User$ratingsReceivedArgs<ExtArgs>
@@ -3314,6 +3465,7 @@ export namespace Prisma {
       reportsMade: Prisma.$ReportPayload<ExtArgs>[]
       boardPosts: Prisma.$BoardPostPayload<ExtArgs>[]
       flowPosts: Prisma.$FlowPostPayload<ExtArgs>[]
+      flowLikes: Prisma.$FlowPostLikePayload<ExtArgs>[]
       polls: Prisma.$PollPayload<ExtArgs>[]
       ratingsGiven: Prisma.$UserRatingPayload<ExtArgs>[]
       ratingsReceived: Prisma.$UserRatingPayload<ExtArgs>[]
@@ -3750,6 +3902,7 @@ export namespace Prisma {
     reportsMade<T extends User$reportsMadeArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     boardPosts<T extends User$boardPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$boardPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BoardPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     flowPosts<T extends User$flowPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$flowPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    flowLikes<T extends User$flowLikesArgs<ExtArgs> = {}>(args?: Subset<T, User$flowLikesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     polls<T extends User$pollsArgs<ExtArgs> = {}>(args?: Subset<T, User$pollsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PollPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ratingsGiven<T extends User$ratingsGivenArgs<ExtArgs> = {}>(args?: Subset<T, User$ratingsGivenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ratingsReceived<T extends User$ratingsReceivedArgs<ExtArgs> = {}>(args?: Subset<T, User$ratingsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4391,6 +4544,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FlowPostScalarFieldEnum | FlowPostScalarFieldEnum[]
+  }
+
+  /**
+   * User.flowLikes
+   */
+  export type User$flowLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    where?: FlowPostLikeWhereInput
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    cursor?: FlowPostLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowPostLikeScalarFieldEnum | FlowPostLikeScalarFieldEnum[]
   }
 
   /**
@@ -11876,6 +12053,8 @@ export namespace Prisma {
     userId: string | null
     body: string | null
     photos: string | null
+    parentPostId: string | null
+    repostOfPostId: string | null
     createdAt: Date | null
   }
 
@@ -11885,6 +12064,8 @@ export namespace Prisma {
     userId: string | null
     body: string | null
     photos: string | null
+    parentPostId: string | null
+    repostOfPostId: string | null
     createdAt: Date | null
   }
 
@@ -11894,6 +12075,8 @@ export namespace Prisma {
     userId: number
     body: number
     photos: number
+    parentPostId: number
+    repostOfPostId: number
     createdAt: number
     _all: number
   }
@@ -11905,6 +12088,8 @@ export namespace Prisma {
     userId?: true
     body?: true
     photos?: true
+    parentPostId?: true
+    repostOfPostId?: true
     createdAt?: true
   }
 
@@ -11914,6 +12099,8 @@ export namespace Prisma {
     userId?: true
     body?: true
     photos?: true
+    parentPostId?: true
+    repostOfPostId?: true
     createdAt?: true
   }
 
@@ -11923,6 +12110,8 @@ export namespace Prisma {
     userId?: true
     body?: true
     photos?: true
+    parentPostId?: true
+    repostOfPostId?: true
     createdAt?: true
     _all?: true
   }
@@ -12005,6 +12194,8 @@ export namespace Prisma {
     userId: string
     body: string
     photos: string
+    parentPostId: string | null
+    repostOfPostId: string | null
     createdAt: Date
     _count: FlowPostCountAggregateOutputType | null
     _min: FlowPostMinAggregateOutputType | null
@@ -12031,9 +12222,17 @@ export namespace Prisma {
     userId?: boolean
     body?: boolean
     photos?: boolean
+    parentPostId?: boolean
+    repostOfPostId?: boolean
     createdAt?: boolean
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    replies?: boolean | FlowPost$repliesArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
+    reposts?: boolean | FlowPost$repostsArgs<ExtArgs>
+    likes?: boolean | FlowPost$likesArgs<ExtArgs>
+    _count?: boolean | FlowPostCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["flowPost"]>
 
   export type FlowPostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12042,9 +12241,13 @@ export namespace Prisma {
     userId?: boolean
     body?: boolean
     photos?: boolean
+    parentPostId?: boolean
+    repostOfPostId?: boolean
     createdAt?: boolean
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
   }, ExtArgs["result"]["flowPost"]>
 
   export type FlowPostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12053,9 +12256,13 @@ export namespace Prisma {
     userId?: boolean
     body?: boolean
     photos?: boolean
+    parentPostId?: boolean
+    repostOfPostId?: boolean
     createdAt?: boolean
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
   }, ExtArgs["result"]["flowPost"]>
 
   export type FlowPostSelectScalar = {
@@ -12064,21 +12271,33 @@ export namespace Prisma {
     userId?: boolean
     body?: boolean
     photos?: boolean
+    parentPostId?: boolean
+    repostOfPostId?: boolean
     createdAt?: boolean
   }
 
-  export type FlowPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "neighborhoodId" | "userId" | "body" | "photos" | "createdAt", ExtArgs["result"]["flowPost"]>
+  export type FlowPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "neighborhoodId" | "userId" | "body" | "photos" | "parentPostId" | "repostOfPostId" | "createdAt", ExtArgs["result"]["flowPost"]>
   export type FlowPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    replies?: boolean | FlowPost$repliesArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
+    reposts?: boolean | FlowPost$repostsArgs<ExtArgs>
+    likes?: boolean | FlowPost$likesArgs<ExtArgs>
+    _count?: boolean | FlowPostCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FlowPostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
   }
   export type FlowPostIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     neighborhood?: boolean | NeighborhoodDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    parentPost?: boolean | FlowPost$parentPostArgs<ExtArgs>
+    repostOfPost?: boolean | FlowPost$repostOfPostArgs<ExtArgs>
   }
 
   export type $FlowPostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12086,6 +12305,11 @@ export namespace Prisma {
     objects: {
       neighborhood: Prisma.$NeighborhoodPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      parentPost: Prisma.$FlowPostPayload<ExtArgs> | null
+      replies: Prisma.$FlowPostPayload<ExtArgs>[]
+      repostOfPost: Prisma.$FlowPostPayload<ExtArgs> | null
+      reposts: Prisma.$FlowPostPayload<ExtArgs>[]
+      likes: Prisma.$FlowPostLikePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12093,6 +12317,8 @@ export namespace Prisma {
       userId: string
       body: string
       photos: string
+      parentPostId: string | null
+      repostOfPostId: string | null
       createdAt: Date
     }, ExtArgs["result"]["flowPost"]>
     composites: {}
@@ -12490,6 +12716,11 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     neighborhood<T extends NeighborhoodDefaultArgs<ExtArgs> = {}>(args?: Subset<T, NeighborhoodDefaultArgs<ExtArgs>>): Prisma__NeighborhoodClient<$Result.GetResult<Prisma.$NeighborhoodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    parentPost<T extends FlowPost$parentPostArgs<ExtArgs> = {}>(args?: Subset<T, FlowPost$parentPostArgs<ExtArgs>>): Prisma__FlowPostClient<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    replies<T extends FlowPost$repliesArgs<ExtArgs> = {}>(args?: Subset<T, FlowPost$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    repostOfPost<T extends FlowPost$repostOfPostArgs<ExtArgs> = {}>(args?: Subset<T, FlowPost$repostOfPostArgs<ExtArgs>>): Prisma__FlowPostClient<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reposts<T extends FlowPost$repostsArgs<ExtArgs> = {}>(args?: Subset<T, FlowPost$repostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    likes<T extends FlowPost$likesArgs<ExtArgs> = {}>(args?: Subset<T, FlowPost$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12524,6 +12755,8 @@ export namespace Prisma {
     readonly userId: FieldRef<"FlowPost", 'String'>
     readonly body: FieldRef<"FlowPost", 'String'>
     readonly photos: FieldRef<"FlowPost", 'String'>
+    readonly parentPostId: FieldRef<"FlowPost", 'String'>
+    readonly repostOfPostId: FieldRef<"FlowPost", 'String'>
     readonly createdAt: FieldRef<"FlowPost", 'DateTime'>
   }
     
@@ -12921,6 +13154,116 @@ export namespace Prisma {
   }
 
   /**
+   * FlowPost.parentPost
+   */
+  export type FlowPost$parentPostArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPost
+     */
+    select?: FlowPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPost
+     */
+    omit?: FlowPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostInclude<ExtArgs> | null
+    where?: FlowPostWhereInput
+  }
+
+  /**
+   * FlowPost.replies
+   */
+  export type FlowPost$repliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPost
+     */
+    select?: FlowPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPost
+     */
+    omit?: FlowPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostInclude<ExtArgs> | null
+    where?: FlowPostWhereInput
+    orderBy?: FlowPostOrderByWithRelationInput | FlowPostOrderByWithRelationInput[]
+    cursor?: FlowPostWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowPostScalarFieldEnum | FlowPostScalarFieldEnum[]
+  }
+
+  /**
+   * FlowPost.repostOfPost
+   */
+  export type FlowPost$repostOfPostArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPost
+     */
+    select?: FlowPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPost
+     */
+    omit?: FlowPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostInclude<ExtArgs> | null
+    where?: FlowPostWhereInput
+  }
+
+  /**
+   * FlowPost.reposts
+   */
+  export type FlowPost$repostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPost
+     */
+    select?: FlowPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPost
+     */
+    omit?: FlowPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostInclude<ExtArgs> | null
+    where?: FlowPostWhereInput
+    orderBy?: FlowPostOrderByWithRelationInput | FlowPostOrderByWithRelationInput[]
+    cursor?: FlowPostWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowPostScalarFieldEnum | FlowPostScalarFieldEnum[]
+  }
+
+  /**
+   * FlowPost.likes
+   */
+  export type FlowPost$likesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    where?: FlowPostLikeWhereInput
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    cursor?: FlowPostLikeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FlowPostLikeScalarFieldEnum | FlowPostLikeScalarFieldEnum[]
+  }
+
+  /**
    * FlowPost without action
    */
   export type FlowPostDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12936,6 +13279,1059 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FlowPostInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FlowPostLike
+   */
+
+  export type AggregateFlowPostLike = {
+    _count: FlowPostLikeCountAggregateOutputType | null
+    _min: FlowPostLikeMinAggregateOutputType | null
+    _max: FlowPostLikeMaxAggregateOutputType | null
+  }
+
+  export type FlowPostLikeMinAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type FlowPostLikeMaxAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type FlowPostLikeCountAggregateOutputType = {
+    id: number
+    postId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FlowPostLikeMinAggregateInputType = {
+    id?: true
+    postId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type FlowPostLikeMaxAggregateInputType = {
+    id?: true
+    postId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type FlowPostLikeCountAggregateInputType = {
+    id?: true
+    postId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FlowPostLikeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowPostLike to aggregate.
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowPostLikes to fetch.
+     */
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FlowPostLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowPostLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowPostLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FlowPostLikes
+    **/
+    _count?: true | FlowPostLikeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FlowPostLikeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FlowPostLikeMaxAggregateInputType
+  }
+
+  export type GetFlowPostLikeAggregateType<T extends FlowPostLikeAggregateArgs> = {
+        [P in keyof T & keyof AggregateFlowPostLike]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFlowPostLike[P]>
+      : GetScalarType<T[P], AggregateFlowPostLike[P]>
+  }
+
+
+
+
+  export type FlowPostLikeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FlowPostLikeWhereInput
+    orderBy?: FlowPostLikeOrderByWithAggregationInput | FlowPostLikeOrderByWithAggregationInput[]
+    by: FlowPostLikeScalarFieldEnum[] | FlowPostLikeScalarFieldEnum
+    having?: FlowPostLikeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FlowPostLikeCountAggregateInputType | true
+    _min?: FlowPostLikeMinAggregateInputType
+    _max?: FlowPostLikeMaxAggregateInputType
+  }
+
+  export type FlowPostLikeGroupByOutputType = {
+    id: string
+    postId: string
+    userId: string
+    createdAt: Date
+    _count: FlowPostLikeCountAggregateOutputType | null
+    _min: FlowPostLikeMinAggregateOutputType | null
+    _max: FlowPostLikeMaxAggregateOutputType | null
+  }
+
+  type GetFlowPostLikeGroupByPayload<T extends FlowPostLikeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FlowPostLikeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FlowPostLikeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FlowPostLikeGroupByOutputType[P]>
+            : GetScalarType<T[P], FlowPostLikeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FlowPostLikeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowPostLike"]>
+
+  export type FlowPostLikeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowPostLike"]>
+
+  export type FlowPostLikeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["flowPostLike"]>
+
+  export type FlowPostLikeSelectScalar = {
+    id?: boolean
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type FlowPostLikeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "postId" | "userId" | "createdAt", ExtArgs["result"]["flowPostLike"]>
+  export type FlowPostLikeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type FlowPostLikeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type FlowPostLikeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | FlowPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $FlowPostLikePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FlowPostLike"
+    objects: {
+      post: Prisma.$FlowPostPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      postId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["flowPostLike"]>
+    composites: {}
+  }
+
+  type FlowPostLikeGetPayload<S extends boolean | null | undefined | FlowPostLikeDefaultArgs> = $Result.GetResult<Prisma.$FlowPostLikePayload, S>
+
+  type FlowPostLikeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FlowPostLikeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FlowPostLikeCountAggregateInputType | true
+    }
+
+  export interface FlowPostLikeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FlowPostLike'], meta: { name: 'FlowPostLike' } }
+    /**
+     * Find zero or one FlowPostLike that matches the filter.
+     * @param {FlowPostLikeFindUniqueArgs} args - Arguments to find a FlowPostLike
+     * @example
+     * // Get one FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FlowPostLikeFindUniqueArgs>(args: SelectSubset<T, FlowPostLikeFindUniqueArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FlowPostLike that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FlowPostLikeFindUniqueOrThrowArgs} args - Arguments to find a FlowPostLike
+     * @example
+     * // Get one FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FlowPostLikeFindUniqueOrThrowArgs>(args: SelectSubset<T, FlowPostLikeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FlowPostLike that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeFindFirstArgs} args - Arguments to find a FlowPostLike
+     * @example
+     * // Get one FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FlowPostLikeFindFirstArgs>(args?: SelectSubset<T, FlowPostLikeFindFirstArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FlowPostLike that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeFindFirstOrThrowArgs} args - Arguments to find a FlowPostLike
+     * @example
+     * // Get one FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FlowPostLikeFindFirstOrThrowArgs>(args?: SelectSubset<T, FlowPostLikeFindFirstOrThrowArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FlowPostLikes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FlowPostLikes
+     * const flowPostLikes = await prisma.flowPostLike.findMany()
+     * 
+     * // Get first 10 FlowPostLikes
+     * const flowPostLikes = await prisma.flowPostLike.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const flowPostLikeWithIdOnly = await prisma.flowPostLike.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FlowPostLikeFindManyArgs>(args?: SelectSubset<T, FlowPostLikeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FlowPostLike.
+     * @param {FlowPostLikeCreateArgs} args - Arguments to create a FlowPostLike.
+     * @example
+     * // Create one FlowPostLike
+     * const FlowPostLike = await prisma.flowPostLike.create({
+     *   data: {
+     *     // ... data to create a FlowPostLike
+     *   }
+     * })
+     * 
+     */
+    create<T extends FlowPostLikeCreateArgs>(args: SelectSubset<T, FlowPostLikeCreateArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FlowPostLikes.
+     * @param {FlowPostLikeCreateManyArgs} args - Arguments to create many FlowPostLikes.
+     * @example
+     * // Create many FlowPostLikes
+     * const flowPostLike = await prisma.flowPostLike.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FlowPostLikeCreateManyArgs>(args?: SelectSubset<T, FlowPostLikeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FlowPostLikes and returns the data saved in the database.
+     * @param {FlowPostLikeCreateManyAndReturnArgs} args - Arguments to create many FlowPostLikes.
+     * @example
+     * // Create many FlowPostLikes
+     * const flowPostLike = await prisma.flowPostLike.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FlowPostLikes and only return the `id`
+     * const flowPostLikeWithIdOnly = await prisma.flowPostLike.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FlowPostLikeCreateManyAndReturnArgs>(args?: SelectSubset<T, FlowPostLikeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FlowPostLike.
+     * @param {FlowPostLikeDeleteArgs} args - Arguments to delete one FlowPostLike.
+     * @example
+     * // Delete one FlowPostLike
+     * const FlowPostLike = await prisma.flowPostLike.delete({
+     *   where: {
+     *     // ... filter to delete one FlowPostLike
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FlowPostLikeDeleteArgs>(args: SelectSubset<T, FlowPostLikeDeleteArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FlowPostLike.
+     * @param {FlowPostLikeUpdateArgs} args - Arguments to update one FlowPostLike.
+     * @example
+     * // Update one FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FlowPostLikeUpdateArgs>(args: SelectSubset<T, FlowPostLikeUpdateArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FlowPostLikes.
+     * @param {FlowPostLikeDeleteManyArgs} args - Arguments to filter FlowPostLikes to delete.
+     * @example
+     * // Delete a few FlowPostLikes
+     * const { count } = await prisma.flowPostLike.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FlowPostLikeDeleteManyArgs>(args?: SelectSubset<T, FlowPostLikeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowPostLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FlowPostLikes
+     * const flowPostLike = await prisma.flowPostLike.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FlowPostLikeUpdateManyArgs>(args: SelectSubset<T, FlowPostLikeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FlowPostLikes and returns the data updated in the database.
+     * @param {FlowPostLikeUpdateManyAndReturnArgs} args - Arguments to update many FlowPostLikes.
+     * @example
+     * // Update many FlowPostLikes
+     * const flowPostLike = await prisma.flowPostLike.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FlowPostLikes and only return the `id`
+     * const flowPostLikeWithIdOnly = await prisma.flowPostLike.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FlowPostLikeUpdateManyAndReturnArgs>(args: SelectSubset<T, FlowPostLikeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FlowPostLike.
+     * @param {FlowPostLikeUpsertArgs} args - Arguments to update or create a FlowPostLike.
+     * @example
+     * // Update or create a FlowPostLike
+     * const flowPostLike = await prisma.flowPostLike.upsert({
+     *   create: {
+     *     // ... data to create a FlowPostLike
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FlowPostLike we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FlowPostLikeUpsertArgs>(args: SelectSubset<T, FlowPostLikeUpsertArgs<ExtArgs>>): Prisma__FlowPostLikeClient<$Result.GetResult<Prisma.$FlowPostLikePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FlowPostLikes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeCountArgs} args - Arguments to filter FlowPostLikes to count.
+     * @example
+     * // Count the number of FlowPostLikes
+     * const count = await prisma.flowPostLike.count({
+     *   where: {
+     *     // ... the filter for the FlowPostLikes we want to count
+     *   }
+     * })
+    **/
+    count<T extends FlowPostLikeCountArgs>(
+      args?: Subset<T, FlowPostLikeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FlowPostLikeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FlowPostLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FlowPostLikeAggregateArgs>(args: Subset<T, FlowPostLikeAggregateArgs>): Prisma.PrismaPromise<GetFlowPostLikeAggregateType<T>>
+
+    /**
+     * Group by FlowPostLike.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FlowPostLikeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FlowPostLikeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FlowPostLikeGroupByArgs['orderBy'] }
+        : { orderBy?: FlowPostLikeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FlowPostLikeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFlowPostLikeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FlowPostLike model
+   */
+  readonly fields: FlowPostLikeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FlowPostLike.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FlowPostLikeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    post<T extends FlowPostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FlowPostDefaultArgs<ExtArgs>>): Prisma__FlowPostClient<$Result.GetResult<Prisma.$FlowPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FlowPostLike model
+   */
+  interface FlowPostLikeFieldRefs {
+    readonly id: FieldRef<"FlowPostLike", 'String'>
+    readonly postId: FieldRef<"FlowPostLike", 'String'>
+    readonly userId: FieldRef<"FlowPostLike", 'String'>
+    readonly createdAt: FieldRef<"FlowPostLike", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FlowPostLike findUnique
+   */
+  export type FlowPostLikeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowPostLike to fetch.
+     */
+    where: FlowPostLikeWhereUniqueInput
+  }
+
+  /**
+   * FlowPostLike findUniqueOrThrow
+   */
+  export type FlowPostLikeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowPostLike to fetch.
+     */
+    where: FlowPostLikeWhereUniqueInput
+  }
+
+  /**
+   * FlowPostLike findFirst
+   */
+  export type FlowPostLikeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowPostLike to fetch.
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowPostLikes to fetch.
+     */
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowPostLikes.
+     */
+    cursor?: FlowPostLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowPostLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowPostLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowPostLikes.
+     */
+    distinct?: FlowPostLikeScalarFieldEnum | FlowPostLikeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowPostLike findFirstOrThrow
+   */
+  export type FlowPostLikeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowPostLike to fetch.
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowPostLikes to fetch.
+     */
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FlowPostLikes.
+     */
+    cursor?: FlowPostLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowPostLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowPostLikes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FlowPostLikes.
+     */
+    distinct?: FlowPostLikeScalarFieldEnum | FlowPostLikeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowPostLike findMany
+   */
+  export type FlowPostLikeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter, which FlowPostLikes to fetch.
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FlowPostLikes to fetch.
+     */
+    orderBy?: FlowPostLikeOrderByWithRelationInput | FlowPostLikeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FlowPostLikes.
+     */
+    cursor?: FlowPostLikeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FlowPostLikes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FlowPostLikes.
+     */
+    skip?: number
+    distinct?: FlowPostLikeScalarFieldEnum | FlowPostLikeScalarFieldEnum[]
+  }
+
+  /**
+   * FlowPostLike create
+   */
+  export type FlowPostLikeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FlowPostLike.
+     */
+    data: XOR<FlowPostLikeCreateInput, FlowPostLikeUncheckedCreateInput>
+  }
+
+  /**
+   * FlowPostLike createMany
+   */
+  export type FlowPostLikeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FlowPostLikes.
+     */
+    data: FlowPostLikeCreateManyInput | FlowPostLikeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FlowPostLike createManyAndReturn
+   */
+  export type FlowPostLikeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * The data used to create many FlowPostLikes.
+     */
+    data: FlowPostLikeCreateManyInput | FlowPostLikeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowPostLike update
+   */
+  export type FlowPostLikeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FlowPostLike.
+     */
+    data: XOR<FlowPostLikeUpdateInput, FlowPostLikeUncheckedUpdateInput>
+    /**
+     * Choose, which FlowPostLike to update.
+     */
+    where: FlowPostLikeWhereUniqueInput
+  }
+
+  /**
+   * FlowPostLike updateMany
+   */
+  export type FlowPostLikeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FlowPostLikes.
+     */
+    data: XOR<FlowPostLikeUpdateManyMutationInput, FlowPostLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowPostLikes to update
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * Limit how many FlowPostLikes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FlowPostLike updateManyAndReturn
+   */
+  export type FlowPostLikeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * The data used to update FlowPostLikes.
+     */
+    data: XOR<FlowPostLikeUpdateManyMutationInput, FlowPostLikeUncheckedUpdateManyInput>
+    /**
+     * Filter which FlowPostLikes to update
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * Limit how many FlowPostLikes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FlowPostLike upsert
+   */
+  export type FlowPostLikeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FlowPostLike to update in case it exists.
+     */
+    where: FlowPostLikeWhereUniqueInput
+    /**
+     * In case the FlowPostLike found by the `where` argument doesn't exist, create a new FlowPostLike with this data.
+     */
+    create: XOR<FlowPostLikeCreateInput, FlowPostLikeUncheckedCreateInput>
+    /**
+     * In case the FlowPostLike was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FlowPostLikeUpdateInput, FlowPostLikeUncheckedUpdateInput>
+  }
+
+  /**
+   * FlowPostLike delete
+   */
+  export type FlowPostLikeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
+    /**
+     * Filter which FlowPostLike to delete.
+     */
+    where: FlowPostLikeWhereUniqueInput
+  }
+
+  /**
+   * FlowPostLike deleteMany
+   */
+  export type FlowPostLikeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FlowPostLikes to delete
+     */
+    where?: FlowPostLikeWhereInput
+    /**
+     * Limit how many FlowPostLikes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FlowPostLike without action
+   */
+  export type FlowPostLikeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FlowPostLike
+     */
+    select?: FlowPostLikeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FlowPostLike
+     */
+    omit?: FlowPostLikeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FlowPostLikeInclude<ExtArgs> | null
   }
 
 
@@ -24901,10 +26297,22 @@ export namespace Prisma {
     userId: 'userId',
     body: 'body',
     photos: 'photos',
+    parentPostId: 'parentPostId',
+    repostOfPostId: 'repostOfPostId',
     createdAt: 'createdAt'
   };
 
   export type FlowPostScalarFieldEnum = (typeof FlowPostScalarFieldEnum)[keyof typeof FlowPostScalarFieldEnum]
+
+
+  export const FlowPostLikeScalarFieldEnum: {
+    id: 'id',
+    postId: 'postId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type FlowPostLikeScalarFieldEnum = (typeof FlowPostLikeScalarFieldEnum)[keyof typeof FlowPostLikeScalarFieldEnum]
 
 
   export const PollScalarFieldEnum: {
@@ -25185,6 +26593,7 @@ export namespace Prisma {
     reportsMade?: ReportListRelationFilter
     boardPosts?: BoardPostListRelationFilter
     flowPosts?: FlowPostListRelationFilter
+    flowLikes?: FlowPostLikeListRelationFilter
     polls?: PollListRelationFilter
     ratingsGiven?: UserRatingListRelationFilter
     ratingsReceived?: UserRatingListRelationFilter
@@ -25228,6 +26637,7 @@ export namespace Prisma {
     reportsMade?: ReportOrderByRelationAggregateInput
     boardPosts?: BoardPostOrderByRelationAggregateInput
     flowPosts?: FlowPostOrderByRelationAggregateInput
+    flowLikes?: FlowPostLikeOrderByRelationAggregateInput
     polls?: PollOrderByRelationAggregateInput
     ratingsGiven?: UserRatingOrderByRelationAggregateInput
     ratingsReceived?: UserRatingOrderByRelationAggregateInput
@@ -25274,6 +26684,7 @@ export namespace Prisma {
     reportsMade?: ReportListRelationFilter
     boardPosts?: BoardPostListRelationFilter
     flowPosts?: FlowPostListRelationFilter
+    flowLikes?: FlowPostLikeListRelationFilter
     polls?: PollListRelationFilter
     ratingsGiven?: UserRatingListRelationFilter
     ratingsReceived?: UserRatingListRelationFilter
@@ -25941,9 +27352,16 @@ export namespace Prisma {
     userId?: StringFilter<"FlowPost"> | string
     body?: StringFilter<"FlowPost"> | string
     photos?: StringFilter<"FlowPost"> | string
+    parentPostId?: StringNullableFilter<"FlowPost"> | string | null
+    repostOfPostId?: StringNullableFilter<"FlowPost"> | string | null
     createdAt?: DateTimeFilter<"FlowPost"> | Date | string
     neighborhood?: XOR<NeighborhoodScalarRelationFilter, NeighborhoodWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    parentPost?: XOR<FlowPostNullableScalarRelationFilter, FlowPostWhereInput> | null
+    replies?: FlowPostListRelationFilter
+    repostOfPost?: XOR<FlowPostNullableScalarRelationFilter, FlowPostWhereInput> | null
+    reposts?: FlowPostListRelationFilter
+    likes?: FlowPostLikeListRelationFilter
   }
 
   export type FlowPostOrderByWithRelationInput = {
@@ -25952,9 +27370,16 @@ export namespace Prisma {
     userId?: SortOrder
     body?: SortOrder
     photos?: SortOrder
+    parentPostId?: SortOrderInput | SortOrder
+    repostOfPostId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     neighborhood?: NeighborhoodOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    parentPost?: FlowPostOrderByWithRelationInput
+    replies?: FlowPostOrderByRelationAggregateInput
+    repostOfPost?: FlowPostOrderByWithRelationInput
+    reposts?: FlowPostOrderByRelationAggregateInput
+    likes?: FlowPostLikeOrderByRelationAggregateInput
   }
 
   export type FlowPostWhereUniqueInput = Prisma.AtLeast<{
@@ -25966,9 +27391,16 @@ export namespace Prisma {
     userId?: StringFilter<"FlowPost"> | string
     body?: StringFilter<"FlowPost"> | string
     photos?: StringFilter<"FlowPost"> | string
+    parentPostId?: StringNullableFilter<"FlowPost"> | string | null
+    repostOfPostId?: StringNullableFilter<"FlowPost"> | string | null
     createdAt?: DateTimeFilter<"FlowPost"> | Date | string
     neighborhood?: XOR<NeighborhoodScalarRelationFilter, NeighborhoodWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    parentPost?: XOR<FlowPostNullableScalarRelationFilter, FlowPostWhereInput> | null
+    replies?: FlowPostListRelationFilter
+    repostOfPost?: XOR<FlowPostNullableScalarRelationFilter, FlowPostWhereInput> | null
+    reposts?: FlowPostListRelationFilter
+    likes?: FlowPostLikeListRelationFilter
   }, "id">
 
   export type FlowPostOrderByWithAggregationInput = {
@@ -25977,6 +27409,8 @@ export namespace Prisma {
     userId?: SortOrder
     body?: SortOrder
     photos?: SortOrder
+    parentPostId?: SortOrderInput | SortOrder
+    repostOfPostId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: FlowPostCountOrderByAggregateInput
     _max?: FlowPostMaxOrderByAggregateInput
@@ -25992,7 +27426,63 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"FlowPost"> | string
     body?: StringWithAggregatesFilter<"FlowPost"> | string
     photos?: StringWithAggregatesFilter<"FlowPost"> | string
+    parentPostId?: StringNullableWithAggregatesFilter<"FlowPost"> | string | null
+    repostOfPostId?: StringNullableWithAggregatesFilter<"FlowPost"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FlowPost"> | Date | string
+  }
+
+  export type FlowPostLikeWhereInput = {
+    AND?: FlowPostLikeWhereInput | FlowPostLikeWhereInput[]
+    OR?: FlowPostLikeWhereInput[]
+    NOT?: FlowPostLikeWhereInput | FlowPostLikeWhereInput[]
+    id?: StringFilter<"FlowPostLike"> | string
+    postId?: StringFilter<"FlowPostLike"> | string
+    userId?: StringFilter<"FlowPostLike"> | string
+    createdAt?: DateTimeFilter<"FlowPostLike"> | Date | string
+    post?: XOR<FlowPostScalarRelationFilter, FlowPostWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type FlowPostLikeOrderByWithRelationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    post?: FlowPostOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type FlowPostLikeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    postId_userId?: FlowPostLikePostIdUserIdCompoundUniqueInput
+    AND?: FlowPostLikeWhereInput | FlowPostLikeWhereInput[]
+    OR?: FlowPostLikeWhereInput[]
+    NOT?: FlowPostLikeWhereInput | FlowPostLikeWhereInput[]
+    postId?: StringFilter<"FlowPostLike"> | string
+    userId?: StringFilter<"FlowPostLike"> | string
+    createdAt?: DateTimeFilter<"FlowPostLike"> | Date | string
+    post?: XOR<FlowPostScalarRelationFilter, FlowPostWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "postId_userId">
+
+  export type FlowPostLikeOrderByWithAggregationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: FlowPostLikeCountOrderByAggregateInput
+    _max?: FlowPostLikeMaxOrderByAggregateInput
+    _min?: FlowPostLikeMinOrderByAggregateInput
+  }
+
+  export type FlowPostLikeScalarWhereWithAggregatesInput = {
+    AND?: FlowPostLikeScalarWhereWithAggregatesInput | FlowPostLikeScalarWhereWithAggregatesInput[]
+    OR?: FlowPostLikeScalarWhereWithAggregatesInput[]
+    NOT?: FlowPostLikeScalarWhereWithAggregatesInput | FlowPostLikeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FlowPostLike"> | string
+    postId?: StringWithAggregatesFilter<"FlowPostLike"> | string
+    userId?: StringWithAggregatesFilter<"FlowPostLike"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"FlowPostLike"> | Date | string
   }
 
   export type PollWhereInput = {
@@ -26700,6 +28190,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -26742,6 +28233,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -26784,6 +28276,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -26826,6 +28319,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -27580,6 +29074,11 @@ export namespace Prisma {
     createdAt?: Date | string
     neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
     user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostUncheckedCreateInput = {
@@ -27588,7 +29087,12 @@ export namespace Prisma {
     userId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
     createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostUpdateInput = {
@@ -27598,6 +29102,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
     user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostUncheckedUpdateInput = {
@@ -27606,7 +29115,12 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostCreateManyInput = {
@@ -27615,6 +29129,8 @@ export namespace Prisma {
     userId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
     createdAt?: Date | string
   }
 
@@ -27631,6 +29147,55 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeCreateInput = {
+    id: string
+    createdAt?: Date | string
+    post: FlowPostCreateNestedOneWithoutLikesInput
+    user: UserCreateNestedOneWithoutFlowLikesInput
+  }
+
+  export type FlowPostLikeUncheckedCreateInput = {
+    id: string
+    postId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: FlowPostUpdateOneRequiredWithoutLikesNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowLikesNestedInput
+  }
+
+  export type FlowPostLikeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeCreateManyInput = {
+    id: string
+    postId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28431,6 +29996,12 @@ export namespace Prisma {
     none?: FlowPostWhereInput
   }
 
+  export type FlowPostLikeListRelationFilter = {
+    every?: FlowPostLikeWhereInput
+    some?: FlowPostLikeWhereInput
+    none?: FlowPostLikeWhereInput
+  }
+
   export type PollListRelationFilter = {
     every?: PollWhereInput
     some?: PollWhereInput
@@ -28493,6 +30064,10 @@ export namespace Prisma {
   }
 
   export type FlowPostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FlowPostLikeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29103,12 +30678,19 @@ export namespace Prisma {
     viewCount?: SortOrder
   }
 
+  export type FlowPostNullableScalarRelationFilter = {
+    is?: FlowPostWhereInput | null
+    isNot?: FlowPostWhereInput | null
+  }
+
   export type FlowPostCountOrderByAggregateInput = {
     id?: SortOrder
     neighborhoodId?: SortOrder
     userId?: SortOrder
     body?: SortOrder
     photos?: SortOrder
+    parentPostId?: SortOrder
+    repostOfPostId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -29118,6 +30700,8 @@ export namespace Prisma {
     userId?: SortOrder
     body?: SortOrder
     photos?: SortOrder
+    parentPostId?: SortOrder
+    repostOfPostId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -29127,6 +30711,39 @@ export namespace Prisma {
     userId?: SortOrder
     body?: SortOrder
     photos?: SortOrder
+    parentPostId?: SortOrder
+    repostOfPostId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FlowPostScalarRelationFilter = {
+    is?: FlowPostWhereInput
+    isNot?: FlowPostWhereInput
+  }
+
+  export type FlowPostLikePostIdUserIdCompoundUniqueInput = {
+    postId: string
+    userId: string
+  }
+
+  export type FlowPostLikeCountOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FlowPostLikeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FlowPostLikeMinOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -29621,6 +31238,13 @@ export namespace Prisma {
     connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
   }
 
+  export type FlowPostLikeCreateNestedManyWithoutUserInput = {
+    create?: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput> | FlowPostLikeCreateWithoutUserInput[] | FlowPostLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutUserInput | FlowPostLikeCreateOrConnectWithoutUserInput[]
+    createMany?: FlowPostLikeCreateManyUserInputEnvelope
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+  }
+
   export type PollCreateNestedManyWithoutUserInput = {
     create?: XOR<PollCreateWithoutUserInput, PollUncheckedCreateWithoutUserInput> | PollCreateWithoutUserInput[] | PollUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PollCreateOrConnectWithoutUserInput | PollCreateOrConnectWithoutUserInput[]
@@ -29717,6 +31341,13 @@ export namespace Prisma {
     connectOrCreate?: FlowPostCreateOrConnectWithoutUserInput | FlowPostCreateOrConnectWithoutUserInput[]
     createMany?: FlowPostCreateManyUserInputEnvelope
     connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+  }
+
+  export type FlowPostLikeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput> | FlowPostLikeCreateWithoutUserInput[] | FlowPostLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutUserInput | FlowPostLikeCreateOrConnectWithoutUserInput[]
+    createMany?: FlowPostLikeCreateManyUserInputEnvelope
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
   }
 
   export type PollUncheckedCreateNestedManyWithoutUserInput = {
@@ -29902,6 +31533,20 @@ export namespace Prisma {
     update?: FlowPostUpdateWithWhereUniqueWithoutUserInput | FlowPostUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: FlowPostUpdateManyWithWhereWithoutUserInput | FlowPostUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostLikeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput> | FlowPostLikeCreateWithoutUserInput[] | FlowPostLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutUserInput | FlowPostLikeCreateOrConnectWithoutUserInput[]
+    upsert?: FlowPostLikeUpsertWithWhereUniqueWithoutUserInput | FlowPostLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FlowPostLikeCreateManyUserInputEnvelope
+    set?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    disconnect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    delete?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    update?: FlowPostLikeUpdateWithWhereUniqueWithoutUserInput | FlowPostLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FlowPostLikeUpdateManyWithWhereWithoutUserInput | FlowPostLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
   }
 
   export type PollUpdateManyWithoutUserNestedInput = {
@@ -30098,6 +31743,20 @@ export namespace Prisma {
     update?: FlowPostUpdateWithWhereUniqueWithoutUserInput | FlowPostUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: FlowPostUpdateManyWithWhereWithoutUserInput | FlowPostUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput> | FlowPostLikeCreateWithoutUserInput[] | FlowPostLikeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutUserInput | FlowPostLikeCreateOrConnectWithoutUserInput[]
+    upsert?: FlowPostLikeUpsertWithWhereUniqueWithoutUserInput | FlowPostLikeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FlowPostLikeCreateManyUserInputEnvelope
+    set?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    disconnect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    delete?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    update?: FlowPostLikeUpdateWithWhereUniqueWithoutUserInput | FlowPostLikeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FlowPostLikeUpdateManyWithWhereWithoutUserInput | FlowPostLikeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
   }
 
   export type PollUncheckedUpdateManyWithoutUserNestedInput = {
@@ -30662,6 +32321,60 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type FlowPostCreateNestedOneWithoutRepliesInput = {
+    create?: XOR<FlowPostCreateWithoutRepliesInput, FlowPostUncheckedCreateWithoutRepliesInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepliesInput
+    connect?: FlowPostWhereUniqueInput
+  }
+
+  export type FlowPostCreateNestedManyWithoutParentPostInput = {
+    create?: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput> | FlowPostCreateWithoutParentPostInput[] | FlowPostUncheckedCreateWithoutParentPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutParentPostInput | FlowPostCreateOrConnectWithoutParentPostInput[]
+    createMany?: FlowPostCreateManyParentPostInputEnvelope
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+  }
+
+  export type FlowPostCreateNestedOneWithoutRepostsInput = {
+    create?: XOR<FlowPostCreateWithoutRepostsInput, FlowPostUncheckedCreateWithoutRepostsInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostsInput
+    connect?: FlowPostWhereUniqueInput
+  }
+
+  export type FlowPostCreateNestedManyWithoutRepostOfPostInput = {
+    create?: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput> | FlowPostCreateWithoutRepostOfPostInput[] | FlowPostUncheckedCreateWithoutRepostOfPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostOfPostInput | FlowPostCreateOrConnectWithoutRepostOfPostInput[]
+    createMany?: FlowPostCreateManyRepostOfPostInputEnvelope
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+  }
+
+  export type FlowPostLikeCreateNestedManyWithoutPostInput = {
+    create?: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput> | FlowPostLikeCreateWithoutPostInput[] | FlowPostLikeUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutPostInput | FlowPostLikeCreateOrConnectWithoutPostInput[]
+    createMany?: FlowPostLikeCreateManyPostInputEnvelope
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+  }
+
+  export type FlowPostUncheckedCreateNestedManyWithoutParentPostInput = {
+    create?: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput> | FlowPostCreateWithoutParentPostInput[] | FlowPostUncheckedCreateWithoutParentPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutParentPostInput | FlowPostCreateOrConnectWithoutParentPostInput[]
+    createMany?: FlowPostCreateManyParentPostInputEnvelope
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+  }
+
+  export type FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput = {
+    create?: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput> | FlowPostCreateWithoutRepostOfPostInput[] | FlowPostUncheckedCreateWithoutRepostOfPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostOfPostInput | FlowPostCreateOrConnectWithoutRepostOfPostInput[]
+    createMany?: FlowPostCreateManyRepostOfPostInputEnvelope
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+  }
+
+  export type FlowPostLikeUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput> | FlowPostLikeCreateWithoutPostInput[] | FlowPostLikeUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutPostInput | FlowPostLikeCreateOrConnectWithoutPostInput[]
+    createMany?: FlowPostLikeCreateManyPostInputEnvelope
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+  }
+
   export type NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput = {
     create?: XOR<NeighborhoodCreateWithoutFlowPostsInput, NeighborhoodUncheckedCreateWithoutFlowPostsInput>
     connectOrCreate?: NeighborhoodCreateOrConnectWithoutFlowPostsInput
@@ -30676,6 +32389,138 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutFlowPostsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFlowPostsInput, UserUpdateWithoutFlowPostsInput>, UserUncheckedUpdateWithoutFlowPostsInput>
+  }
+
+  export type FlowPostUpdateOneWithoutRepliesNestedInput = {
+    create?: XOR<FlowPostCreateWithoutRepliesInput, FlowPostUncheckedCreateWithoutRepliesInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepliesInput
+    upsert?: FlowPostUpsertWithoutRepliesInput
+    disconnect?: FlowPostWhereInput | boolean
+    delete?: FlowPostWhereInput | boolean
+    connect?: FlowPostWhereUniqueInput
+    update?: XOR<XOR<FlowPostUpdateToOneWithWhereWithoutRepliesInput, FlowPostUpdateWithoutRepliesInput>, FlowPostUncheckedUpdateWithoutRepliesInput>
+  }
+
+  export type FlowPostUpdateManyWithoutParentPostNestedInput = {
+    create?: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput> | FlowPostCreateWithoutParentPostInput[] | FlowPostUncheckedCreateWithoutParentPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutParentPostInput | FlowPostCreateOrConnectWithoutParentPostInput[]
+    upsert?: FlowPostUpsertWithWhereUniqueWithoutParentPostInput | FlowPostUpsertWithWhereUniqueWithoutParentPostInput[]
+    createMany?: FlowPostCreateManyParentPostInputEnvelope
+    set?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    disconnect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    delete?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    update?: FlowPostUpdateWithWhereUniqueWithoutParentPostInput | FlowPostUpdateWithWhereUniqueWithoutParentPostInput[]
+    updateMany?: FlowPostUpdateManyWithWhereWithoutParentPostInput | FlowPostUpdateManyWithWhereWithoutParentPostInput[]
+    deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostUpdateOneWithoutRepostsNestedInput = {
+    create?: XOR<FlowPostCreateWithoutRepostsInput, FlowPostUncheckedCreateWithoutRepostsInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostsInput
+    upsert?: FlowPostUpsertWithoutRepostsInput
+    disconnect?: FlowPostWhereInput | boolean
+    delete?: FlowPostWhereInput | boolean
+    connect?: FlowPostWhereUniqueInput
+    update?: XOR<XOR<FlowPostUpdateToOneWithWhereWithoutRepostsInput, FlowPostUpdateWithoutRepostsInput>, FlowPostUncheckedUpdateWithoutRepostsInput>
+  }
+
+  export type FlowPostUpdateManyWithoutRepostOfPostNestedInput = {
+    create?: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput> | FlowPostCreateWithoutRepostOfPostInput[] | FlowPostUncheckedCreateWithoutRepostOfPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostOfPostInput | FlowPostCreateOrConnectWithoutRepostOfPostInput[]
+    upsert?: FlowPostUpsertWithWhereUniqueWithoutRepostOfPostInput | FlowPostUpsertWithWhereUniqueWithoutRepostOfPostInput[]
+    createMany?: FlowPostCreateManyRepostOfPostInputEnvelope
+    set?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    disconnect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    delete?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    update?: FlowPostUpdateWithWhereUniqueWithoutRepostOfPostInput | FlowPostUpdateWithWhereUniqueWithoutRepostOfPostInput[]
+    updateMany?: FlowPostUpdateManyWithWhereWithoutRepostOfPostInput | FlowPostUpdateManyWithWhereWithoutRepostOfPostInput[]
+    deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostLikeUpdateManyWithoutPostNestedInput = {
+    create?: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput> | FlowPostLikeCreateWithoutPostInput[] | FlowPostLikeUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutPostInput | FlowPostLikeCreateOrConnectWithoutPostInput[]
+    upsert?: FlowPostLikeUpsertWithWhereUniqueWithoutPostInput | FlowPostLikeUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: FlowPostLikeCreateManyPostInputEnvelope
+    set?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    disconnect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    delete?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    update?: FlowPostLikeUpdateWithWhereUniqueWithoutPostInput | FlowPostLikeUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: FlowPostLikeUpdateManyWithWhereWithoutPostInput | FlowPostLikeUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
+  }
+
+  export type FlowPostUncheckedUpdateManyWithoutParentPostNestedInput = {
+    create?: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput> | FlowPostCreateWithoutParentPostInput[] | FlowPostUncheckedCreateWithoutParentPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutParentPostInput | FlowPostCreateOrConnectWithoutParentPostInput[]
+    upsert?: FlowPostUpsertWithWhereUniqueWithoutParentPostInput | FlowPostUpsertWithWhereUniqueWithoutParentPostInput[]
+    createMany?: FlowPostCreateManyParentPostInputEnvelope
+    set?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    disconnect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    delete?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    update?: FlowPostUpdateWithWhereUniqueWithoutParentPostInput | FlowPostUpdateWithWhereUniqueWithoutParentPostInput[]
+    updateMany?: FlowPostUpdateManyWithWhereWithoutParentPostInput | FlowPostUpdateManyWithWhereWithoutParentPostInput[]
+    deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput = {
+    create?: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput> | FlowPostCreateWithoutRepostOfPostInput[] | FlowPostUncheckedCreateWithoutRepostOfPostInput[]
+    connectOrCreate?: FlowPostCreateOrConnectWithoutRepostOfPostInput | FlowPostCreateOrConnectWithoutRepostOfPostInput[]
+    upsert?: FlowPostUpsertWithWhereUniqueWithoutRepostOfPostInput | FlowPostUpsertWithWhereUniqueWithoutRepostOfPostInput[]
+    createMany?: FlowPostCreateManyRepostOfPostInputEnvelope
+    set?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    disconnect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    delete?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    connect?: FlowPostWhereUniqueInput | FlowPostWhereUniqueInput[]
+    update?: FlowPostUpdateWithWhereUniqueWithoutRepostOfPostInput | FlowPostUpdateWithWhereUniqueWithoutRepostOfPostInput[]
+    updateMany?: FlowPostUpdateManyWithWhereWithoutRepostOfPostInput | FlowPostUpdateManyWithWhereWithoutRepostOfPostInput[]
+    deleteMany?: FlowPostScalarWhereInput | FlowPostScalarWhereInput[]
+  }
+
+  export type FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput> | FlowPostLikeCreateWithoutPostInput[] | FlowPostLikeUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FlowPostLikeCreateOrConnectWithoutPostInput | FlowPostLikeCreateOrConnectWithoutPostInput[]
+    upsert?: FlowPostLikeUpsertWithWhereUniqueWithoutPostInput | FlowPostLikeUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: FlowPostLikeCreateManyPostInputEnvelope
+    set?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    disconnect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    delete?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    connect?: FlowPostLikeWhereUniqueInput | FlowPostLikeWhereUniqueInput[]
+    update?: FlowPostLikeUpdateWithWhereUniqueWithoutPostInput | FlowPostLikeUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: FlowPostLikeUpdateManyWithWhereWithoutPostInput | FlowPostLikeUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
+  }
+
+  export type FlowPostCreateNestedOneWithoutLikesInput = {
+    create?: XOR<FlowPostCreateWithoutLikesInput, FlowPostUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutLikesInput
+    connect?: FlowPostWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFlowLikesInput = {
+    create?: XOR<UserCreateWithoutFlowLikesInput, UserUncheckedCreateWithoutFlowLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFlowLikesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FlowPostUpdateOneRequiredWithoutLikesNestedInput = {
+    create?: XOR<FlowPostCreateWithoutLikesInput, FlowPostUncheckedCreateWithoutLikesInput>
+    connectOrCreate?: FlowPostCreateOrConnectWithoutLikesInput
+    upsert?: FlowPostUpsertWithoutLikesInput
+    connect?: FlowPostWhereUniqueInput
+    update?: XOR<XOR<FlowPostUpdateToOneWithWhereWithoutLikesInput, FlowPostUpdateWithoutLikesInput>, FlowPostUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutFlowLikesNestedInput = {
+    create?: XOR<UserCreateWithoutFlowLikesInput, UserUncheckedCreateWithoutFlowLikesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFlowLikesInput
+    upsert?: UserUpsertWithoutFlowLikesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFlowLikesInput, UserUpdateWithoutFlowLikesInput>, UserUncheckedUpdateWithoutFlowLikesInput>
   }
 
   export type NeighborhoodCreateNestedOneWithoutPollsInput = {
@@ -31425,6 +33270,11 @@ export namespace Prisma {
     photos: string
     createdAt?: Date | string
     neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostUncheckedCreateWithoutUserInput = {
@@ -31432,7 +33282,12 @@ export namespace Prisma {
     neighborhoodId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
     createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostCreateOrConnectWithoutUserInput = {
@@ -31442,6 +33297,28 @@ export namespace Prisma {
 
   export type FlowPostCreateManyUserInputEnvelope = {
     data: FlowPostCreateManyUserInput | FlowPostCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowPostLikeCreateWithoutUserInput = {
+    id: string
+    createdAt?: Date | string
+    post: FlowPostCreateNestedOneWithoutLikesInput
+  }
+
+  export type FlowPostLikeUncheckedCreateWithoutUserInput = {
+    id: string
+    postId: string
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeCreateOrConnectWithoutUserInput = {
+    where: FlowPostLikeWhereUniqueInput
+    create: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type FlowPostLikeCreateManyUserInputEnvelope = {
+    data: FlowPostLikeCreateManyUserInput | FlowPostLikeCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -31896,7 +33773,35 @@ export namespace Prisma {
     userId?: StringFilter<"FlowPost"> | string
     body?: StringFilter<"FlowPost"> | string
     photos?: StringFilter<"FlowPost"> | string
+    parentPostId?: StringNullableFilter<"FlowPost"> | string | null
+    repostOfPostId?: StringNullableFilter<"FlowPost"> | string | null
     createdAt?: DateTimeFilter<"FlowPost"> | Date | string
+  }
+
+  export type FlowPostLikeUpsertWithWhereUniqueWithoutUserInput = {
+    where: FlowPostLikeWhereUniqueInput
+    update: XOR<FlowPostLikeUpdateWithoutUserInput, FlowPostLikeUncheckedUpdateWithoutUserInput>
+    create: XOR<FlowPostLikeCreateWithoutUserInput, FlowPostLikeUncheckedCreateWithoutUserInput>
+  }
+
+  export type FlowPostLikeUpdateWithWhereUniqueWithoutUserInput = {
+    where: FlowPostLikeWhereUniqueInput
+    data: XOR<FlowPostLikeUpdateWithoutUserInput, FlowPostLikeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FlowPostLikeUpdateManyWithWhereWithoutUserInput = {
+    where: FlowPostLikeScalarWhereInput
+    data: XOR<FlowPostLikeUpdateManyMutationInput, FlowPostLikeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FlowPostLikeScalarWhereInput = {
+    AND?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
+    OR?: FlowPostLikeScalarWhereInput[]
+    NOT?: FlowPostLikeScalarWhereInput | FlowPostLikeScalarWhereInput[]
+    id?: StringFilter<"FlowPostLike"> | string
+    postId?: StringFilter<"FlowPostLike"> | string
+    userId?: StringFilter<"FlowPostLike"> | string
+    createdAt?: DateTimeFilter<"FlowPostLike"> | Date | string
   }
 
   export type PollUpsertWithWhereUniqueWithoutUserInput = {
@@ -32120,6 +34025,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -32161,6 +34067,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -32276,6 +34183,11 @@ export namespace Prisma {
     photos: string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostUncheckedCreateWithoutNeighborhoodInput = {
@@ -32283,7 +34195,12 @@ export namespace Prisma {
     userId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
     createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type FlowPostCreateOrConnectWithoutNeighborhoodInput = {
@@ -32502,6 +34419,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -32543,6 +34461,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -32697,6 +34616,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -32738,6 +34658,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -32842,6 +34763,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -32883,6 +34805,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -32929,6 +34852,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -32970,6 +34894,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -33108,6 +35033,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -33149,6 +35075,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -33201,6 +35128,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -33242,6 +35170,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -33350,6 +35279,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -33391,6 +35321,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -33505,6 +35436,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -33546,6 +35478,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -33587,6 +35520,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -33628,6 +35562,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -33685,6 +35620,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -33726,6 +35662,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -33802,6 +35739,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -33843,6 +35781,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -33941,6 +35880,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -33982,6 +35922,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -34058,6 +35999,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutSenderInput
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -34099,6 +36041,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -34111,6 +36054,162 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutFlowPostsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutFlowPostsInput, UserUncheckedCreateWithoutFlowPostsInput>
+  }
+
+  export type FlowPostCreateWithoutRepliesInput = {
+    id: string
+    body: string
+    photos: string
+    createdAt?: Date | string
+    neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostUncheckedCreateWithoutRepliesInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostCreateOrConnectWithoutRepliesInput = {
+    where: FlowPostWhereUniqueInput
+    create: XOR<FlowPostCreateWithoutRepliesInput, FlowPostUncheckedCreateWithoutRepliesInput>
+  }
+
+  export type FlowPostCreateWithoutParentPostInput = {
+    id: string
+    body: string
+    photos: string
+    createdAt?: Date | string
+    neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    user: UserCreateNestedOneWithoutFlowPostsInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostUncheckedCreateWithoutParentPostInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostCreateOrConnectWithoutParentPostInput = {
+    where: FlowPostWhereUniqueInput
+    create: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput>
+  }
+
+  export type FlowPostCreateManyParentPostInputEnvelope = {
+    data: FlowPostCreateManyParentPostInput | FlowPostCreateManyParentPostInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowPostCreateWithoutRepostsInput = {
+    id: string
+    body: string
+    photos: string
+    createdAt?: Date | string
+    neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostUncheckedCreateWithoutRepostsInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostCreateOrConnectWithoutRepostsInput = {
+    where: FlowPostWhereUniqueInput
+    create: XOR<FlowPostCreateWithoutRepostsInput, FlowPostUncheckedCreateWithoutRepostsInput>
+  }
+
+  export type FlowPostCreateWithoutRepostOfPostInput = {
+    id: string
+    body: string
+    photos: string
+    createdAt?: Date | string
+    neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostUncheckedCreateWithoutRepostOfPostInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    parentPostId?: string | null
+    createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+    likes?: FlowPostLikeUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type FlowPostCreateOrConnectWithoutRepostOfPostInput = {
+    where: FlowPostWhereUniqueInput
+    create: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput>
+  }
+
+  export type FlowPostCreateManyRepostOfPostInputEnvelope = {
+    data: FlowPostCreateManyRepostOfPostInput | FlowPostCreateManyRepostOfPostInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FlowPostLikeCreateWithoutPostInput = {
+    id: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutFlowLikesInput
+  }
+
+  export type FlowPostLikeUncheckedCreateWithoutPostInput = {
+    id: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeCreateOrConnectWithoutPostInput = {
+    where: FlowPostLikeWhereUniqueInput
+    create: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput>
+  }
+
+  export type FlowPostLikeCreateManyPostInputEnvelope = {
+    data: FlowPostLikeCreateManyPostInput | FlowPostLikeCreateManyPostInput[]
+    skipDuplicates?: boolean
   }
 
   export type NeighborhoodUpsertWithoutFlowPostsInput = {
@@ -34197,6 +36296,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutSenderNestedInput
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -34238,6 +36338,381 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
+    polls?: PollUncheckedUpdateManyWithoutUserNestedInput
+    ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
+    ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
+    weeklyUsage?: UserWeeklyUsageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type FlowPostUpsertWithoutRepliesInput = {
+    update: XOR<FlowPostUpdateWithoutRepliesInput, FlowPostUncheckedUpdateWithoutRepliesInput>
+    create: XOR<FlowPostCreateWithoutRepliesInput, FlowPostUncheckedCreateWithoutRepliesInput>
+    where?: FlowPostWhereInput
+  }
+
+  export type FlowPostUpdateToOneWithWhereWithoutRepliesInput = {
+    where?: FlowPostWhereInput
+    data: XOR<FlowPostUpdateWithoutRepliesInput, FlowPostUncheckedUpdateWithoutRepliesInput>
+  }
+
+  export type FlowPostUpdateWithoutRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateWithoutRepliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUpsertWithWhereUniqueWithoutParentPostInput = {
+    where: FlowPostWhereUniqueInput
+    update: XOR<FlowPostUpdateWithoutParentPostInput, FlowPostUncheckedUpdateWithoutParentPostInput>
+    create: XOR<FlowPostCreateWithoutParentPostInput, FlowPostUncheckedCreateWithoutParentPostInput>
+  }
+
+  export type FlowPostUpdateWithWhereUniqueWithoutParentPostInput = {
+    where: FlowPostWhereUniqueInput
+    data: XOR<FlowPostUpdateWithoutParentPostInput, FlowPostUncheckedUpdateWithoutParentPostInput>
+  }
+
+  export type FlowPostUpdateManyWithWhereWithoutParentPostInput = {
+    where: FlowPostScalarWhereInput
+    data: XOR<FlowPostUpdateManyMutationInput, FlowPostUncheckedUpdateManyWithoutParentPostInput>
+  }
+
+  export type FlowPostUpsertWithoutRepostsInput = {
+    update: XOR<FlowPostUpdateWithoutRepostsInput, FlowPostUncheckedUpdateWithoutRepostsInput>
+    create: XOR<FlowPostCreateWithoutRepostsInput, FlowPostUncheckedCreateWithoutRepostsInput>
+    where?: FlowPostWhereInput
+  }
+
+  export type FlowPostUpdateToOneWithWhereWithoutRepostsInput = {
+    where?: FlowPostWhereInput
+    data: XOR<FlowPostUpdateWithoutRepostsInput, FlowPostUncheckedUpdateWithoutRepostsInput>
+  }
+
+  export type FlowPostUpdateWithoutRepostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateWithoutRepostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUpsertWithWhereUniqueWithoutRepostOfPostInput = {
+    where: FlowPostWhereUniqueInput
+    update: XOR<FlowPostUpdateWithoutRepostOfPostInput, FlowPostUncheckedUpdateWithoutRepostOfPostInput>
+    create: XOR<FlowPostCreateWithoutRepostOfPostInput, FlowPostUncheckedCreateWithoutRepostOfPostInput>
+  }
+
+  export type FlowPostUpdateWithWhereUniqueWithoutRepostOfPostInput = {
+    where: FlowPostWhereUniqueInput
+    data: XOR<FlowPostUpdateWithoutRepostOfPostInput, FlowPostUncheckedUpdateWithoutRepostOfPostInput>
+  }
+
+  export type FlowPostUpdateManyWithWhereWithoutRepostOfPostInput = {
+    where: FlowPostScalarWhereInput
+    data: XOR<FlowPostUpdateManyMutationInput, FlowPostUncheckedUpdateManyWithoutRepostOfPostInput>
+  }
+
+  export type FlowPostLikeUpsertWithWhereUniqueWithoutPostInput = {
+    where: FlowPostLikeWhereUniqueInput
+    update: XOR<FlowPostLikeUpdateWithoutPostInput, FlowPostLikeUncheckedUpdateWithoutPostInput>
+    create: XOR<FlowPostLikeCreateWithoutPostInput, FlowPostLikeUncheckedCreateWithoutPostInput>
+  }
+
+  export type FlowPostLikeUpdateWithWhereUniqueWithoutPostInput = {
+    where: FlowPostLikeWhereUniqueInput
+    data: XOR<FlowPostLikeUpdateWithoutPostInput, FlowPostLikeUncheckedUpdateWithoutPostInput>
+  }
+
+  export type FlowPostLikeUpdateManyWithWhereWithoutPostInput = {
+    where: FlowPostLikeScalarWhereInput
+    data: XOR<FlowPostLikeUpdateManyMutationInput, FlowPostLikeUncheckedUpdateManyWithoutPostInput>
+  }
+
+  export type FlowPostCreateWithoutLikesInput = {
+    id: string
+    body: string
+    photos: string
+    createdAt?: Date | string
+    neighborhood: NeighborhoodCreateNestedOneWithoutFlowPostsInput
+    user: UserCreateNestedOneWithoutFlowPostsInput
+    parentPost?: FlowPostCreateNestedOneWithoutRepliesInput
+    replies?: FlowPostCreateNestedManyWithoutParentPostInput
+    repostOfPost?: FlowPostCreateNestedOneWithoutRepostsInput
+    reposts?: FlowPostCreateNestedManyWithoutRepostOfPostInput
+  }
+
+  export type FlowPostUncheckedCreateWithoutLikesInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+    replies?: FlowPostUncheckedCreateNestedManyWithoutParentPostInput
+    reposts?: FlowPostUncheckedCreateNestedManyWithoutRepostOfPostInput
+  }
+
+  export type FlowPostCreateOrConnectWithoutLikesInput = {
+    where: FlowPostWhereUniqueInput
+    create: XOR<FlowPostCreateWithoutLikesInput, FlowPostUncheckedCreateWithoutLikesInput>
+  }
+
+  export type UserCreateWithoutFlowLikesInput = {
+    id: string
+    name: string
+    username?: string | null
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash: string
+    image?: string | null
+    role?: string
+    locationScope?: string | null
+    verifiedAt?: Date | string | null
+    suspendedUntil?: Date | string | null
+    birthDate?: Date | string | null
+    showAge?: boolean
+    accountType?: string
+    businessCategory?: string | null
+    businessClosedHours?: string | null
+    shopName?: string | null
+    shopLogo?: string | null
+    shopLocationText?: string | null
+    shopLocationLat?: number | null
+    shopLocationLng?: number | null
+    lastBoardSeenAt?: Date | string | null
+    seenBoardPostIds?: string | null
+    createdAt?: Date | string
+    neighborhood?: NeighborhoodCreateNestedOneWithoutUsersInput
+    listings?: ListingCreateNestedManyWithoutUserInput
+    buyerConversations?: ConversationCreateNestedManyWithoutBuyerInput
+    sellerConversations?: ConversationCreateNestedManyWithoutSellerInput
+    messages?: MessageCreateNestedManyWithoutSenderInput
+    reportsMade?: ReportCreateNestedManyWithoutReporterInput
+    boardPosts?: BoardPostCreateNestedManyWithoutUserInput
+    flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    polls?: PollCreateNestedManyWithoutUserInput
+    ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
+    ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
+    weeklyUsage?: UserWeeklyUsageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFlowLikesInput = {
+    id: string
+    name: string
+    username?: string | null
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash: string
+    image?: string | null
+    role?: string
+    locationScope?: string | null
+    neighborhoodId?: string | null
+    verifiedAt?: Date | string | null
+    suspendedUntil?: Date | string | null
+    birthDate?: Date | string | null
+    showAge?: boolean
+    accountType?: string
+    businessCategory?: string | null
+    businessClosedHours?: string | null
+    shopName?: string | null
+    shopLogo?: string | null
+    shopLocationText?: string | null
+    shopLocationLat?: number | null
+    shopLocationLng?: number | null
+    lastBoardSeenAt?: Date | string | null
+    seenBoardPostIds?: string | null
+    createdAt?: Date | string
+    listings?: ListingUncheckedCreateNestedManyWithoutUserInput
+    buyerConversations?: ConversationUncheckedCreateNestedManyWithoutBuyerInput
+    sellerConversations?: ConversationUncheckedCreateNestedManyWithoutSellerInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
+    flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    polls?: PollUncheckedCreateNestedManyWithoutUserInput
+    ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
+    ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
+    weeklyUsage?: UserWeeklyUsageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFlowLikesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFlowLikesInput, UserUncheckedCreateWithoutFlowLikesInput>
+  }
+
+  export type FlowPostUpsertWithoutLikesInput = {
+    update: XOR<FlowPostUpdateWithoutLikesInput, FlowPostUncheckedUpdateWithoutLikesInput>
+    create: XOR<FlowPostCreateWithoutLikesInput, FlowPostUncheckedCreateWithoutLikesInput>
+    where?: FlowPostWhereInput
+  }
+
+  export type FlowPostUpdateToOneWithWhereWithoutLikesInput = {
+    where?: FlowPostWhereInput
+    data: XOR<FlowPostUpdateWithoutLikesInput, FlowPostUncheckedUpdateWithoutLikesInput>
+  }
+
+  export type FlowPostUpdateWithoutLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateWithoutLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+  }
+
+  export type UserUpsertWithoutFlowLikesInput = {
+    update: XOR<UserUpdateWithoutFlowLikesInput, UserUncheckedUpdateWithoutFlowLikesInput>
+    create: XOR<UserCreateWithoutFlowLikesInput, UserUncheckedCreateWithoutFlowLikesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFlowLikesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFlowLikesInput, UserUncheckedUpdateWithoutFlowLikesInput>
+  }
+
+  export type UserUpdateWithoutFlowLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    locationScope?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showAge?: BoolFieldUpdateOperationsInput | boolean
+    accountType?: StringFieldUpdateOperationsInput | string
+    businessCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    businessClosedHours?: NullableStringFieldUpdateOperationsInput | string | null
+    shopName?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLocationText?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLocationLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneWithoutUsersNestedInput
+    listings?: ListingUpdateManyWithoutUserNestedInput
+    buyerConversations?: ConversationUpdateManyWithoutBuyerNestedInput
+    sellerConversations?: ConversationUpdateManyWithoutSellerNestedInput
+    messages?: MessageUpdateManyWithoutSenderNestedInput
+    reportsMade?: ReportUpdateManyWithoutReporterNestedInput
+    boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
+    flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    polls?: PollUpdateManyWithoutUserNestedInput
+    ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
+    ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
+    weeklyUsage?: UserWeeklyUsageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFlowLikesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    locationScope?: NullableStringFieldUpdateOperationsInput | string | null
+    neighborhoodId?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showAge?: BoolFieldUpdateOperationsInput | boolean
+    accountType?: StringFieldUpdateOperationsInput | string
+    businessCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    businessClosedHours?: NullableStringFieldUpdateOperationsInput | string | null
+    shopName?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLocationText?: NullableStringFieldUpdateOperationsInput | string | null
+    shopLocationLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    shopLocationLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastBoardSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    seenBoardPostIds?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    listings?: ListingUncheckedUpdateManyWithoutUserNestedInput
+    buyerConversations?: ConversationUncheckedUpdateManyWithoutBuyerNestedInput
+    sellerConversations?: ConversationUncheckedUpdateManyWithoutSellerNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
+    flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -34315,6 +36790,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
     weeklyUsage?: UserWeeklyUsageCreateNestedManyWithoutUserInput
@@ -34356,6 +36832,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
     weeklyUsage?: UserWeeklyUsageUncheckedCreateNestedManyWithoutUserInput
@@ -34480,6 +36957,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
     weeklyUsage?: UserWeeklyUsageUpdateManyWithoutUserNestedInput
@@ -34521,6 +36999,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
     weeklyUsage?: UserWeeklyUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -34642,6 +37121,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
     weeklyUsage?: UserWeeklyUsageCreateNestedManyWithoutUserInput
@@ -34683,6 +37163,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
     weeklyUsage?: UserWeeklyUsageUncheckedCreateNestedManyWithoutUserInput
@@ -34729,6 +37210,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     weeklyUsage?: UserWeeklyUsageCreateNestedManyWithoutUserInput
@@ -34770,6 +37252,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     weeklyUsage?: UserWeeklyUsageUncheckedCreateNestedManyWithoutUserInput
@@ -34827,6 +37310,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
     weeklyUsage?: UserWeeklyUsageUpdateManyWithoutUserNestedInput
@@ -34868,6 +37352,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
     weeklyUsage?: UserWeeklyUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -34920,6 +37405,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     weeklyUsage?: UserWeeklyUsageUpdateManyWithoutUserNestedInput
@@ -34961,6 +37447,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     weeklyUsage?: UserWeeklyUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -35002,6 +37489,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -35043,6 +37531,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -35100,6 +37589,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -35141,6 +37631,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -35182,6 +37673,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -35223,6 +37715,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -35280,6 +37773,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -35321,6 +37815,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -35362,6 +37857,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -35403,6 +37899,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -35460,6 +37957,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -35501,6 +37999,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -35542,6 +38041,7 @@ export namespace Prisma {
     reportsMade?: ReportCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeCreateNestedManyWithoutUserInput
     polls?: PollCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingCreateNestedManyWithoutTargetInput
@@ -35583,6 +38083,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedCreateNestedManyWithoutReporterInput
     boardPosts?: BoardPostUncheckedCreateNestedManyWithoutUserInput
     flowPosts?: FlowPostUncheckedCreateNestedManyWithoutUserInput
+    flowLikes?: FlowPostLikeUncheckedCreateNestedManyWithoutUserInput
     polls?: PollUncheckedCreateNestedManyWithoutUserInput
     ratingsGiven?: UserRatingUncheckedCreateNestedManyWithoutRaterInput
     ratingsReceived?: UserRatingUncheckedCreateNestedManyWithoutTargetInput
@@ -35640,6 +38141,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -35681,6 +38183,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -35791,6 +38294,14 @@ export namespace Prisma {
     neighborhoodId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeCreateManyUserInput = {
+    id: string
+    postId: string
     createdAt?: Date | string
   }
 
@@ -36158,6 +38669,11 @@ export namespace Prisma {
     photos?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostUncheckedUpdateWithoutUserInput = {
@@ -36165,7 +38681,12 @@ export namespace Prisma {
     neighborhoodId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostUncheckedUpdateManyWithoutUserInput = {
@@ -36173,6 +38694,26 @@ export namespace Prisma {
     neighborhoodId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: FlowPostUpdateOneRequiredWithoutLikesNestedInput
+  }
+
+  export type FlowPostLikeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -36427,6 +38968,8 @@ export namespace Prisma {
     userId: string
     body: string
     photos: string
+    parentPostId?: string | null
+    repostOfPostId?: string | null
     createdAt?: Date | string
   }
 
@@ -36470,6 +39013,7 @@ export namespace Prisma {
     reportsMade?: ReportUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUpdateManyWithoutUserNestedInput
     polls?: PollUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUpdateManyWithoutTargetNestedInput
@@ -36511,6 +39055,7 @@ export namespace Prisma {
     reportsMade?: ReportUncheckedUpdateManyWithoutReporterNestedInput
     boardPosts?: BoardPostUncheckedUpdateManyWithoutUserNestedInput
     flowPosts?: FlowPostUncheckedUpdateManyWithoutUserNestedInput
+    flowLikes?: FlowPostLikeUncheckedUpdateManyWithoutUserNestedInput
     polls?: PollUncheckedUpdateManyWithoutUserNestedInput
     ratingsGiven?: UserRatingUncheckedUpdateManyWithoutRaterNestedInput
     ratingsReceived?: UserRatingUncheckedUpdateManyWithoutTargetNestedInput
@@ -36657,6 +39202,11 @@ export namespace Prisma {
     photos?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostUncheckedUpdateWithoutNeighborhoodInput = {
@@ -36664,7 +39214,12 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type FlowPostUncheckedUpdateManyWithoutNeighborhoodInput = {
@@ -36672,6 +39227,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -36824,6 +39381,122 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     viewOnceConsumedByBuyerAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewOnceConsumedBySellerAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostCreateManyParentPostInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    repostOfPostId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FlowPostCreateManyRepostOfPostInput = {
+    id: string
+    neighborhoodId: string
+    userId: string
+    body: string
+    photos: string
+    parentPostId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FlowPostLikeCreateManyPostInput = {
+    id: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type FlowPostUpdateWithoutParentPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    repostOfPost?: FlowPostUpdateOneWithoutRepostsNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateWithoutParentPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateManyWithoutParentPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    repostOfPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostUpdateWithoutRepostOfPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    neighborhood?: NeighborhoodUpdateOneRequiredWithoutFlowPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutFlowPostsNestedInput
+    parentPost?: FlowPostUpdateOneWithoutRepliesNestedInput
+    replies?: FlowPostUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateWithoutRepostOfPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: FlowPostUncheckedUpdateManyWithoutParentPostNestedInput
+    reposts?: FlowPostUncheckedUpdateManyWithoutRepostOfPostNestedInput
+    likes?: FlowPostLikeUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type FlowPostUncheckedUpdateManyWithoutRepostOfPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    neighborhoodId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    photos?: StringFieldUpdateOperationsInput | string
+    parentPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFlowLikesNestedInput
+  }
+
+  export type FlowPostLikeUncheckedUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FlowPostLikeUncheckedUpdateManyWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
