@@ -25,6 +25,11 @@ export async function POST(req: NextRequest) {
     }
   });
 
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { lastActiveAt: new Date() }
+  });
+
   return NextResponse.json({ ok: true });
 }
 

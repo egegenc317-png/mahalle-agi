@@ -32,6 +32,7 @@ model User {
   shopLocationLng     Float?
   lastBoardSeenAt     DateTime?
   seenBoardPostIds    String?
+  lastActiveAt        DateTime?
   createdAt           DateTime       @default(now())
   listings            Listing[]
   buyerConversations  Conversation[] @relation("BuyerConversations")

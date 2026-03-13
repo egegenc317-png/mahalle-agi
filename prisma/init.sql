@@ -24,6 +24,7 @@ CREATE TABLE "User" (
     "shopLocationLng" REAL,
     "lastBoardSeenAt" DATETIME,
     "seenBoardPostIds" TEXT,
+    "lastActiveAt" DATETIME,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "User_neighborhoodId_fkey" FOREIGN KEY ("neighborhoodId") REFERENCES "Neighborhood" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
