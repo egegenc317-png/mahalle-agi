@@ -8,6 +8,7 @@ import { Clock3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { LocationHelpCard } from "@/components/location-help-card";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
@@ -255,6 +256,8 @@ export function ShopForm({
       <div className="rounded-md border bg-zinc-50 px-3 py-2 text-xs text-zinc-700">
         {coords ? `Canlı konum: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}` : "Canlı konum alınamadı."}
       </div>
+
+      <LocationHelpCard compact />
 
       <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" onClick={refreshLocation} disabled={locLoading}>
         {locLoading ? "Konum alınıyor..." : "Konumu Yenile"}

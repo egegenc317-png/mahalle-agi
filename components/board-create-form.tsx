@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { LocationHelpCard } from "@/components/location-help-card";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
 async function fetchJsonWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 20000) {
@@ -207,6 +208,7 @@ export function BoardCreateForm() {
             </Button>
           ) : null}
         </div>
+        <LocationHelpCard compact />
       </div>
 
       {error ? <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p> : null}

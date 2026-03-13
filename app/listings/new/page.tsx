@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { LocationHelpCard } from "@/components/location-help-card";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
@@ -215,6 +216,7 @@ export default function NewListingPage() {
                     </Button>
                   ) : null}
                 </div>
+                <LocationHelpCard compact />
               </div>
 
               <div className="space-y-2 rounded-xl border border-amber-200 bg-white p-3 shadow-sm">

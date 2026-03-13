@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LocationHelpCard } from "@/components/location-help-card";
 import { requestPreciseLocation, type BrowserPermissionState } from "@/lib/client/request-location";
 
 export default function NeighborhoodOnboardingPage() {
@@ -90,6 +91,7 @@ export default function NeighborhoodOnboardingPage() {
                 ? "Konum izni daha önce kapatılmış. Tarayıcı veya telefon ayarlarından tekrar açman gerekiyor."
                 : "Bazı telefonlarda izin penceresi tarayıcıya göre değişebilir. Doğrula tuşu izin istemeyi yine tetikler."}
         </div>
+        <LocationHelpCard />
         <Button className="h-12 w-full rounded-xl bg-orange-500 text-white hover:bg-orange-600" onClick={verifyLocation} disabled={loading}>
           {loading ? "Konum kontrol ediliyor..." : "Konumumu Doğrula"}
         </Button>
