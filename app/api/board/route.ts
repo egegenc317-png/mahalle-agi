@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds, validatePointInUserScope } from "@/lib/location-scope";
+import { validatePointInUserScope } from "@/lib/location-scope";
 import { geocodeLocationText } from "@/lib/geocode";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/ratelimit";
@@ -15,16 +15,8 @@ export async function GET() {
   if (!session.user.locationScope) return NextResponse.json({ error: "Kapsam seçimi gerekli" }, { status: 400 });
   if (!session.user.neighborhoodId) return NextResponse.json({ error: "Mahalle seçimi gerekli" }, { status: 400 });
 
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-  const neighborhoodIds = scopeContext.ids;
-  const whereNeighborhood =
-    neighborhoodIds.length === 1 ? neighborhoodIds[0] : { in: neighborhoodIds };
-
   const items = await prisma.boardPost.findMany({
-    where: { neighborhoodId: whereNeighborhood },
+    where: { neighborhoodId: session.user.neighborhoodId },
     include: { user: { select: { id: true, name: true } } },
     orderBy: { createdAt: "desc" }
   });

@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { prisma } from "@/lib/prisma";
 import { pollVoteSchema } from "@/lib/validations";
 
@@ -21,12 +20,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const poll = await prisma.poll.findUnique({ where: { id: params.id } });
   if (!poll) return NextResponse.json({ error: "Anket bulunamadı" }, { status: 404 });
 
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-
-  if (!session.user.neighborhoodId || !scopeContext.ids.includes(poll.neighborhoodId)) {
+  if (!session.user.neighborhoodId || poll.neighborhoodId !== session.user.neighborhoodId) {
     return NextResponse.json({ error: "Bu ankete oy veremezsiniz" }, { status: 403 });
   }
 

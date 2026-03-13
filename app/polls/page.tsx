@@ -3,7 +3,6 @@ import { Crown, Vote } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import { resolveScopeNeighborhoodIds } from "@/lib/location-scope";
 import { canUserCreatePollByMukhtarRule, getWeeklyNeighborhoodMukhtar } from "@/lib/mukhtar";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -29,17 +28,9 @@ export default async function PollsPage({ searchParams }: { searchParams?: { err
   if (!session.user.locationScope) redirect("/onboarding/scope");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
 
-  const scopeContext = await resolveScopeNeighborhoodIds(
-    session.user.neighborhoodId,
-    session.user.locationScope
-  );
-  const neighborhoodIds = scopeContext.ids;
-  const whereNeighborhood =
-    neighborhoodIds.length === 1 ? neighborhoodIds[0] : { in: neighborhoodIds };
-
   const [polls, mukhtar, permission] = await Promise.all([
     prisma.poll.findMany({
-      where: { neighborhoodId: whereNeighborhood },
+      where: { neighborhoodId: session.user.neighborhoodId },
       include: { user: { select: { id: true, name: true } }, votes: true },
       orderBy: { createdAt: "desc" }
     }) as Promise<PollView[]>,
@@ -51,8 +42,8 @@ export default async function PollsPage({ searchParams }: { searchParams?: { err
     })
   ]);
 
-  const areaLabel = session.user.locationScope === "DISTRICT" ? "Semt" : "Mahalle";
-  const areaLabelLower = areaLabel.toLowerCase();
+  const areaLabel = "Mahalle";
+  const areaLabelLower = "mahalle";
   const canCreate = permission.ok;
 
   return (
