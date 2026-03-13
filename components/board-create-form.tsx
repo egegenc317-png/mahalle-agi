@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, LocateFixed, MapPin, PencilLine, SendHorizonal } from "lucide-react";
 
@@ -61,11 +61,6 @@ export function BoardCreateForm() {
     }
   };
 
-  useEffect(() => {
-    refreshLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -92,21 +87,19 @@ export function BoardCreateForm() {
         })
       );
 
-      let coords: { lat: number; lng: number } | null = locationPreview;
-      try {
-        if (!coords) coords = await getCurrentPosition();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Konum alınamadı.");
-        return;
-      }
+      const coords: { lat: number; lng: number } | null = locationPreview;
 
       const payload = {
         type: String(form.get("type") || "ANNOUNCEMENT"),
         title: String(form.get("title") || ""),
         body: String(form.get("body") || ""),
         photos: uploadedPhotos,
-        locationLat: coords.lat,
-        locationLng: coords.lng
+        ...(coords
+          ? {
+              locationLat: coords.lat,
+              locationLng: coords.lng
+            }
+          : {})
       };
 
       const { response, data } = await fetchJsonWithTimeout(
@@ -203,17 +196,30 @@ export function BoardCreateForm() {
 
       <div className="space-y-2 rounded-xl border border-amber-200 bg-white p-3 shadow-sm">
         <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-          <MapPin className="h-3.5 w-3.5" /> Konum doğrulama
+          <MapPin className="h-3.5 w-3.5" /> Konum (opsiyonel)
         </p>
         <div className="rounded-lg border border-amber-100 bg-amber-50/60 px-3 py-2 text-xs text-[#6b4a2d]">
           {locationPreview
             ? `Canlı konum: ${locationPreview.lat.toFixed(5)}, ${locationPreview.lng.toFixed(5)}`
-            : "Canlı konum alınamadı."}
+            : "Konum eklemek istemiyorsan bu alanı boş bırakabilirsin."}
         </div>
-        <Button type="button" variant="outline" size="sm" onClick={refreshLocation} disabled={locLoading} className="border-amber-300 text-amber-700 hover:bg-amber-50">
-          <LocateFixed className="mr-1.5 h-4 w-4" />
-          {locLoading ? "Konum alınıyor..." : "Konumu Yenile"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={refreshLocation} disabled={locLoading} className="border-amber-300 text-amber-700 hover:bg-amber-50">
+            <LocateFixed className="mr-1.5 h-4 w-4" />
+            {locLoading ? "Konum alınıyor..." : "Konum Ekle"}
+          </Button>
+          {locationPreview ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setLocationPreview(null)}
+              className="border-zinc-300 text-zinc-700 hover:bg-zinc-50"
+            >
+              Konumu Kaldır
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {error ? <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p> : null}

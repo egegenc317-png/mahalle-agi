@@ -86,11 +86,6 @@ export default function NewListingPage() {
     }
   };
 
-  useEffect(() => {
-    refreshLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -116,13 +111,7 @@ export default function NewListingPage() {
         })
       );
 
-      let coords: { lat: number; lng: number } | null = locationPreview;
-      try {
-        if (!coords) coords = await getCurrentPosition();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Konum alınamadı.");
-        return;
-      }
+      const coords: { lat: number; lng: number } | null = locationPreview;
 
       const payload = {
         type,
@@ -131,8 +120,13 @@ export default function NewListingPage() {
         category: form.get("category"),
         price: form.get("price") ? Number(form.get("price")) : null,
         locationHint: form.get("locationHint") || undefined,
-        locationLat: coords.lat,
-        locationLng: coords.lng,
+        locationText: form.get("locationHint") || undefined,
+        ...(coords
+          ? {
+              locationLat: coords.lat,
+              locationLng: coords.lng
+            }
+          : {}),
         photos
       };
 
@@ -208,17 +202,30 @@ export default function NewListingPage() {
 
               <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/50 p-3">
                 <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-600">
-                  <MapPin className="h-3.5 w-3.5" /> Konum doğrulama
+                  <MapPin className="h-3.5 w-3.5" /> Konum (opsiyonel)
                 </p>
                 <div className="rounded-lg border border-amber-100 bg-white/80 px-3 py-2 text-xs text-zinc-700">
                   {locationPreview
                     ? `Canlı konum: ${locationPreview.lat.toFixed(5)}, ${locationPreview.lng.toFixed(5)}`
-                    : "Canlı konum alınamadı."}
+                    : "Konum eklemek istemiyorsan bu alanı boş bırakabilirsin."}
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={refreshLocation} disabled={locLoading} className="border-amber-300 text-amber-700 hover:bg-amber-50">
-                  <LocateFixed className="mr-1.5 h-4 w-4" />
-                  {locLoading ? "Konum alınıyor..." : "Konumu Yenile"}
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={refreshLocation} disabled={locLoading} className="border-amber-300 text-amber-700 hover:bg-amber-50">
+                    <LocateFixed className="mr-1.5 h-4 w-4" />
+                    {locLoading ? "Konum alınıyor..." : "Konum Ekle"}
+                  </Button>
+                  {locationPreview ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLocationPreview(null)}
+                      className="border-zinc-300 text-zinc-700 hover:bg-zinc-50"
+                    >
+                      Konumu Kaldır
+                    </Button>
+                  ) : null}
+                </div>
               </div>
 
               <div className="space-y-2 rounded-xl border border-amber-200 bg-white p-3 shadow-sm">
