@@ -8,6 +8,7 @@ import { Copy, Crown, Link2, LogOut, Search, ShieldCheck, UserMinus, Users } fro
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type Member = {
   id: string;
@@ -67,9 +68,8 @@ export function GroupSettingsPanel({
   const uploadFile = async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Fotoğraf yüklenemedi.");
+    const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+    if (!response.ok) throw new Error(data.error || "Fotoğraf yüklenemedi.");
     return String(data.url);
   };
 
@@ -91,18 +91,30 @@ export function GroupSettingsPanel({
     if (!canManage || saving) return;
     setError(null);
     setSaving(true);
-    const res = await fetch(`/api/conversations/groups/${group.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ groupName, groupDescription, groupImage })
-    });
-    const data = await res.json().catch(() => ({}));
-    setSaving(false);
-    if (!res.ok) {
-      setError(data?.error || "Grup ayarları kaydedilemedi.");
-      return;
+    try {
+      const { response, data } = await fetchJsonWithTimeout(
+        `/api/conversations/groups/${group.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ groupName, groupDescription, groupImage })
+        },
+        30000
+      );
+      if (!response.ok) {
+        setError(data?.error || "Grup ayarları kaydedilemedi.");
+        return;
+      }
+      router.refresh();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Kaydetme isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Grup ayarları kaydedilemedi.");
+    } finally {
+      setSaving(false);
     }
-    router.refresh();
   };
 
   const updateMember = async (userId: string, action: "promote" | "demote" | "remove" | "add" | "leave") => {

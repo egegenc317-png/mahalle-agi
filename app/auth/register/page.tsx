@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/brand-logo";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type ClosedDayMode = "OPEN" | "FULL_DAY" | "RANGE";
 type ClosedDayState = { day: number; label: string; mode: ClosedDayMode; start: string; end: string };
@@ -84,19 +85,31 @@ export default function RegisterPage() {
     setEmailStatus(null);
     setEmailVerified(false);
     setEmailSending(true);
-    const res = await fetch("/api/auth/email-verification/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: normalizedEmail })
-    });
-    const data = await res.json();
-    setEmailSending(false);
-    if (!res.ok) {
-      setError(data.error || "Doğrulama kodu gönderilemedi.");
-      return;
+    try {
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/auth/email-verification/request",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: normalizedEmail })
+        },
+        20000
+      );
+      if (!response.ok) {
+        setError(data.error || "Doğrulama kodu gönderilemedi.");
+        return;
+      }
+      setEmailCodeExpiresAt(typeof data.expiresAt === "string" ? data.expiresAt : null);
+      setEmailStatus("Doğrulama kodu e-posta adresine gönderildi. Kod 4 dakika boyunca geçerli.");
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Kod gönderme isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Doğrulama kodu gönderilemedi.");
+    } finally {
+      setEmailSending(false);
     }
-    setEmailCodeExpiresAt(typeof data.expiresAt === "string" ? data.expiresAt : null);
-    setEmailStatus("Doğrulama kodu e-posta adresine gönderildi. Kod 4 dakika boyunca geçerli.");
   };
 
   const verifyEmailCode = async () => {
@@ -108,29 +121,40 @@ export default function RegisterPage() {
     setError(null);
     setEmailStatus(null);
     setEmailVerifying(true);
-    const res = await fetch("/api/auth/email-verification/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: normalizedEmail, code: emailCode.trim() })
-    });
-    const data = await res.json();
-    setEmailVerifying(false);
-    if (!res.ok) {
-      setError(data.error || "Kod doğrulanamadı.");
-      return;
+    try {
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/auth/email-verification/verify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: normalizedEmail, code: emailCode.trim() })
+        },
+        20000
+      );
+      if (!response.ok) {
+        setError(data.error || "Kod doğrulanamadı.");
+        return;
+      }
+      setEmailVerified(true);
+      setEmailCodeExpiresAt(null);
+      setEmailCountdown(0);
+      setEmailStatus("E-posta adresi doğrulandı.");
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Kod doğrulama isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Kod doğrulanamadı.");
+    } finally {
+      setEmailVerifying(false);
     }
-    setEmailVerified(true);
-    setEmailCodeExpiresAt(null);
-    setEmailCountdown(0);
-    setEmailStatus("E-posta adresi doğrulandı.");
   };
 
   const uploadFile = async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) {
+    const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+    if (!response.ok) {
       throw new Error(data.error || "Dosya yüklenemedi.");
     }
     return String(data.url);
@@ -165,50 +189,60 @@ export default function RegisterPage() {
       return;
     }
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        username,
-        email: normalizedEmail,
-        password,
-        birthDate,
-        showAge,
-        accountType,
-        businessCategory: accountType === "BUSINESS" ? businessCategory : undefined,
-        businessClosedHours:
-          accountType === "BUSINESS"
-            ? closedDays
-                .filter((item) => item.mode !== "OPEN")
-                .map((item) => {
-                  if (item.mode === "FULL_DAY") {
-                    return { day: item.day, mode: "FULL_DAY" as const };
-                  }
-                  return { day: item.day, mode: "RANGE" as const, start: item.start, end: item.end };
-                })
-            : undefined,
-        profileImage,
-        shopLogo
-      })
-    });
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Kayıt başarısız");
-      setSubmitting(false);
-      return;
-    }
+    try {
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/auth/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            username,
+            email: normalizedEmail,
+            password,
+            birthDate,
+            showAge,
+            accountType,
+            businessCategory: accountType === "BUSINESS" ? businessCategory : undefined,
+            businessClosedHours:
+              accountType === "BUSINESS"
+                ? closedDays
+                    .filter((item) => item.mode !== "OPEN")
+                    .map((item) => {
+                      if (item.mode === "FULL_DAY") {
+                        return { day: item.day, mode: "FULL_DAY" as const };
+                      }
+                      return { day: item.day, mode: "RANGE" as const, start: item.start, end: item.end };
+                    })
+                : undefined,
+            profileImage,
+            shopLogo
+          })
+        },
+        30000
+      );
+      if (!response.ok) {
+        setError(data.error || "Kayıt başarısız");
+        return;
+      }
 
-    const loginResult = await signIn("credentials", { email: normalizedEmail || username, password, redirect: false });
-    if (loginResult?.error) {
-      setSubmitting(false);
-      router.push("/auth/login");
-      return;
-    }
+      const loginResult = await signIn("credentials", { email: normalizedEmail || username, password, redirect: false });
+      if (loginResult?.error) {
+        router.push("/auth/login");
+        return;
+      }
 
-    setSubmitting(false);
-    router.push("/post-login");
-    router.refresh();
+      router.push("/post-login");
+      router.refresh();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Kayıt isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Kayıt sırasında beklenmeyen bir hata oluştu.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

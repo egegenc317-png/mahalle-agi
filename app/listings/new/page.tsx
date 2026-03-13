@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type ListingType = "PRODUCT" | "SERVICE" | "JOB";
 
@@ -75,64 +76,77 @@ export default function NewListingPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const form = new FormData(e.currentTarget);
-    const files = selectedPhotos.filter((f) => f.size > 0);
+    try {
+      const form = new FormData(e.currentTarget);
+      const files = selectedPhotos.filter((f) => f.size > 0);
 
-    if (files.length > 8) {
-      setError("En fazla 8 fotoğraf yüklenebilir.");
-      setLoading(false);
-      return;
-    }
-
-    const photos: string[] = [];
-    for (const file of files) {
-      const fd = new FormData();
-      fd.append("file", file);
-      const up = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await up.json();
-      if (!up.ok) {
-        setError(data.error || "Foto yüklenemedi");
-        setLoading(false);
+      if (files.length > 8) {
+        setError("En fazla 8 fotoğraf yüklenebilir.");
         return;
       }
-      photos.push(data.url);
-    }
 
-    let coords: { lat: number; lng: number } | null = locationPreview;
-    try {
-      if (!coords) coords = await getCurrentPosition();
+      const photos: string[] = [];
+      for (const file of files) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+        if (!response.ok) {
+          setError(data.error || "Foto yüklenemedi");
+          return;
+        }
+        photos.push(String(data.url));
+      }
+
+      let coords: { lat: number; lng: number } | null = locationPreview;
+      try {
+        if (!coords) coords = await getCurrentPosition();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Konum alınamadı.");
+        return;
+      }
+
+      const payload = {
+        type: isBusiness ? type : "JOB",
+        title: form.get("title"),
+        description: form.get("description"),
+        category: form.get("category"),
+        price: form.get("price") ? Number(form.get("price")) : null,
+        locationHint: form.get("locationHint") || undefined,
+        locationLat: coords.lat,
+        locationLng: coords.lng,
+        photos
+      };
+
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/listings",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        setError(data.error || "İlan oluşturulamadı");
+        return;
+      }
+
+      if (!data.id) {
+        setError("İlan oluşturuldu ama yönlendirme bilgisi alınamadı. Sayfayı yenileyip kontrol et.");
+        return;
+      }
+
+      router.push(`/listings/${data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Konum alınamadı.");
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("İstek zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "İlan yayınlanırken beklenmeyen bir hata oluştu.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const payload = {
-      type: isBusiness ? type : "JOB",
-      title: form.get("title"),
-      description: form.get("description"),
-      category: form.get("category"),
-      price: form.get("price") ? Number(form.get("price")) : null,
-      locationHint: form.get("locationHint") || undefined,
-      locationLat: coords.lat,
-      locationLng: coords.lng,
-      photos
-    };
-
-    const res = await fetch("/api/listings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error || "İlan oluşturulamadı");
-      setLoading(false);
-      return;
-    }
-
-    router.push(`/listings/${data.id}`);
   };
 
   return (
@@ -226,7 +240,7 @@ export default function NewListingPage() {
               </div>
 
               {error && <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-              <Button type="submit" className="h-12 w-full rounded-xl bg-gradient-to-r from-[#e58a2d] to-[#d97f23] text-white shadow-md hover:from-[#dc8126] hover:to-[#cc751f]">
+              <Button type="submit" disabled={loading} className="h-12 w-full rounded-xl bg-gradient-to-r from-[#e58a2d] to-[#d97f23] text-white shadow-md hover:from-[#dc8126] hover:to-[#cc751f]">
                 {loading ? "Yayınlanıyor..." : "Yayınla"}
               </Button>
             </form>

@@ -8,6 +8,7 @@ import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type FlowComposerProps = {
   neighborhoodLabel: string;
@@ -30,37 +31,46 @@ export function FlowComposer({ neighborhoodLabel, compact = false }: FlowCompose
 
     setLoading(true);
     setError(null);
+    try {
+      const photos: string[] = [];
+      for (const file of selectedPhotos) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+        if (!response.ok) {
+          setError(data.error || "Fotoğraf yüklenemedi.");
+          return;
+        }
+        photos.push(String(data.url));
+      }
 
-    const photos: string[] = [];
-    for (const file of selectedPhotos) {
-      const fd = new FormData();
-      fd.append("file", file);
-      const uploadRes = await fetch("/api/upload", { method: "POST", body: fd });
-      const uploadData = await uploadRes.json().catch(() => ({}));
-      if (!uploadRes.ok) {
-        setLoading(false);
-        setError(uploadData.error || "Fotoğraf yüklenemedi.");
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/akis",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ body: body.trim(), photos })
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        setError(data.error || "Paylaşım gönderilemedi.");
         return;
       }
-      photos.push(String(uploadData.url));
+
+      setBody("");
+      setSelectedPhotos([]);
+      router.refresh();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("İstek zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Paylaşım sırasında beklenmeyen bir hata oluştu.");
+    } finally {
+      setLoading(false);
     }
-
-    const res = await fetch("/api/akis", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: body.trim(), photos })
-    });
-    const data = await res.json().catch(() => ({}));
-
-    setLoading(false);
-    if (!res.ok) {
-      setError(data.error || "Paylaşım gönderilemedi.");
-      return;
-    }
-
-    setBody("");
-    setSelectedPhotos([]);
-    router.refresh();
   };
 
   return (

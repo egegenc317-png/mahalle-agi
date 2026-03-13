@@ -8,6 +8,7 @@ import { Camera, Search, Users, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type UserItem = {
   id: string;
@@ -71,9 +72,8 @@ export function GroupConversationBuilder({
   const uploadFile = async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Fotoğraf yüklenemedi.");
+    const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+    if (!response.ok) throw new Error(data.error || "Fotoğraf yüklenemedi.");
     return String(data.url);
   };
 
@@ -95,23 +95,35 @@ export function GroupConversationBuilder({
     if (saving) return;
     setError(null);
     setSaving(true);
-    const res = await fetch("/api/conversations/groups", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        groupName,
-        participantIds: selected.map((item) => item.id),
-        ...(groupImage ? { groupImage } : {})
-      })
-    });
-    const data = await res.json().catch(() => ({}));
-    setSaving(false);
-    if (!res.ok) {
-      setError(readApiError(data, "Grup oluşturulamadı."));
-      return;
+    try {
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/conversations/groups",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            groupName,
+            participantIds: selected.map((item) => item.id),
+            ...(groupImage ? { groupImage } : {})
+          })
+        },
+        30000
+      );
+      if (!response.ok) {
+        setError(readApiError(data, "Grup oluşturulamadı."));
+        return;
+      }
+      router.push(`/messages/${data.id}`);
+      router.refresh();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Grup oluşturma isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Grup oluşturulamadı.");
+    } finally {
+      setSaving(false);
     }
-    router.push(`/messages/${data.id}`);
-    router.refresh();
   };
 
   return (

@@ -8,6 +8,7 @@ import { Clock3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
+import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
 
 type ClosedDayMode = "OPEN" | "FULL_DAY" | "RANGE";
 type ClosedDayState = { day: number; label: string; mode: ClosedDayMode; start: string; end: string };
@@ -104,9 +105,8 @@ export function ShopForm({
   const uploadFile = async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Logo yüklenemedi.");
+    const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
+    if (!response.ok) throw new Error(data.error || "Logo yüklenemedi.");
     return String(data.url);
   };
 
@@ -119,48 +119,59 @@ export function ShopForm({
     }
 
     setSaving(true);
-    let logoToSave = shopLogoUrl || null;
-    if (shopLogoFile) {
-      try {
-        logoToSave = await uploadFile(shopLogoFile);
-      } catch (err) {
-        setSaving(false);
-        setError(err instanceof Error ? err.message : "Logo yüklenemedi.");
+    try {
+      let logoToSave = shopLogoUrl || null;
+      if (shopLogoFile) {
+        try {
+          logoToSave = await uploadFile(shopLogoFile);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Logo yüklenemedi.");
+          return;
+        }
+      }
+
+      const { response, data } = await fetchJsonWithTimeout(
+        "/api/shop",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            shopName,
+            businessCategory,
+            shopLogo: logoToSave,
+            businessClosedHours: closedDays
+              .filter((item) => item.mode !== "OPEN")
+              .map((item) => {
+                if (item.mode === "FULL_DAY") {
+                  return { day: item.day, mode: "FULL_DAY" as const };
+                }
+                return { day: item.day, mode: "RANGE" as const, start: item.start, end: item.end };
+              }),
+            locationText,
+            locationLat: coords.lat,
+            locationLng: coords.lng
+          })
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        setError(data.error || "Dükkan kaydedilemedi");
         return;
       }
+
+      if (logoToSave) setShopLogoUrl(logoToSave);
+      setShopLogoFile(null);
+      router.refresh();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Kaydetme isteği zaman aşımına uğradı. Lütfen tekrar dene.");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Dükkan kaydedilirken beklenmeyen bir hata oluştu.");
+    } finally {
+      setSaving(false);
     }
-
-    const res = await fetch("/api/shop", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        shopName,
-        businessCategory,
-        shopLogo: logoToSave,
-        businessClosedHours: closedDays
-          .filter((item) => item.mode !== "OPEN")
-          .map((item) => {
-            if (item.mode === "FULL_DAY") {
-              return { day: item.day, mode: "FULL_DAY" as const };
-            }
-            return { day: item.day, mode: "RANGE" as const, start: item.start, end: item.end };
-          }),
-        locationText,
-        locationLat: coords.lat,
-        locationLng: coords.lng
-      })
-    });
-    const data = await res.json().catch(() => ({}));
-    setSaving(false);
-
-    if (!res.ok) {
-      setError(data.error || "Dükkan kaydedilemedi");
-      return;
-    }
-
-    if (logoToSave) setShopLogoUrl(logoToSave);
-    setShopLogoFile(null);
-    router.refresh();
   };
 
   return (
