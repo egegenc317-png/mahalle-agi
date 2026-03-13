@@ -68,7 +68,7 @@ export default function NeighborhoodOnboardingPage() {
       </CardHeader>
       <CardContent className="space-y-4 p-5 pt-0 sm:p-6 sm:pt-0">
         <p className="text-sm leading-6 text-muted-foreground">
-          Devam etmek için konumunuzu doğrulayın. Sistem sizi doğrudan mahallenizin sayfasina yönlendirecek.
+          Devam etmek için konumunuzu doğrulayın. Sistem sizi bulunduğunuz şehir, ilçe ve mahalleye göre otomatik olarak hazırlayacak.
         </p>
         <div className="rounded-2xl border border-amber-200 bg-white/85 px-4 py-3 text-xs text-zinc-600">
           Telefonunda konum izni açık olmalı. Doğrulama sonrası otomatik yönlendirme yapılır.
