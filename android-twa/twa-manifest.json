@@ -1,0 +1,20 @@
+{
+  "packageId": "com.dijitalmahallem.app",
+  "host": "dijitalmahallem.com",
+  "name": "Dijital Mahallem",
+  "launcherName": "Dijital Mahallem",
+  "display": "standalone",
+  "themeColor": "#f97316",
+  "backgroundColor": "#fff7ed",
+  "startUrl": "/",
+  "iconUrl": "https://dijitalmahallem.com/icons/icon-512.png",
+  "maskableIconUrl": "https://dijitalmahallem.com/icons/icon-512.png",
+  "monochromeIconUrl": "https://dijitalmahallem.com/icons/icon-512.png",
+  "orientation": "portrait",
+  "enableNotifications": false,
+  "webManifestUrl": "https://dijitalmahallem.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": false
+  }
+}
