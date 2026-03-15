@@ -78,7 +78,18 @@ export default async function MessagesPage() {
   });
 
   const lastMap = await getLatestMessagesByConversationIds(conversations.map((conversation) => conversation.id));
-  const users = (await prisma.user.findMany()) as Array<{ id: string; name: string; username?: string | null }>;
+  const relatedUserIds = Array.from(
+    new Set(
+      conversations.flatMap((conversation) => [
+        conversation.buyerId,
+        conversation.sellerId,
+        ...(conversation.participantIds || [])
+      ])
+    )
+  ).filter(Boolean);
+  const users = (await prisma.user.findMany({
+    where: { id: { in: relatedUserIds } }
+  })) as Array<{ id: string; name: string; username?: string | null }>;
   const userMap = new Map(users.map((item) => [item.id, item.name]));
   const me = users.find((item) => item.id === session.user.id) || null;
   const mentionToken = getMentionToken(me || {});

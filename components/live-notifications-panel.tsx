@@ -31,32 +31,59 @@ export function LiveNotificationsPanel({
 }: LiveNotificationsPanelProps) {
   const [messageAlerts, setMessageAlerts] = useState(initialMessageAlerts);
   const [boardAlerts, setBoardAlerts] = useState(initialBoardAlerts);
+  const storageKey = "mahalle:live-notifications";
 
   const loadNotifications = useCallback(async () => {
     try {
       const res = await fetch("/api/notifications/live", { cache: "no-store" });
       if (!res.ok) return;
       const data = await res.json();
-      setMessageAlerts(Array.isArray(data?.messageAlerts) ? data.messageAlerts : []);
-      setBoardAlerts(Array.isArray(data?.boardAlerts) ? data.boardAlerts : []);
+      const nextMessageAlerts = Array.isArray(data?.messageAlerts) ? data.messageAlerts : [];
+      const nextBoardAlerts = Array.isArray(data?.boardAlerts) ? data.boardAlerts : [];
+      setMessageAlerts(nextMessageAlerts);
+      setBoardAlerts(nextBoardAlerts);
+      try {
+        window.sessionStorage.setItem(
+          storageKey,
+          JSON.stringify({ messageAlerts: nextMessageAlerts, boardAlerts: nextBoardAlerts, ts: Date.now() })
+        );
+      } catch {
+        // cache yoksa sessiz geç
+      }
     } catch {
       // Bildirim ekranı sessizce son bilinen veriyle kalabilir.
     }
   }, []);
 
   useEffect(() => {
+    try {
+      const cached = window.sessionStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed?.messageAlerts)) setMessageAlerts(parsed.messageAlerts);
+        if (Array.isArray(parsed?.boardAlerts)) setBoardAlerts(parsed.boardAlerts);
+      }
+    } catch {
+      // ignore cache parse issues
+    }
+
     loadNotifications();
 
     const refresh = () => void loadNotifications();
-    const interval = window.setInterval(refresh, 5000);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") refresh();
+    }, 6000);
     window.addEventListener("focus", refresh);
-    document.addEventListener("visibilitychange", refresh);
+    document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("mahalle:refresh-summary", refresh as EventListener);
 
     return () => {
       window.clearInterval(interval);
       window.removeEventListener("focus", refresh);
-      document.removeEventListener("visibilitychange", refresh);
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("mahalle:refresh-summary", refresh as EventListener);
     };
   }, [loadNotifications]);

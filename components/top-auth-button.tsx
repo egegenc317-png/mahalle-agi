@@ -25,6 +25,7 @@ export function TopAuthButton({
 }) {
   const router = useRouter();
   const [liveUnreadCount, setLiveUnreadCount] = useState(unreadCount);
+  const storageKey = "mahalle:shell-unread-count";
 
   useEffect(() => {
     setLiveUnreadCount(unreadCount);
@@ -43,6 +44,11 @@ export function TopAuthButton({
         const data = await res.json();
         if (!cancelled && typeof data?.unreadCount === "number") {
           setLiveUnreadCount(data.unreadCount);
+          try {
+            window.sessionStorage.setItem(storageKey, String(data.unreadCount));
+          } catch {
+            // ignore storage issues
+          }
         }
       } catch {
         // Bildirim özeti hata verse bile üst bar akıcı kalmalı.
@@ -55,8 +61,18 @@ export function TopAuthButton({
       }
     };
 
+    try {
+      const cachedUnread = window.sessionStorage.getItem(storageKey);
+      if (cachedUnread !== null) {
+        const parsed = Number(cachedUnread);
+        if (!Number.isNaN(parsed)) setLiveUnreadCount(parsed);
+      }
+    } catch {
+      // ignore cache issues
+    }
+
     loadSummary();
-    intervalId = window.setInterval(refreshIfVisible, 5000);
+    intervalId = window.setInterval(refreshIfVisible, 6000);
     window.addEventListener("focus", refreshIfVisible);
     document.addEventListener("visibilitychange", refreshIfVisible);
     window.addEventListener("mahalle:refresh-summary", refreshIfVisible as EventListener);
