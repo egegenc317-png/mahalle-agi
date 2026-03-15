@@ -46,6 +46,30 @@ async function resolveNeighborhoodIdForPoint(input: {
   return neighborhood?.id ?? null;
 }
 
+async function resolveNeighborhoodCenter(neighborhood: {
+  id: string;
+  city?: string | null;
+  district?: string | null;
+  name?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+}) {
+  if (typeof neighborhood?.lat === "number" && typeof neighborhood?.lng === "number") {
+    return { lat: neighborhood.lat, lng: neighborhood.lng };
+  }
+
+  const parts = [neighborhood?.name, neighborhood?.district, neighborhood?.city, "Türkiye"].filter(Boolean);
+  const point = await geocodeLocationText(parts.join(", "));
+  if (!point) return null;
+
+  await prisma.neighborhood.update({
+    where: { id: neighborhood.id },
+    data: { lat: point.lat, lng: point.lng }
+  });
+
+  return point;
+}
+
 export default async function MapPage() {
   const session = await auth();
   if (!session) redirect("/auth/login");
@@ -69,18 +93,19 @@ export default async function MapPage() {
   const businessUsers = await prisma.user.findMany();
   const neighborhoodRadiusKm =
     typeof neighborhood?.radiusKm === "number" && neighborhood.radiusKm > 0 ? neighborhood.radiusKm : 6;
+  const neighborhoodCenter = neighborhood ? await resolveNeighborhoodCenter(neighborhood) : null;
 
   const isInsideCurrentNeighborhoodRadius = (lat?: number | null, lng?: number | null) => {
     if (
       typeof lat !== "number" ||
       typeof lng !== "number" ||
-      typeof neighborhood?.lat !== "number" ||
-      typeof neighborhood?.lng !== "number"
+      typeof neighborhoodCenter?.lat !== "number" ||
+      typeof neighborhoodCenter?.lng !== "number"
     ) {
       return false;
     }
 
-    return distanceKm(lat, lng, neighborhood.lat, neighborhood.lng) <= neighborhoodRadiusKm;
+    return distanceKm(lat, lng, neighborhoodCenter.lat, neighborhoodCenter.lng) <= neighborhoodRadiusKm;
   };
 
   const listings = allListings.filter(
@@ -201,10 +226,9 @@ export default async function MapPage() {
           <UnifiedNeighborhoodMap
             items={mapItems}
             defaultCenter={
-              typeof neighborhood?.lat === "number" && typeof neighborhood?.lng === "number"
-                ? { lat: neighborhood.lat, lng: neighborhood.lng }
-                : null
+              neighborhoodCenter
             }
+            maxDistanceKm={neighborhoodRadiusKm}
           />
         </CardContent>
       </Card>

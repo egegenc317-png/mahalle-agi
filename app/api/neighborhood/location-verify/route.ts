@@ -97,6 +97,17 @@ export async function POST(req: NextRequest) {
         }
       }));
   }
+  
+  await prisma.neighborhood.update({
+    where: { id: neighborhood.id },
+    data: {
+      city,
+      district,
+      name,
+      lat: parsed.data.lat,
+      lng: parsed.data.lng
+    }
+  });
 
   const byId = await prisma.user.findUnique({ where: { id: session.user.id } });
   const byEmail =

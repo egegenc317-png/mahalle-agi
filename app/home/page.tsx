@@ -248,10 +248,10 @@ export default async function UnifiedHomePage() {
               <>
                 <p className="text-sm font-medium text-zinc-900">{mukhtar.name} (@{mukhtar.username || "Kullanıcı"})</p>
                 <p className="text-xs text-zinc-600">Haftalık aktif süre: {(mukhtar.seconds / 3600).toFixed(1)} saat</p>
-                <p className="mt-2 flex items-center gap-1 text-xs text-orange-600"><Sparkles className="h-3.5 w-3.5" /> Bu hafta anket açma yetkisi mahalle muhtarında.</p>
+                <p className="mt-2 flex items-center gap-1 text-xs text-orange-600"><Sparkles className="h-3.5 w-3.5" /> Hafta sonunda en çok süre geçiren kullanıcı yeni mahalle muhtarı olur. Yeni hesaplar da yarışa katılır.</p>
               </>
             ) : (
-              <p className="text-xs text-zinc-600">Bu hafta henüz muhtar belirlenmedi. Kullanım arttıkça otomatik atanır.</p>
+              <p className="text-xs text-zinc-600">Bu hafta henüz muhtar belirlenmedi. Yeni hesaplar dahil herkesin süreleri sayılır, hafta sonunda en çok vakit geçiren kullanıcı otomatik seçilir.</p>
             )}
           </div>
         </div>

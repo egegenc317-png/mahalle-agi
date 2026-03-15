@@ -21,6 +21,20 @@ type MapItem = {
   locationLng?: number | null;
 };
 
+function toRad(value: number) {
+  return (value * Math.PI) / 180;
+}
+
+function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 declare global {
   interface Window {
     L?: LeafletLike;
@@ -168,10 +182,12 @@ function buildPopupNode(item: MapItem) {
 
 export function UnifiedNeighborhoodMap({
   items,
-  defaultCenter
+  defaultCenter,
+  maxDistanceKm
 }: {
   items: MapItem[];
   defaultCenter?: { lat: number; lng: number } | null;
+  maxDistanceKm?: number;
 }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [statusText, setStatusText] = useState("Harita hazırlanıyor...");
@@ -203,7 +219,7 @@ export function UnifiedNeighborhoodMap({
       const initialCenter = hasPinnedNeighborhoodCenter
         ? [defaultCenter!.lat, defaultCenter!.lng]
         : [39.0, 35.0];
-      const initialZoom = hasPinnedNeighborhoodCenter ? 16 : 6;
+      const initialZoom = hasPinnedNeighborhoodCenter ? 15 : 6;
       mapInstance = L.map(mapRef.current, {
         zoomControl: true
       }).setView(initialCenter as [number, number], initialZoom);
@@ -233,6 +249,13 @@ export function UnifiedNeighborhoodMap({
         }
 
         if (lat === null || lng === null) continue;
+        if (
+          hasPinnedNeighborhoodCenter &&
+          typeof maxDistanceKm === "number" &&
+          distanceKm(lat, lng, defaultCenter!.lat, defaultCenter!.lng) > maxDistanceKm
+        ) {
+          continue;
+        }
 
         const palette = paletteFor(item);
         const icon = L.divIcon({
@@ -269,7 +292,7 @@ export function UnifiedNeighborhoodMap({
         mapInstance.remove();
       }
     };
-  }, [defaultCenter, sortedItems]);
+  }, [defaultCenter, maxDistanceKm, sortedItems]);
 
   return (
     <div className="space-y-3">
@@ -289,7 +312,19 @@ export function UnifiedNeighborhoodMap({
       <p className="text-xs text-zinc-500">{statusText}</p>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        {sortedItems.map((item) => (
+        {sortedItems
+          .filter((item) => {
+            if (
+              !defaultCenter ||
+              typeof maxDistanceKm !== "number" ||
+              typeof item.locationLat !== "number" ||
+              typeof item.locationLng !== "number"
+            ) {
+              return true;
+            }
+            return distanceKm(item.locationLat, item.locationLng, defaultCenter.lat, defaultCenter.lng) <= maxDistanceKm;
+          })
+          .map((item) => (
           <div
             key={`${item.kind}-${item.id}`}
             className={`rounded-lg border bg-white p-3 ${paletteFor(item).card}`}
