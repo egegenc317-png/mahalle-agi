@@ -224,10 +224,60 @@ export function ChatClient({
   }, [conversationId, router]);
 
   useEffect(() => {
-    fetchMessages();
-    const timer = setInterval(fetchMessages, 1000);
-    return () => clearInterval(timer);
-  }, [fetchMessages]);
+    let eventSource: EventSource | null = null;
+    let fallbackTimer: number | null = null;
+    let cancelled = false;
+
+    const startFallbackPolling = () => {
+      if (fallbackTimer) return;
+      fallbackTimer = window.setInterval(() => {
+        if (document.visibilityState === "visible") {
+          void fetchMessages();
+        }
+      }, 12000);
+    };
+
+    void fetchMessages();
+
+    try {
+      eventSource = new EventSource(`/api/conversations/${conversationId}/messages/stream`);
+      eventSource.addEventListener("messages", (event) => {
+        try {
+          const data = JSON.parse((event as MessageEvent).data);
+          if (cancelled) return;
+          if (Array.isArray(data?.items)) {
+            setMessages(data.items);
+            setPeerLastSeenAt(typeof data?.peerLastSeenAt === "string" ? data.peerLastSeenAt : null);
+            setError(null);
+          }
+        } catch {
+          // ignore malformed SSE payloads
+        }
+      });
+      eventSource.addEventListener("error", (event) => {
+        try {
+          const data = JSON.parse((event as MessageEvent).data);
+          if (!cancelled && typeof data?.error === "string") {
+            setError(data.error);
+          }
+        } catch {
+          // ignore malformed SSE payloads
+        }
+      });
+      eventSource.onerror = () => {
+        eventSource?.close();
+        startFallbackPolling();
+      };
+    } catch {
+      startFallbackPolling();
+    }
+
+    return () => {
+      cancelled = true;
+      eventSource?.close();
+      if (fallbackTimer) window.clearInterval(fallbackTimer);
+    };
+  }, [conversationId, fetchMessages]);
 
   useEffect(() => {
     if (!scrollRef.current) return;

@@ -36,6 +36,7 @@ export function TopAuthButton({
 
     let cancelled = false;
     let intervalId: number | null = null;
+    let eventSource: EventSource | null = null;
 
     const loadSummary = async () => {
       try {
@@ -72,7 +73,32 @@ export function TopAuthButton({
     }
 
     loadSummary();
-    intervalId = window.setInterval(refreshIfVisible, 6000);
+
+    try {
+      eventSource = new EventSource("/api/me/shell-summary/stream");
+      eventSource.addEventListener("summary", (event) => {
+        try {
+          const data = JSON.parse((event as MessageEvent).data);
+          if (!cancelled && typeof data?.unreadCount === "number") {
+            setLiveUnreadCount(data.unreadCount);
+            try {
+              window.sessionStorage.setItem(storageKey, String(data.unreadCount));
+            } catch {
+              // ignore storage issues
+            }
+          }
+        } catch {
+          // ignore malformed payloads
+        }
+      });
+      eventSource.onerror = () => {
+        eventSource?.close();
+      };
+    } catch {
+      // SSE desteklenmezse polling fallback devam eder.
+    }
+
+    intervalId = window.setInterval(refreshIfVisible, 15000);
     window.addEventListener("focus", refreshIfVisible);
     document.addEventListener("visibilitychange", refreshIfVisible);
     window.addEventListener("mahalle:refresh-summary", refreshIfVisible as EventListener);
@@ -80,6 +106,7 @@ export function TopAuthButton({
     return () => {
       cancelled = true;
       if (intervalId) window.clearInterval(intervalId);
+      eventSource?.close();
       window.removeEventListener("focus", refreshIfVisible);
       document.removeEventListener("visibilitychange", refreshIfVisible);
       window.removeEventListener("mahalle:refresh-summary", refreshIfVisible as EventListener);
