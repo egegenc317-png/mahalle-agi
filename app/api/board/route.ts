@@ -9,19 +9,39 @@ import { checkRateLimit } from "@/lib/ratelimit";
 import { canCreateContentByRating, CONTENT_CREATOR_MIN_STARS } from "@/lib/user-rating";
 import { boardPostCreateSchema } from "@/lib/validations";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
   if (!session.user.locationScope) return NextResponse.json({ error: "Kapsam seçimi gerekli" }, { status: 400 });
   if (!session.user.neighborhoodId) return NextResponse.json({ error: "Mahalle seçimi gerekli" }, { status: 400 });
 
-  const items = await prisma.boardPost.findMany({
-    where: { neighborhoodId: session.user.neighborhoodId },
-    include: { user: { select: { id: true, name: true } } },
-    orderBy: { createdAt: "desc" }
-  });
+  const type = req.nextUrl.searchParams.get("type");
+  const q = req.nextUrl.searchParams.get("q");
+  const page = Math.max(1, Number(req.nextUrl.searchParams.get("page") || "1") || 1);
+  const pageSize = Math.min(24, Math.max(6, Number(req.nextUrl.searchParams.get("pageSize") || "12") || 12));
+  const skip = (page - 1) * pageSize;
 
-  return NextResponse.json({ items });
+  const where: Record<string, unknown> = { neighborhoodId: session.user.neighborhoodId };
+  if (type && type !== "ALL") where.type = type;
+  if (q) {
+    where.OR = [
+      { title: { contains: q, mode: "insensitive" } },
+      { body: { contains: q, mode: "insensitive" } }
+    ];
+  }
+
+  const [items, total] = await Promise.all([
+    prisma.boardPost.findMany({
+      where,
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: { createdAt: "desc" },
+      take: pageSize,
+      skip
+    }),
+    prisma.boardPost.count({ where })
+  ]);
+
+  return NextResponse.json({ items, total, page, pageSize, hasMore: skip + items.length < total });
 }
 
 export async function POST(req: NextRequest) {

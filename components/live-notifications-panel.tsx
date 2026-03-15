@@ -75,13 +75,37 @@ export function LiveNotificationsPanel({
     };
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible") refresh();
-    }, 6000);
+    }, 15000);
+    let eventSource: EventSource | null = null;
+    if (typeof window !== "undefined" && "EventSource" in window) {
+      eventSource = new EventSource("/api/notifications/stream");
+      eventSource.addEventListener("notifications", (event) => {
+        try {
+          const data = JSON.parse((event as MessageEvent).data);
+          const nextMessageAlerts = Array.isArray(data?.messageAlerts) ? data.messageAlerts : [];
+          const nextBoardAlerts = Array.isArray(data?.boardAlerts) ? data.boardAlerts : [];
+          setMessageAlerts(nextMessageAlerts);
+          setBoardAlerts(nextBoardAlerts);
+          window.sessionStorage.setItem(
+            storageKey,
+            JSON.stringify({ messageAlerts: nextMessageAlerts, boardAlerts: nextBoardAlerts, ts: Date.now() })
+          );
+        } catch {
+          // sse parse fail olursa polling devam eder
+        }
+      });
+      eventSource.onerror = () => {
+        eventSource?.close();
+        eventSource = null;
+      };
+    }
     window.addEventListener("focus", refresh);
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("mahalle:refresh-summary", refresh as EventListener);
 
     return () => {
       window.clearInterval(interval);
+      eventSource?.close();
       window.removeEventListener("focus", refresh);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("mahalle:refresh-summary", refresh as EventListener);

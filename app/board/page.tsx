@@ -2,32 +2,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Megaphone, Plus, Search } from "lucide-react";
-import Image from "next/image";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { BoardFeed } from "@/components/board-feed";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-
-const typeLabels: Record<string, string> = {
-  ANNOUNCEMENT: "Duyuru",
-  LOST_FOUND: "Kayıp / Bulundu",
-  INFRASTRUCTURE: "Altyapı",
-  NOISE: "Şikayet",
-  EVENT: "Etkinlik"
-};
-
-type BoardPostView = {
-  id: string;
-  userId: string;
-  type: string;
-  title: string;
-  body: string;
-  locationText?: string | null;
-  createdAt: Date;
-  user: { id: string; name: string; username?: string | null; image?: string | null };
-};
 
 export default async function BoardPage({
   searchParams
@@ -69,14 +49,10 @@ export default async function BoardPage({
     prisma.boardPost.count({ where })
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(totalPosts / pageSize));
-  const createPageHref = (nextPage: number) => {
-    const params = new URLSearchParams();
-    if (activeType !== "ALL") params.set("type", activeType);
-    if (searchParams.q) params.set("q", searchParams.q);
-    if (nextPage > 1) params.set("page", String(nextPage));
-    return `/board${params.size ? `?${params.toString()}` : ""}`;
-  };
+  const params = new URLSearchParams();
+  if (activeType !== "ALL") params.set("type", activeType);
+  if (searchParams.q) params.set("q", searchParams.q);
+  const queryString = params.size ? `?${params.toString()}` : "";
 
   return (
     <div className="space-y-4 pb-8 sm:pb-10">
@@ -145,90 +121,14 @@ export default async function BoardPage({
             <div className="relative overflow-hidden rounded-xl border border-[#9f744a] bg-[#c9a37a] p-4 shadow-inner">
               <div className="pointer-events-none absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#8f6a46 0.6px, transparent 0.6px)", backgroundSize: "10px 10px" }} />
 
-              {posts.length === 0 ? (
-                <div className="relative z-10 rounded-xl border border-dashed border-[#9f744a] bg-[#f6ecd9]/80 p-12 text-center text-sm text-[#5f452e]">
-                  Bu filtrede duyuru bulunamadı.
-                </div>
-              ) : (
-                <div className="relative z-10 grid gap-3 lg:grid-cols-2">
-                  {(posts as BoardPostView[]).map((post) => {
-                    const ownPost = post.userId === session.user.id;
-                    const canDeletePost = ownPost || session.user.role === "ADMIN";
-
-                    return (
-                      <article key={post.id} className="group relative rounded-xl border border-[#d6b48d] bg-[#f7efe1] p-3 shadow-md transition hover:-translate-y-0.5 hover:shadow-lg sm:p-4">
-                        {canDeletePost ? (
-                          <form action={`/api/board/${post.id}/delete`} method="post" className="absolute right-2 top-2 z-20">
-                            <button
-                              type="submit"
-                              className="rounded-md border border-red-200 bg-white/90 px-2 py-1 text-[11px] font-medium text-red-700 shadow-sm hover:bg-red-50"
-                            >
-                              Sil
-                            </button>
-                          </form>
-                        ) : null}
-
-                        <div className="relative z-20">
-                          <div className="mb-2 flex items-center justify-between gap-2">
-                            <Badge variant="outline" className="border-[#c49a6c] bg-white/60 text-[#6b4a2d]">
-                              {typeLabels[post.type] || post.type}
-                            </Badge>
-                            <span className="text-[11px] text-[#7b5a3d]">{new Date(post.createdAt).toLocaleString("tr-TR")}</span>
-                          </div>
-
-                          <Link href={`/board/${post.id}`} className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8893a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7efe1]">
-                            <h3 className="text-xl leading-tight text-[#5a3b23] sm:text-2xl">{post.title}</h3>
-                            <p className="mt-2 max-h-16 overflow-hidden text-sm leading-relaxed text-[#65462b]">{post.body}</p>
-                            {post.locationText ? <p className="mt-1 text-xs text-[#6b4a2d]">Konum: {post.locationText}</p> : null}
-                          </Link>
-
-                          <div className="mt-3 flex flex-col gap-2 text-xs text-[#6e5035] sm:flex-row sm:items-center sm:justify-between">
-                            <Link
-                              href={`/profile/${post.user.id}`}
-                              className="inline-flex items-center gap-2 rounded-full border border-[#d2ae84] bg-white/90 px-2.5 py-1.5 text-[#6b4a2d] shadow-sm transition hover:bg-white"
-                            >
-                              {post.user.image ? (
-                                <Image
-                                  src={post.user.image}
-                                  alt={post.user.name}
-                                  width={22}
-                                  height={22}
-                                  className="h-[22px] w-[22px] rounded-full object-cover"
-                                />
-                              ) : (
-                                <span className="inline-flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[#efc48c] text-[10px] font-semibold text-[#7a4e21]">
-                                  {post.user.name.slice(0, 1).toUpperCase()}
-                                </span>
-                              )}
-                              <span className="max-w-[120px] truncate">@{post.user.username || post.user.name}</span>
-                            </Link>
-                            <Link href={`/board/${post.id}`} className="font-medium text-[#7b5a3d] transition hover:text-[#5a3b23]">
-                              Detaya git
-                            </Link>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              )}
+              <BoardFeed
+                initialItems={posts}
+                totalItems={totalPosts}
+                queryString={queryString}
+                currentUserId={session.user.id}
+                currentUserRole={session.user.role}
+              />
             </div>
-
-            {totalPages > 1 ? (
-              <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#d1b08b] bg-[#fffaf2] p-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-[#6b4a2d]">
-                  Sayfa {page} / {totalPages} - Toplam {totalPosts} duyuru
-                </p>
-                <div className="flex gap-2">
-                  <Button asChild variant="outline" size="sm" className="border-[#c49a6c] text-[#6b4a2d]" disabled={page <= 1}>
-                    <Link href={createPageHref(page - 1)} aria-disabled={page <= 1}>Önceki</Link>
-                  </Button>
-                  <Button asChild variant="outline" size="sm" className="border-[#c49a6c] text-[#6b4a2d]" disabled={page >= totalPages}>
-                    <Link href={createPageHref(page + 1)} aria-disabled={page >= totalPages}>Sonraki</Link>
-                  </Button>
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
       </section>

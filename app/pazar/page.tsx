@@ -5,7 +5,7 @@ import { Plus, Search, Store } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ListingCard } from "@/components/listing-card";
+import { ListingFeed } from "@/components/listing-feed";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -54,18 +54,14 @@ export default async function PazarPage({
     prisma.listing.count({ where })
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(totalListings / pageSize));
-  const createPageHref = (nextPage: number) => {
-    const params = new URLSearchParams();
-    if (searchParams.type) params.set("type", searchParams.type);
-    if (searchParams.category) params.set("category", searchParams.category);
-    if (searchParams.q) params.set("q", searchParams.q);
-    if (searchParams.minPrice) params.set("minPrice", searchParams.minPrice);
-    if (searchParams.maxPrice) params.set("maxPrice", searchParams.maxPrice);
-    if (searchParams.sort) params.set("sort", searchParams.sort);
-    if (nextPage > 1) params.set("page", String(nextPage));
-    return `/pazar${params.size ? `?${params.toString()}` : ""}`;
-  };
+  const params = new URLSearchParams();
+  if (searchParams.type) params.set("type", searchParams.type);
+  if (searchParams.category) params.set("category", searchParams.category);
+  if (searchParams.q) params.set("q", searchParams.q);
+  if (searchParams.minPrice) params.set("minPrice", searchParams.minPrice);
+  if (searchParams.maxPrice) params.set("maxPrice", searchParams.maxPrice);
+  if (searchParams.sort) params.set("sort", searchParams.sort);
+  const queryString = params.size ? `?${params.toString()}` : "";
 
   return (
     <div className="space-y-5">
@@ -109,36 +105,7 @@ export default async function PazarPage({
         </form>
       </section>
 
-      {listings.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-amber-300 bg-white/80 p-10 text-center text-sm text-zinc-600">Pazarda bu filtreye uygün ilan bulunamadı.</div>
-      ) : (
-        <section className="rounded-2xl border border-amber-100 bg-gradient-to-b from-white to-amber-50/40 p-3 shadow-sm">
-          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-semibold text-zinc-800">Bugünün Tezgahları</p>
-            <p className="text-xs text-zinc-500">Yeniden eskiye Sıralı</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {listings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} variant="warm" />
-          ))}
-          </div>
-          {totalPages > 1 ? (
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-white/80 p-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-zinc-600">
-                Sayfa {page} / {totalPages} - Toplam {totalListings} ilan
-              </p>
-              <div className="flex gap-2">
-                <Button asChild variant="outline" size="sm" className="border-amber-300 text-amber-700" disabled={page <= 1}>
-                  <Link href={createPageHref(page - 1)} aria-disabled={page <= 1}>Önceki</Link>
-                </Button>
-                <Button asChild variant="outline" size="sm" className="border-amber-300 text-amber-700" disabled={page >= totalPages}>
-                  <Link href={createPageHref(page + 1)} aria-disabled={page >= totalPages}>Sonraki</Link>
-                </Button>
-              </div>
-            </div>
-          ) : null}
-        </section>
-      )}
+      <ListingFeed initialItems={listings} totalItems={totalListings} queryString={queryString} />
     </div>
   );
 }

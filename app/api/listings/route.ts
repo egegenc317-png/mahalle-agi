@@ -9,6 +9,7 @@ import { checkRateLimit } from "@/lib/ratelimit";
 import { listingCreateSchema } from "@/lib/validations";
 
 export async function GET(req: NextRequest) {
+  const session = await auth();
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
   const q = searchParams.get("q");
@@ -16,20 +17,29 @@ export async function GET(req: NextRequest) {
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
   const sort = searchParams.get("sort") || "newest";
+  const page = Math.max(1, Number(searchParams.get("page") || "1") || 1);
+  const pageSize = Math.min(24, Math.max(6, Number(searchParams.get("pageSize") || "12") || 12));
+  const skip = (page - 1) * pageSize;
 
   const where: Record<string, unknown> = { status: "ACTIVE" };
   if (type) where.type = type;
   if (category) where.category = category;
+  if (session?.user?.neighborhoodId) where.neighborhoodId = session.user.neighborhoodId;
   if (q) where.OR = [{ title: { contains: q, mode: "insensitive" } }, { description: { contains: q, mode: "insensitive" } }];
   if (minPrice || maxPrice) where.price = { gte: minPrice ? Number(minPrice) : undefined, lte: maxPrice ? Number(maxPrice) : undefined };
 
-  const items = await prisma.listing.findMany({
-    where,
-    include: { user: { select: { id: true, name: true } } },
-    orderBy: sort === "oldest" ? { createdAt: "asc" } : { createdAt: "desc" }
-  });
+  const [items, total] = await Promise.all([
+    prisma.listing.findMany({
+      where,
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: sort === "oldest" ? { createdAt: "asc" } : { createdAt: "desc" },
+      take: pageSize,
+      skip
+    }),
+    prisma.listing.count({ where })
+  ]);
 
-  return NextResponse.json({ items });
+  return NextResponse.json({ items, total, page, pageSize, hasMore: skip + items.length < total });
 }
 
 export async function POST(req: NextRequest) {
