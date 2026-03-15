@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { LocationHelpCard } from "@/components/location-help-card";
+import { optimizeUploadImages } from "@/lib/client/optimize-upload-image";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
 async function fetchJsonWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 20000) {
@@ -63,8 +64,9 @@ export function BoardCreateForm() {
         return;
       }
 
+      const optimizedFiles = await optimizeUploadImages(files);
       const uploadedPhotos = await Promise.all(
-        files.map(async (file) => {
+        optimizedFiles.map(async (file) => {
           const fd = new FormData();
           fd.append("file", file);
           const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { LocationHelpCard } from "@/components/location-help-card";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { optimizeUploadImage } from "@/lib/client/optimize-upload-image";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
 type ClosedDayMode = "OPEN" | "FULL_DAY" | "RANGE";
@@ -102,8 +103,9 @@ export function ShopForm({
   }, []);
 
   const uploadFile = async (file: File) => {
+    const optimizedFile = await optimizeUploadImage(file, { maxDimension: 1200, quality: 0.8 });
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", optimizedFile);
     const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
     if (!response.ok) throw new Error(data.error || "Logo yüklenemedi.");
     return String(data.url);

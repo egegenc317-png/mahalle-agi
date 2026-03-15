@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/brand-logo";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { optimizeUploadImage } from "@/lib/client/optimize-upload-image";
 
 type ClosedDayMode = "OPEN" | "FULL_DAY" | "RANGE";
 type ClosedDayState = { day: number; label: string; mode: ClosedDayMode; start: string; end: string };
@@ -151,8 +152,9 @@ export default function RegisterPage() {
   };
 
   const uploadFile = async (file: File, purpose: "register-profile" | "register-logo") => {
+    const optimizedFile = await optimizeUploadImage(file, { maxDimension: 1200, quality: 0.8 });
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", optimizedFile);
     fd.append("purpose", purpose);
     const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
     if (!response.ok) {

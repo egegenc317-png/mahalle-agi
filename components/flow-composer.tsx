@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { optimizeUploadImages } from "@/lib/client/optimize-upload-image";
 
 type FlowComposerProps = {
   neighborhoodLabel: string;
@@ -32,8 +33,9 @@ export function FlowComposer({ neighborhoodLabel, compact = false }: FlowCompose
     setLoading(true);
     setError(null);
     try {
+      const optimizedFiles = await optimizeUploadImages(selectedPhotos);
       const photos = await Promise.all(
-        selectedPhotos.map(async (file) => {
+        optimizedFiles.map(async (file) => {
           const fd = new FormData();
           fd.append("file", file);
           const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);

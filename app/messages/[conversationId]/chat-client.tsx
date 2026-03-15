@@ -8,6 +8,7 @@ import { Camera, Check, CheckCheck, FileText, Paperclip, Pin, PinOff, SendHorizo
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { optimizeUploadImage } from "@/lib/client/optimize-upload-image";
 import { normalizeMediaUrl } from "@/lib/media-url";
 
 type Message = {
@@ -337,12 +338,15 @@ export function ChatClient({
   const sendFile = async (file: File, options?: { viewOnce?: boolean }) => {
     if (sending || uploadingFile) return;
     const viewOnce = Boolean(options?.viewOnce);
+    const optimizedFile = file.type.startsWith("image/")
+      ? await optimizeUploadImage(file, { maxDimension: 1600, quality: 0.82 })
+      : file;
 
-    const localPreviewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+    const localPreviewUrl = optimizedFile.type.startsWith("image/") ? URL.createObjectURL(optimizedFile) : undefined;
     const optimisticId = `local-file-${Date.now()}`;
     const optimisticMessage: Message = {
       id: optimisticId,
-      body: buildFileMessage(file.name, "", viewOnce),
+      body: buildFileMessage(optimizedFile.name, "", viewOnce),
       senderId: currentUserId,
       createdAt: new Date().toISOString(),
       sender: { id: currentUserId, name: "Sen" },
@@ -356,7 +360,7 @@ export function ChatClient({
     setUploadingFile(true);
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", optimizedFile);
       const { response: uploadRes, data: uploadData } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
       if (!uploadRes.ok) {
         setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
@@ -373,7 +377,7 @@ export function ChatClient({
       const messageRes = await fetch(`/api/conversations/${conversationId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: buildFileMessage(file.name, uploadedUrl, viewOnce) })
+        body: JSON.stringify({ body: buildFileMessage(optimizedFile.name, uploadedUrl, viewOnce) })
       });
 
       if (!messageRes.ok) {

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { CameraCaptureButton } from "@/components/camera-capture-button";
 import { LocationHelpCard } from "@/components/location-help-card";
 import { fetchJsonWithTimeout } from "@/lib/client/fetch-json-with-timeout";
+import { optimizeUploadImages } from "@/lib/client/optimize-upload-image";
 import { requestPreciseLocation } from "@/lib/client/request-location";
 
 type ListingType = "PRODUCT" | "SERVICE" | "JOB";
@@ -89,8 +90,9 @@ export default function NewListingPage() {
         return;
       }
 
+      const optimizedFiles = await optimizeUploadImages(files);
       const photos = await Promise.all(
-        files.map(async (file) => {
+        optimizedFiles.map(async (file) => {
           const fd = new FormData();
           fd.append("file", file);
           const { response, data } = await fetchJsonWithTimeout("/api/upload", { method: "POST", body: fd }, 30000);
