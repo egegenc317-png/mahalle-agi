@@ -183,11 +183,13 @@ function buildPopupNode(item: MapItem) {
 export function UnifiedNeighborhoodMap({
   items,
   defaultCenter,
-  maxDistanceKm
+  maxDistanceKm,
+  showLegend = true
 }: {
   items: MapItem[];
   defaultCenter?: { lat: number; lng: number } | null;
   maxDistanceKm?: number;
+  showLegend?: boolean;
 }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [statusText, setStatusText] = useState("Harita hazırlanıyor...");
@@ -216,13 +218,15 @@ export function UnifiedNeighborhoodMap({
         Boolean(defaultCenter) &&
         typeof defaultCenter?.lat === "number" &&
         typeof defaultCenter?.lng === "number";
-      const initialCenter = hasPinnedNeighborhoodCenter
-        ? [defaultCenter!.lat, defaultCenter!.lng]
-        : [39.0, 35.0];
-      const initialZoom = hasPinnedNeighborhoodCenter ? 15 : 6;
+      const initialCenter = hasPinnedNeighborhoodCenter ? [defaultCenter!.lat, defaultCenter!.lng] : null;
+      const initialZoom = 16;
       mapInstance = L.map(mapRef.current, {
         zoomControl: true
-      }).setView(initialCenter as [number, number], initialZoom);
+      });
+
+      if (initialCenter) {
+        mapInstance.setView(initialCenter as [number, number], initialZoom);
+      }
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: tileAttribution
@@ -272,9 +276,14 @@ export function UnifiedNeighborhoodMap({
       }
 
       if (markerCount > 0 && !hasPinnedNeighborhoodCenter) {
-        mapInstance.fitBounds(bounds.pad(0.22));
-        setStatusText(`${markerCount} konum haritada gösteriliyor.`);
-      } else if (markerCount > 0) {
+        const firstItem = sortedItems.find(
+          (item) => typeof item.locationLat === "number" && typeof item.locationLng === "number"
+        );
+        if (firstItem && typeof firstItem.locationLat === "number" && typeof firstItem.locationLng === "number") {
+          mapInstance.setView([firstItem.locationLat, firstItem.locationLng], initialZoom);
+        }
+        setStatusText(`${markerCount} konum bu mahallede gösteriliyor.`);
+      } else if (markerCount > 0 && initialCenter) {
         mapInstance.setView(initialCenter as [number, number], initialZoom);
         setStatusText(`${markerCount} konum bu mahallede gösteriliyor.`);
       } else {
@@ -296,18 +305,20 @@ export function UnifiedNeighborhoodMap({
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2 rounded-md border bg-white px-3 py-2 text-xs text-zinc-700">
-        <span className="font-medium text-zinc-800">Harita Efsanesi:</span>
-        <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-blue-600" /> İşletme
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-orange-500" /> Altyapı Duyurusu
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-600" /> İkinci El İlan
-        </span>
-      </div>
+      {showLegend ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-md border bg-white px-3 py-2 text-xs text-zinc-700">
+          <span className="font-medium text-zinc-800">Harita Efsanesi:</span>
+          <span className="inline-flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-600" /> İşletme
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-orange-500" /> Altyapı Duyurusu
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-600" /> İkinci El İlan
+          </span>
+        </div>
+      ) : null}
       <div ref={mapRef} className="h-[70vh] min-h-[520px] w-full rounded-xl border" />
       <p className="text-xs text-zinc-500">{statusText}</p>
 

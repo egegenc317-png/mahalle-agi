@@ -9,8 +9,6 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UnifiedNeighborhoodMap } from "@/components/unified-neighborhood-map";
 
-type ListingWithUser = Awaited<ReturnType<typeof prisma.listing.findMany>>[number];
-type BoardPostWithUser = Awaited<ReturnType<typeof prisma.boardPost.findMany>>[number];
 type BusinessUser = Awaited<ReturnType<typeof prisma.user.findMany>>[number];
 
 function toRad(value: number) {
@@ -30,25 +28,6 @@ function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
 function getEffectiveNeighborhoodRadiusKm(radiusKm?: number | null) {
   const safeRadius = typeof radiusKm === "number" && radiusKm > 0 ? radiusKm : 3;
   return Math.min(Math.max(safeRadius, 1.5), 4);
-}
-
-async function resolveNeighborhoodIdForPoint(input: {
-  locationLat?: number | null;
-  locationLng?: number | null;
-  locationText?: string | null;
-}) {
-  let lat = typeof input.locationLat === "number" ? input.locationLat : null;
-  let lng = typeof input.locationLng === "number" ? input.locationLng : null;
-
-  if ((lat === null || lng === null) && input.locationText?.trim()) {
-    const point = await geocodeLocationText(input.locationText.trim());
-    lat = point?.lat ?? null;
-    lng = point?.lng ?? null;
-  }
-
-  if (lat === null || lng === null) return null;
-  const neighborhood = await findNeighborhoodByLocation(lat, lng);
-  return neighborhood?.id ?? null;
 }
 
 async function resolveNeighborhoodCenter(neighborhood: {
@@ -82,19 +61,7 @@ export default async function MapPage() {
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
   const neighborhoodId = session.user.neighborhoodId;
 
-  const [allListings, allPosts, neighborhood] = await Promise.all([
-    prisma.listing.findMany({
-      where: { neighborhoodId, status: "ACTIVE" },
-      include: { user: { select: { id: true, name: true } } },
-      orderBy: { createdAt: "desc" }
-    }),
-    prisma.boardPost.findMany({
-      where: { neighborhoodId },
-      include: { user: { select: { id: true, name: true } } },
-      orderBy: { createdAt: "desc" }
-    }),
-    prisma.neighborhood.findUnique({ where: { id: neighborhoodId } })
-  ]);
+  const neighborhood = await prisma.neighborhood.findUnique({ where: { id: neighborhoodId } });
   const businessUsers = await prisma.user.findMany();
   const neighborhoodRadiusKm = getEffectiveNeighborhoodRadiusKm(neighborhood?.radiusKm);
   const neighborhoodCenter = neighborhood ? await resolveNeighborhoodCenter(neighborhood) : null;
@@ -112,85 +79,24 @@ export default async function MapPage() {
     return distanceKm(lat, lng, neighborhoodCenter.lat, neighborhoodCenter.lng) <= neighborhoodRadiusKm;
   };
 
-  const listings = allListings.filter(
-    (l: ListingWithUser) => Boolean(l.locationText) || (typeof l.locationLat === "number" && typeof l.locationLng === "number")
-  );
-  const posts = allPosts.filter(
-    (p: BoardPostWithUser) => Boolean(p.locationText) || (typeof p.locationLat === "number" && typeof p.locationLng === "number")
-  );
-
-  const [postItems, listingItems, businessItems] = await Promise.all([
-    Promise.all(
-      posts.map(async (post: BoardPostWithUser) => {
-        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
-          locationLat: typeof post.locationLat === "number" ? post.locationLat : null,
-          locationLng: typeof post.locationLng === "number" ? post.locationLng : null,
-          locationText: post.locationText ?? null
-        });
-        if (matchedNeighborhoodId !== neighborhoodId) return null;
-        if (!isInsideCurrentNeighborhoodRadius(post.locationLat, post.locationLng)) return null;
-        return {
-          id: post.id,
-          kind: "BOARD" as const,
-          type: post.type,
-          title: post.title,
-          body: post.body,
-          userName: post.user.name || "Kullanıcı",
-          href: "/board",
-          createdAt: new Date(post.createdAt).toISOString(),
-          locationText: post.locationText ?? null,
-          locationLat: typeof post.locationLat === "number" ? post.locationLat : null,
-          locationLng: typeof post.locationLng === "number" ? post.locationLng : null
-        };
-      })
-    ),
-    Promise.all(
-      listings.map(async (listing: ListingWithUser) => {
-        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
-          locationLat: typeof listing.locationLat === "number" ? listing.locationLat : null,
-          locationLng: typeof listing.locationLng === "number" ? listing.locationLng : null,
-          locationText: listing.locationText ?? null
-        });
-        if (matchedNeighborhoodId !== neighborhoodId) return null;
-        if (!isInsideCurrentNeighborhoodRadius(listing.locationLat, listing.locationLng)) return null;
-        return {
-          id: listing.id,
-          kind: "LISTING" as const,
-          type: listing.type,
-          title: listing.title,
-          body: listing.description,
-          userName: listing.user.name || "Kullanıcı",
-          href: `/listings/${listing.id}`,
-          createdAt: new Date(listing.createdAt).toISOString(),
-          locationText: listing.locationText ?? null,
-          locationLat: typeof listing.locationLat === "number" ? listing.locationLat : null,
-          locationLng: typeof listing.locationLng === "number" ? listing.locationLng : null
-        };
-      })
-    ),
-    Promise.all(
+  const businessItems = (
+    await Promise.all(
       businessUsers
-        .filter(
-          (u: BusinessUser) =>
-            u.accountType === "BUSINESS" &&
-            (typeof u.shopLocationLat === "number" || Boolean(u.shopLocationText))
-        )
+        .filter((u: BusinessUser) => u.accountType === "BUSINESS")
+        .filter((u: BusinessUser) => typeof u.shopLocationLat === "number" && typeof u.shopLocationLng === "number")
         .map(async (u: BusinessUser) => {
-        const matchedNeighborhoodId = await resolveNeighborhoodIdForPoint({
-          locationLat: u.shopLocationLat ?? null,
-          locationLng: u.shopLocationLng ?? null,
-          locationText: u.shopLocationText ?? null
-        });
-        if (matchedNeighborhoodId !== neighborhoodId) return null;
-        if (!isInsideCurrentNeighborhoodRadius(u.shopLocationLat, u.shopLocationLng)) return null;
-        return {
+          const matchedNeighborhood = await findNeighborhoodByLocation(u.shopLocationLat!, u.shopLocationLng!);
+          if (matchedNeighborhood?.id !== neighborhoodId) return null;
+          if (!isInsideCurrentNeighborhoodRadius(u.shopLocationLat, u.shopLocationLng)) return null;
+
+          return {
             id: `shop-${u.id}`,
             kind: "LISTING" as const,
             type: "SHOP",
             title: u.shopName || `${u.name} Dükkanı`,
             body: u.shopLocationText || "İşletme konumu",
             userName: u.name || "İşletme",
-            href: `/profile/${u.id}`,
+            href: `/shop/${u.id}`,
             createdAt: new Date(u.createdAt).toISOString(),
             locationText: u.shopLocationText ?? null,
             locationLat: u.shopLocationLat ?? null,
@@ -200,9 +106,9 @@ export default async function MapPage() {
           };
         })
     )
-  ]);
+  ).filter(Boolean);
 
-  const mapItems = [...postItems, ...listingItems, ...businessItems].filter(Boolean);
+  const mapItems = businessItems;
 
   return (
     <div className="space-y-4">
@@ -214,17 +120,17 @@ export default async function MapPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-sm text-zinc-600">
-            {`${neighborhood?.city} / ${neighborhood?.district} / ${neighborhood?.name} mahallesi için konumlu ilan, duyuru ve işletmeler.`}
+            {`${neighborhood?.city} / ${neighborhood?.district} / ${neighborhood?.name} mahallesi için sadece işletme noktaları gösteriliyor.`}
           </p>
           <p className="text-xs text-zinc-500">
-            Konum yenileyince harita ve içerikler otomatik olarak geçtiğin mahalleye göre güncellenir.
+            Konum yenileyince harita sadece geçtiğin mahallenin işletmelerine göre güncellenir.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Mahallendeki Konumlar ({mapItems.length})</CardTitle>
+          <CardTitle>Mahallendeki İşletmeler ({mapItems.length})</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6">
           <UnifiedNeighborhoodMap
@@ -233,6 +139,7 @@ export default async function MapPage() {
               neighborhoodCenter
             }
             maxDistanceKm={neighborhoodRadiusKm}
+            showLegend={false}
           />
         </CardContent>
       </Card>

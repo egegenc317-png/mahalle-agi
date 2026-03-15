@@ -12,6 +12,11 @@ type NeighborhoodRecord = {
   radiusKm?: number;
 };
 
+function getEffectiveNeighborhoodRadiusKm(radiusKm?: number | null) {
+  const safeRadius = typeof radiusKm === "number" && radiusKm > 0 ? radiusKm : 3;
+  return Math.min(Math.max(safeRadius, 1.5), 4);
+}
+
 function toRad(v: number) {
   return (v * Math.PI) / 180;
 }
@@ -53,7 +58,7 @@ export async function findNeighborhoodByLocation(lat: number, lng: number) {
     .sort((a, b) => a.distance - b.distance);
 
   const reverse = await reverseGeocodeLocation(lat, lng);
-  const inRadius = ranked.filter((item) => item.distance <= (typeof item.radiusKm === "number" ? item.radiusKm : 12));
+  const inRadius = ranked.filter((item) => item.distance <= getEffectiveNeighborhoodRadiusKm(item.radiusKm));
   if (inRadius.length === 0) {
     return null;
   }
