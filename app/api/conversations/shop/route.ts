@@ -5,13 +5,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getClosedStatus, getIstanbulNow } from "@/lib/shop-hours";
 
-type ConversationLite = {
-  id: string;
-  buyerId: string;
-  sellerId: string;
-  contextType?: string;
-};
-
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
@@ -42,16 +35,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 409 });
   }
 
-  const allMyConversations = await prisma.conversation.findMany({
-    where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
+  const [existingConversation] = await prisma.conversation.findMany({
+    where: {
+      listingId: null,
+      contextType: "SHOP",
+      OR: [
+        { buyerId: session.user.id, sellerId: shopUser.id },
+        { buyerId: shopUser.id, sellerId: session.user.id }
+      ]
+    },
+    orderBy: { createdAt: "desc" }
   });
-
-  const existingConversation = (allMyConversations as ConversationLite[]).find(
-    (c) =>
-      c.contextType === "SHOP" &&
-      ((c.buyerId === session.user.id && c.sellerId === shopUser.id) ||
-        (c.buyerId === shopUser.id && c.sellerId === session.user.id))
-  );
 
   const conversation =
     existingConversation ||

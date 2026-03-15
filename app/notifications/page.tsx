@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Bell } from "lucide-react";
 
 import { auth } from "@/lib/auth";
+import { getLatestMessagesByConversationIds } from "@/lib/conversation-last-message";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LiveNotificationsPanel } from "@/components/live-notifications-panel";
@@ -48,14 +49,9 @@ export default async function NotificationsPage() {
       : Promise.resolve([])
   ]);
 
-  const messageAlertsRaw = await Promise.all(
-    conversations.map(async (conversation) => {
-      const [last] = await prisma.message.findMany({
-        where: { conversationId: conversation.id },
-        include: { sender: { select: { id: true, name: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 1
-      });
+  const latestMessageMap = await getLatestMessagesByConversationIds(conversations.map((conversation) => conversation.id));
+  const messageAlertsRaw = conversations.map((conversation) => {
+      const last = latestMessageMap.get(conversation.id);
       if (!last) return null;
 
       const mySeenAt =
@@ -81,15 +77,14 @@ export default async function NotificationsPage() {
         body: stripSpecialMessage(last.body),
         createdAt: last.createdAt,
         isGroup: conversation.conversationType === "GROUP",
-        senderName: (last as { sender?: { name?: string } }).sender?.name || "Bir kullanıcı",
+        senderName: last.senderName || "Bir kullanıcı",
         isMention: Boolean(
           conversation.conversationType === "GROUP" &&
           getMentionToken(me) &&
           stripSpecialMessage(last.body).includes(getMentionToken(me) as string)
         )
       };
-    })
-  );
+    });
   const messageAlerts = messageAlertsRaw.filter(Boolean) as Array<{
     id: string;
     peer: string;

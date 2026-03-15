@@ -4,15 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-type ConversationView = {
-  id: string;
-  buyerId: string;
-  sellerId: string;
-  contextType?: string;
-  listingId?: string | null;
-  createdAt?: Date;
-};
-
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) {
@@ -31,17 +22,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/messages", req.url));
   }
 
-  const allMyConversations = await prisma.conversation.findMany({
-    where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
+  const directMatches = await prisma.conversation.findMany({
+    where: {
+      listingId: null,
+      OR: [
+        { buyerId: session.user.id, sellerId: peer.id },
+        { buyerId: peer.id, sellerId: session.user.id }
+      ]
+    },
+    orderBy: { createdAt: "desc" }
   });
-
-  const directMatches = (allMyConversations as ConversationView[]).filter(
-    (c) =>
-      !c.listingId &&
-      ((c.buyerId === session.user.id && c.sellerId === peer.id) ||
-        (c.buyerId === peer.id && c.sellerId === session.user.id))
-  );
-  let conversation = directMatches.sort((a, b) => +new Date(b.createdAt || 0) - +new Date(a.createdAt || 0))[0];
+  let conversation = directMatches[0];
 
   if (!conversation) {
     conversation = await prisma.conversation.create({

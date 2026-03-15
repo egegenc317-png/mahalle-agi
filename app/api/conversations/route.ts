@@ -5,15 +5,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { conversationCreateSchema } from "@/lib/validations";
 
-type ConversationView = {
-  id: string;
-  buyerId: string;
-  sellerId: string;
-  contextType?: string;
-  listingId?: string | null;
-  createdAt?: Date;
-};
-
 export async function GET() {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Yetkişiz" }, { status: 401 });
@@ -44,7 +35,7 @@ export async function POST(req: NextRequest) {
   const parsed = conversationCreateSchema.safeParse(payload);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  let conversation: ConversationView | null = null;
+  let conversation = null;
 
   if (parsed.data.listingId) {
     const listing = await prisma.listing.findUnique({ where: { id: parsed.data.listingId } });
@@ -78,17 +69,17 @@ export async function POST(req: NextRequest) {
     if (!peer) return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
     if (peer.id === session.user.id) return NextResponse.json({ error: "Kendinizle sohbet açamazsınız" }, { status: 400 });
 
-    const allMyConversations = await prisma.conversation.findMany({
-      where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
+    const directMatches = await prisma.conversation.findMany({
+      where: {
+        listingId: null,
+        OR: [
+          { buyerId: session.user.id, sellerId: peer.id },
+          { buyerId: peer.id, sellerId: session.user.id }
+        ]
+      },
+      orderBy: { createdAt: "desc" }
     });
-
-    const directMatches = (allMyConversations as ConversationView[]).filter(
-      (c) =>
-        !c.listingId &&
-        ((c.buyerId === session.user.id && c.sellerId === peer.id) ||
-          (c.buyerId === peer.id && c.sellerId === session.user.id))
-    );
-    conversation = directMatches.sort((a, b) => +new Date(b.createdAt || 0) - +new Date(a.createdAt || 0))[0] || null;
+    conversation = directMatches[0] || null;
 
     if (!conversation) {
       conversation = await prisma.conversation.create({

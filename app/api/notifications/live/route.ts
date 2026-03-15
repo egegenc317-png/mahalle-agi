@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
+import { getLatestMessagesByConversationIds } from "@/lib/conversation-last-message";
 import { prisma } from "@/lib/prisma";
 
 const SYSTEM_MESSAGE_PREFIX = "__SYSTEM__|";
@@ -51,14 +52,9 @@ export async function GET() {
   ]);
 
   const mentionToken = getMentionToken(me);
-  const messageAlertsRaw = await Promise.all(
-    conversations.map(async (conversation: any) => {
-      const [last] = await prisma.message.findMany({
-        where: { conversationId: conversation.id },
-        include: { sender: { select: { id: true, name: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 1
-      });
+  const latestMessageMap = await getLatestMessagesByConversationIds(conversations.map((conversation: any) => conversation.id));
+  const messageAlertsRaw = conversations.map((conversation: any) => {
+      const last = latestMessageMap.get(conversation.id);
 
       if (!last) return null;
 
@@ -87,15 +83,14 @@ export async function GET() {
         body: stripSpecialMessage(last.body),
         createdAt: last.createdAt,
         isGroup: conversation.conversationType === "GROUP",
-        senderName: (last as { sender?: { name?: string } }).sender?.name || "Bir kullanıcı",
+        senderName: last.senderName || "Bir kullanıcı",
         isMention: Boolean(
           conversation.conversationType === "GROUP" &&
           mentionToken &&
           stripSpecialMessage(last.body).includes(mentionToken)
         )
       };
-    })
-  );
+    });
 
   const lastSeen = me.lastBoardSeenAt ? new Date(me.lastBoardSeenAt).getTime() : 0;
   const boardAlerts = boardPosts

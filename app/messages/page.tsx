@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { getLatestMessagesByConversationIds } from "@/lib/conversation-last-message";
 import { prisma } from "@/lib/prisma";
 import { MessagesHub } from "@/components/messages-hub";
 
@@ -76,17 +77,7 @@ export default async function MessagesPage() {
     orderBy: { createdAt: "desc" }
   });
 
-  const lastByConversation = await Promise.all(
-    conversations.map(async (conversation) => {
-      const [last] = await prisma.message.findMany({
-        where: { conversationId: conversation.id },
-        orderBy: { createdAt: "desc" },
-        take: 1
-      });
-      return { conversationId: conversation.id, last: last || null };
-    })
-  );
-  const lastMap = new Map(lastByConversation.map((item) => [item.conversationId, item.last]));
+  const lastMap = await getLatestMessagesByConversationIds(conversations.map((conversation) => conversation.id));
   const users = (await prisma.user.findMany()) as Array<{ id: string; name: string; username?: string | null }>;
   const userMap = new Map(users.map((item) => [item.id, item.name]));
   const me = users.find((item) => item.id === session.user.id) || null;

@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
+import { getLatestMessagesByConversationIds } from "@/lib/conversation-last-message";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -20,13 +21,10 @@ export async function GET() {
     where: { OR: [{ buyerId: session.user.id }, { sellerId: session.user.id }] }
   });
 
-  const latestMessages = await Promise.all(
-    myConversations.map(async (conversation: any) => {
-      const [last] = await prisma.message.findMany({
-        where: { conversationId: conversation.id },
-        orderBy: { createdAt: "desc" },
-        take: 1
-      });
+  const latestMessageMap = await getLatestMessagesByConversationIds(myConversations.map((conversation: any) => conversation.id));
+
+  const latestMessages = myConversations.map((conversation: any) => {
+      const last = latestMessageMap.get(conversation.id);
       if (!last) return 0;
       const mySeenAt =
         conversation.conversationType === "GROUP"
@@ -36,8 +34,7 @@ export async function GET() {
             : conversation.lastSeenBySellerAt;
       const unread = last.senderId !== session.user.id && (!mySeenAt || new Date(last.createdAt).getTime() > new Date(mySeenAt).getTime());
       return unread ? 1 : 0;
-    })
-  );
+    });
 
   unreadMessageCount = latestMessages.reduce<number>((sum, item) => sum + item, 0);
 
