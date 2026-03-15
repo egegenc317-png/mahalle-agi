@@ -7,19 +7,27 @@ import { checkRateLimit } from "@/lib/ratelimit";
 import { canCreateContentByRating, CONTENT_CREATOR_MIN_STARS } from "@/lib/user-rating";
 import { flowPostCreateSchema } from "@/lib/validations";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
   if (!session.user.neighborhoodId) return NextResponse.json({ error: "Mahalle seçimi gerekli" }, { status: 400 });
 
-  const items = await prisma.flowPost.findMany({
-    where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null },
-    include: { user: true, likes: true, replies: true, reposts: true, repostOfPost: true },
-    orderBy: { createdAt: "desc" },
-    take: 60
-  });
+  const page = Math.max(1, Number(req.nextUrl.searchParams.get("page") || "1") || 1);
+  const pageSize = Math.min(20, Math.max(10, Number(req.nextUrl.searchParams.get("pageSize") || "15") || 15));
+  const skip = (page - 1) * pageSize;
 
-  return NextResponse.json({ items });
+  const [items, total] = await Promise.all([
+    prisma.flowPost.findMany({
+      where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null },
+      include: { user: true, likes: true, replies: true, reposts: true, repostOfPost: true },
+      orderBy: { createdAt: "desc" },
+      take: pageSize,
+      skip
+    }),
+    prisma.flowPost.count({ where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null } })
+  ]);
+
+  return NextResponse.json({ items, page, pageSize, total });
 }
 
 export async function POST(req: NextRequest) {

@@ -255,12 +255,13 @@ export const prisma = {
       })
   },
   listing: {
-    findMany: async ({ where, include, orderBy, take }: any = {}) =>
-      (await db.listing.findMany({ where, include: attachListingIncludes(include), orderBy, take })).map(normalizeListing),
-    findUnique: async ({ where, include }: any) =>
-      normalizeListing(await db.listing.findUnique({ where, include: attachListingIncludes(include) })),
-    create: async ({ data }: any) =>
-      normalizeListing(
+      findMany: async ({ where, include, orderBy, take, skip }: any = {}) =>
+        (await db.listing.findMany({ where, include: attachListingIncludes(include), orderBy, take, skip })).map(normalizeListing),
+      findUnique: async ({ where, include }: any) =>
+        normalizeListing(await db.listing.findUnique({ where, include: attachListingIncludes(include) })),
+      count: async ({ where }: any = {}) => await db.listing.count({ where }),
+      create: async ({ data }: any) =>
+        normalizeListing(
         await db.listing.create({
           data: {
             id: data.id || randomUUID(),
@@ -321,30 +322,33 @@ export const prisma = {
     update: async ({ where, data }: any) => await db.report.update({ where, data }),
     count: async ({ where }: any) => await db.report.count({ where })
   },
-  boardPost: {
-    findMany: async ({ where, include, orderBy, take }: any = {}) =>
-      (await db.boardPost.findMany({ where, include: { user: Boolean(include?.user) }, orderBy, take })).map(normalizeBoardPost),
-    create: async ({ data }: any) => normalizeBoardPost(await db.boardPost.create({ data: { id: data.id || randomUUID(), viewCount: 0, ...data } })),
+    boardPost: {
+      findMany: async ({ where, include, orderBy, take, skip }: any = {}) =>
+        (await db.boardPost.findMany({ where, include: { user: Boolean(include?.user) }, orderBy, take, skip })).map(normalizeBoardPost),
+      count: async ({ where }: any = {}) => await db.boardPost.count({ where }),
+      create: async ({ data }: any) => normalizeBoardPost(await db.boardPost.create({ data: { id: data.id || randomUUID(), viewCount: 0, ...data } })),
     findUnique: async ({ where, include }: any) =>
       normalizeBoardPost(await db.boardPost.findUnique({ where, include: { user: Boolean(include?.user) } })),
     update: async ({ where, data }: any) => normalizeBoardPost(await db.boardPost.update({ where, data })),
     delete: async ({ where }: any) => normalizeBoardPost(await db.boardPost.delete({ where }))
   },
-  flowPost: {
-    findMany: async ({ where, include, orderBy, take }: any = {}) =>
-      (await db.flowPost.findMany({
-        where,
-        include: {
+    flowPost: {
+      findMany: async ({ where, include, orderBy, take, skip }: any = {}) =>
+        (await db.flowPost.findMany({
+          where,
+          include: {
           user: Boolean(include?.user),
           likes: Boolean(include?.likes),
           replies: include?.replies ? { include: { user: true }, orderBy: { createdAt: "asc" } } : false,
           reposts: Boolean(include?.reposts),
           repostOfPost: include?.repostOfPost ? { include: { user: true } } : false
         },
-        orderBy,
-        take
-      })).map(normalizeFlowPost),
-    create: async ({ data }: any) =>
+          orderBy,
+          take,
+          skip
+        })).map(normalizeFlowPost),
+      count: async ({ where }: any = {}) => await db.flowPost.count({ where }),
+      create: async ({ data }: any) =>
       normalizeFlowPost(await db.flowPost.create({ data: { id: data.id || randomUUID(), ...data, photos: JSON.stringify(data.photos || []) } })),
     findUnique: async ({ where, include }: any) =>
       normalizeFlowPost(await db.flowPost.findUnique({

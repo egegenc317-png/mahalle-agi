@@ -30,19 +30,29 @@ function formatRelative(date: Date) {
   return `${diffDay} g`;
 }
 
-export default async function AkisPage() {
+export default async function AkisPage({
+  searchParams
+}: {
+  searchParams: { page?: string };
+}) {
   const session = await auth();
   if (!session) redirect("/auth/login");
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
 
-  const [neighborhood, posts] = await Promise.all([
+  const page = Math.max(1, Number(searchParams.page || "1") || 1);
+  const pageSize = 15;
+  const skip = (page - 1) * pageSize;
+
+  const [neighborhood, posts, totalPosts] = await Promise.all([
     prisma.neighborhood.findUnique({ where: { id: session.user.neighborhoodId } }),
     prisma.flowPost.findMany({
       where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null },
       include: { user: true, likes: true, replies: true, reposts: true, repostOfPost: true },
       orderBy: { createdAt: "desc" },
-      take: 60
-    })
+      take: pageSize,
+      skip
+    }),
+    prisma.flowPost.count({ where: { neighborhoodId: session.user.neighborhoodId, parentPostId: null } })
   ]);
 
   const neighborhoodLabel = neighborhood
@@ -93,7 +103,7 @@ export default async function AkisPage() {
               <p className="mt-1 text-sm text-zinc-600">Twitter gibi düz akan, sadece mahallene özel bir mahalle akışı.</p>
             </div>
             <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-800">
-              {posts.length} paylaşım
+              {totalPosts} paylaşım
             </Badge>
           </div>
         </div>
@@ -194,6 +204,23 @@ export default async function AkisPage() {
             ))
           )}
         </div>
+        {totalPosts > 0 ? (
+          <div className="border-t border-amber-100 bg-[linear-gradient(180deg,#fffdf8_0%,#fff8ee_100%)] px-4 py-4 sm:px-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-zinc-600">
+                Sayfa {page} / {Math.max(1, Math.ceil(totalPosts / pageSize))} - Toplam {totalPosts} paylaşım
+              </p>
+              <div className="flex gap-2">
+                <Button asChild variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50" disabled={page <= 1}>
+                  <Link href={page <= 2 ? "/akis" : `/akis?page=${page - 1}`} aria-disabled={page <= 1}>Önceki</Link>
+                </Button>
+                <Button asChild variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50" disabled={skip + posts.length >= totalPosts}>
+                  <Link href={`/akis?page=${page + 1}`} aria-disabled={skip + posts.length >= totalPosts}>Daha Fazla</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </section>
     </div>
   );

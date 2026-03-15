@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 export default async function PazarPage({
   searchParams
 }: {
-  searchParams: { type?: string; category?: string; q?: string; minPrice?: string; maxPrice?: string; sort?: string };
+  searchParams: { type?: string; category?: string; q?: string; minPrice?: string; maxPrice?: string; sort?: string; page?: string };
 }) {
   const session = await auth();
   if (!session) redirect("/auth/login");
@@ -39,11 +39,33 @@ export default async function PazarPage({
     };
   }
 
-  const listings = await prisma.listing.findMany({
-    where,
-    include: { user: { select: { id: true, name: true, username: true, image: true } } },
-    orderBy: searchParams.sort === "oldest" ? { createdAt: "asc" } : { createdAt: "desc" }
-  });
+  const page = Math.max(1, Number(searchParams.page || "1") || 1);
+  const pageSize = 12;
+  const skip = (page - 1) * pageSize;
+
+  const [listings, totalListings] = await Promise.all([
+    prisma.listing.findMany({
+      where,
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: searchParams.sort === "oldest" ? { createdAt: "asc" } : { createdAt: "desc" },
+      take: pageSize,
+      skip
+    }),
+    prisma.listing.count({ where })
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalListings / pageSize));
+  const createPageHref = (nextPage: number) => {
+    const params = new URLSearchParams();
+    if (searchParams.type) params.set("type", searchParams.type);
+    if (searchParams.category) params.set("category", searchParams.category);
+    if (searchParams.q) params.set("q", searchParams.q);
+    if (searchParams.minPrice) params.set("minPrice", searchParams.minPrice);
+    if (searchParams.maxPrice) params.set("maxPrice", searchParams.maxPrice);
+    if (searchParams.sort) params.set("sort", searchParams.sort);
+    if (nextPage > 1) params.set("page", String(nextPage));
+    return `/pazar${params.size ? `?${params.toString()}` : ""}`;
+  };
 
   return (
     <div className="space-y-5">
@@ -60,7 +82,7 @@ export default async function PazarPage({
             <h1 className="mt-2 text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">Mahalle Pazarı</h1>
             <p className="text-sm text-zinc-700">Tezgah tezgah dolaş, sadece kendi mahallendeki aktif ilanları sıcak pazar havasında keşfet.</p>
             <div className="mt-2 flex flex-wrap gap-2 text-xs">
-              <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">{listings.length} aktif ilan</span>
+              <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">{totalListings} aktif ilan</span>
               <span className="rounded-full border border-amber-300 bg-white/80 px-3 py-1 text-amber-800">Sadece bu mahalledeki satıcılar</span>
             </div>
           </div>
@@ -100,6 +122,21 @@ export default async function PazarPage({
             <ListingCard key={listing.id} listing={listing} variant="warm" />
           ))}
           </div>
+          {totalPages > 1 ? (
+            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-white/80 p-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-zinc-600">
+                Sayfa {page} / {totalPages} - Toplam {totalListings} ilan
+              </p>
+              <div className="flex gap-2">
+                <Button asChild variant="outline" size="sm" className="border-amber-300 text-amber-700" disabled={page <= 1}>
+                  <Link href={createPageHref(page - 1)} aria-disabled={page <= 1}>Önceki</Link>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="border-amber-300 text-amber-700" disabled={page >= totalPages}>
+                  <Link href={createPageHref(page + 1)} aria-disabled={page >= totalPages}>Sonraki</Link>
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </section>
       )}
     </div>

@@ -39,7 +39,7 @@ export default async function UnifiedHomePage() {
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
   const neighborhoodId = session.user.neighborhoodId;
 
-  const [listings, boardPosts, listingCandidates, boardCandidates, polls, neighborhood, mukhtar] = await Promise.all([
+  const [listings, boardPosts, topListings, topBoardPosts, polls, neighborhood, mukhtar] = await Promise.all([
     prisma.listing.findMany({
       where: {
         status: "ACTIVE",
@@ -62,13 +62,17 @@ export default async function UnifiedHomePage() {
         status: "ACTIVE",
         neighborhoodId
       },
-      include: { user: { select: { id: true, name: true, username: true, image: true } } }
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
+      take: 3
     }),
     prisma.boardPost.findMany({
       where: {
         neighborhoodId
       },
-      include: { user: { select: { id: true, name: true, username: true, image: true } } }
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
+      take: 3
     }) as Promise<BoardPostView[]>,
     prisma.poll.findMany({
       where: {
@@ -81,13 +85,6 @@ export default async function UnifiedHomePage() {
     prisma.neighborhood.findUnique({ where: { id: neighborhoodId } }),
     getWeeklyNeighborhoodMukhtar(neighborhoodId),
   ]);
-
-  const topListings = [...(listingCandidates as ListingView[])]
-    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0) || +b.createdAt - +a.createdAt)
-    .slice(0, 3);
-  const topBoardPosts = [...boardCandidates]
-    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0) || +b.createdAt - +a.createdAt)
-    .slice(0, 3);
 
   const areaLabel = "Mahalle";
   const heroText = "Mahallendeki ilanları, duyuruları ve oylamaları tek ekranda takip et. Sıcak, güvenli ve yerel bir topluluk deneyimi.";

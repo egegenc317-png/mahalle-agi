@@ -32,7 +32,7 @@ type BoardPostView = {
 export default async function BoardPage({
   searchParams
 }: {
-  searchParams: { type?: string; q?: string; error?: string; success?: string };
+  searchParams: { type?: string; q?: string; error?: string; success?: string; page?: string };
 }) {
   const session = await auth();
   if (!session) redirect("/auth/login");
@@ -52,13 +52,31 @@ export default async function BoardPage({
     ];
   }
 
-  const posts = await prisma.boardPost.findMany({
-    where,
-    include: { user: { select: { id: true, name: true, username: true, image: true } } },
-    orderBy: { createdAt: "desc" }
-  });
+  const page = Math.max(1, Number(searchParams.page || "1") || 1);
+  const pageSize = 12;
+  const skip = (page - 1) * pageSize;
 
   const activeType = searchParams.type || "ALL";
+
+  const [posts, totalPosts] = await Promise.all([
+    prisma.boardPost.findMany({
+      where,
+      include: { user: { select: { id: true, name: true, username: true, image: true } } },
+      orderBy: { createdAt: "desc" },
+      take: pageSize,
+      skip
+    }),
+    prisma.boardPost.count({ where })
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalPosts / pageSize));
+  const createPageHref = (nextPage: number) => {
+    const params = new URLSearchParams();
+    if (activeType !== "ALL") params.set("type", activeType);
+    if (searchParams.q) params.set("q", searchParams.q);
+    if (nextPage > 1) params.set("page", String(nextPage));
+    return `/board${params.size ? `?${params.toString()}` : ""}`;
+  };
 
   return (
     <div className="space-y-4 pb-8 sm:pb-10">
@@ -110,7 +128,10 @@ export default async function BoardPage({
                   ["NOISE", "Şikayet"],
                   ["EVENT", "Etkinlik"]
                 ].map(([value, label]) => {
-                  const href = `/board?type=${value}${searchParams.q ? `&q=${encodeURIComponent(searchParams.q)}` : ""}`;
+                  const params = new URLSearchParams();
+                  params.set("type", value);
+                  if (searchParams.q) params.set("q", searchParams.q);
+                  const href = `/board?${params.toString()}`;
                   const selected = activeType === value;
                   return (
                     <Button key={value} asChild size="sm" variant={selected ? "default" : "outline"} className={`h-9 ${selected ? "bg-[#e58a2d] hover:bg-[#d97f23]" : "border-[#c49a6c] text-[#6b4a2d]"}`}>
@@ -192,6 +213,22 @@ export default async function BoardPage({
                 </div>
               )}
             </div>
+
+            {totalPages > 1 ? (
+              <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#d1b08b] bg-[#fffaf2] p-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-[#6b4a2d]">
+                  Sayfa {page} / {totalPages} - Toplam {totalPosts} duyuru
+                </p>
+                <div className="flex gap-2">
+                  <Button asChild variant="outline" size="sm" className="border-[#c49a6c] text-[#6b4a2d]" disabled={page <= 1}>
+                    <Link href={createPageHref(page - 1)} aria-disabled={page <= 1}>Önceki</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="border-[#c49a6c] text-[#6b4a2d]" disabled={page >= totalPages}>
+                    <Link href={createPageHref(page + 1)} aria-disabled={page >= totalPages}>Sonraki</Link>
+                  </Button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
