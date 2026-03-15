@@ -27,6 +27,11 @@ function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+function getEffectiveNeighborhoodRadiusKm(radiusKm?: number | null) {
+  const safeRadius = typeof radiusKm === "number" && radiusKm > 0 ? radiusKm : 3;
+  return Math.min(Math.max(safeRadius, 1.5), 4);
+}
+
 async function resolveNeighborhoodIdForPoint(input: {
   locationLat?: number | null;
   locationLng?: number | null;
@@ -91,8 +96,7 @@ export default async function MapPage() {
     prisma.neighborhood.findUnique({ where: { id: neighborhoodId } })
   ]);
   const businessUsers = await prisma.user.findMany();
-  const neighborhoodRadiusKm =
-    typeof neighborhood?.radiusKm === "number" && neighborhood.radiusKm > 0 ? neighborhood.radiusKm : 6;
+  const neighborhoodRadiusKm = getEffectiveNeighborhoodRadiusKm(neighborhood?.radiusKm);
   const neighborhoodCenter = neighborhood ? await resolveNeighborhoodCenter(neighborhood) : null;
 
   const isInsideCurrentNeighborhoodRadius = (lat?: number | null, lng?: number | null) => {

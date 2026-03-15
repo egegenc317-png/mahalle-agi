@@ -46,6 +46,25 @@ function formatPrice(price: number | null) {
   return `${price.toLocaleString("tr-TR")} TL`;
 }
 
+function toRad(value: number) {
+  return (value * Math.PI) / 180;
+}
+
+function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getEffectiveNeighborhoodRadiusKm(radiusKm?: number | null) {
+  const safeRadius = typeof radiusKm === "number" && radiusKm > 0 ? radiusKm : 3;
+  return Math.min(Math.max(safeRadius, 1.5), 4);
+}
+
 export default async function CarsiPage() {
   const session = await auth();
   if (!session) redirect("/auth/login");
@@ -53,7 +72,7 @@ export default async function CarsiPage() {
   if (!session.user.neighborhoodId) redirect("/onboarding/neighborhood");
   const neighborhoodId = session.user.neighborhoodId;
 
-  const [users, listings] = await Promise.all([
+  const [users, listings, neighborhood] = await Promise.all([
     prisma.user.findMany(),
     prisma.listing.findMany({
       where: {
@@ -61,8 +80,11 @@ export default async function CarsiPage() {
         neighborhoodId
       },
       orderBy: { createdAt: "desc" }
-    }) as Promise<ListingView[]>
+    }) as Promise<ListingView[]>,
+    prisma.neighborhood.findUnique({ where: { id: neighborhoodId } })
   ]);
+
+  const effectiveRadiusKm = getEffectiveNeighborhoodRadiusKm(neighborhood?.radiusKm);
 
   const businessUsers = (users as ShopUser[])
     .filter((user) => user.accountType === "BUSINESS")
@@ -73,7 +95,19 @@ export default async function CarsiPage() {
     await Promise.all(
       businessUsers.map(async (user) => {
         const matchedNeighborhood = await findNeighborhoodByLocation(user.shopLocationLat!, user.shopLocationLng!);
-        return matchedNeighborhood?.id === neighborhoodId ? user : null;
+        if (matchedNeighborhood?.id !== neighborhoodId) return null;
+        if (
+          typeof neighborhood?.lat !== "number" ||
+          typeof neighborhood?.lng !== "number" ||
+          typeof user.shopLocationLat !== "number" ||
+          typeof user.shopLocationLng !== "number"
+        ) {
+          return null;
+        }
+
+        return distanceKm(user.shopLocationLat, user.shopLocationLng, neighborhood.lat, neighborhood.lng) <= effectiveRadiusKm
+          ? user
+          : null;
       })
     )
   ).filter(Boolean) as ShopUser[];
